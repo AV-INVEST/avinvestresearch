@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, User } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 
 export default function Navbar() {
@@ -71,9 +71,14 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-2.5 lg:flex">
           {showMember ? (
-            <Link href="/#accesso" className="link-underline text-sm font-medium whitespace-nowrap">
+            <Link
+              href="/login"
+              className="btn-ghost !py-2.5 !px-3.5 text-sm whitespace-nowrap"
+              aria-label="Accedi all'area membri"
+            >
+              <User className="h-4 w-4 flex-none text-av-green" />
               Accedi
             </Link>
           ) : null}
@@ -81,7 +86,7 @@ export default function Navbar() {
             href={siteConfig.calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary !py-2.5 !px-4 text-sm shadow-glow-green-sm whitespace-nowrap"
+            className="btn-primary !py-2.5 !px-3.5 text-sm shadow-glow-green-sm whitespace-nowrap"
             aria-label="Prenota una call - Link Calendly (si apre in una nuova scheda)"
           >
             <Phone className="h-4 w-4 flex-none" />
@@ -120,11 +125,12 @@ export default function Navbar() {
           ))}
           {showMember ? (
             <Link
-              href="/#accesso"
+              href="/login"
               onClick={() => setOpen(false)}
-              className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white"
+              className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white inline-flex items-center gap-3"
             >
-              Accedi
+              <User className="h-5 w-5 flex-none text-av-green" />
+              Accedi all&apos;area membri
             </Link>
           ) : null}
           <div className="mt-3 flex flex-col gap-2 px-1 pb-2">

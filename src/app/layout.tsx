@@ -4,7 +4,6 @@ import './globals.css';
 import { siteConfig } from '@/config/siteConfig';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import MobileBottomBar from '@/components/layout/MobileBottomBar';
 import CookieConsent from '@/components/cookie/CookieConsent';
 import { CookieProvider } from '@/components/cookie/CookieConsentContext';
 import FooterManagerBridge from '@/components/cookie/FooterManagerBridge';
@@ -114,7 +113,6 @@ export default function RootLayout({
           <CookieConsent />
           <FooterManagerBridge />
           <Footer />
-          <MobileBottomBar />
         </CookieProvider>
       </body>
     </html>

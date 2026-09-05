@@ -9,10 +9,10 @@
   ogImage: '/og.png',
 
   calendlyUrl: 'https://calendly.com/REPLACE-ME',
-  contactEmail: 'info@avinvestresearch.com',
+  contactEmail: 'avinvestresearch@gmail.com',
 
   featureFlags: {
-    memberAreaEnabled: false,
+    memberAreaEnabled: true,
   },
 
   social: {

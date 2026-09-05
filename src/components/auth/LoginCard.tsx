@@ -1,0 +1,150 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, LogIn, AlertCircle, ShieldCheck, Loader2 } from 'lucide-react';
+import GlassCard from '@/components/ui/GlassCard';
+
+interface Props {
+  callbackUrl?: string;
+  error?: string;
+  guardMessage?: string | null;
+}
+
+export default function LoginCard({ callbackUrl, error, guardMessage }: Props) {
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const url = new URL('/api/auth/signin/google', window.location.origin);
+    if (callbackUrl) url.searchParams.set('callbackUrl', callbackUrl);
+    url.searchParams.set('csrf', 'true');
+    window.location.href = url.toString();
+  };
+
+  return (
+    <>
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 text-sm font-medium text-av-muted transition-colors hover:text-white"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Torna alla home
+      </Link>
+
+      <div className="mt-8">
+        <GlassCard className="overflow-hidden p-5 sm:p-8">
+          <div className="flex items-start gap-3">
+            <span className="grid h-12 w-12 flex-none place-items-center rounded-2xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
+              <ShieldCheck className="h-6 w-6" />
+            </span>
+            <div className="min-w-0">
+              <h1 className="font-display text-2xl font-semibold text-white sm:text-3xl">
+                Accedi all&apos;area membri
+              </h1>
+              <p className="mt-2 text-sm leading-relaxed text-av-muted sm:text-base">
+                Utilizza il tuo account Google per continuare. La procedura è sicura e
+                gestita tramite provider ufficiale.
+              </p>
+            </div>
+          </div>
+
+          {guardMessage ? (
+            <div className="mt-7 rounded-2xl border border-red-500/40 bg-red-500/5 p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="mt-0.5 h-5 w-5 flex-none text-red-400" />
+                <div>
+                  <p className="text-sm font-semibold text-red-300">
+                    Configurazione mancante
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-red-200/90">
+                    {guardMessage}
+                  </p>
+                  <p className="mt-3 text-xs text-red-200/70">
+                    Questo messaggio viene mostrato solo quando le variabili ambiente
+                    mancanti impediscono l&apos;avvio corretto dell&apos;autenticazione.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {error && !guardMessage ? (
+            <div className="mt-7 rounded-2xl border border-red-500/40 bg-red-500/5 p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="mt-0.5 h-5 w-5 flex-none text-red-400" />
+                <p className="text-sm leading-relaxed text-red-200/90">
+                  Si è verificato un errore durante l&apos;autenticazione. Riprova tra
+                  qualche istante o verifica che l&apos;account Google sia correttamente
+                  abilitato.
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          <form className="mt-7 space-y-3" onSubmit={onSubmit}>
+            <button
+              type="submit"
+              disabled={!!guardMessage || loading}
+              className="btn-primary w-full !py-3.5 items-center justify-center shadow-glow-green-sm disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Reindirizzamento in corso...
+                </>
+              ) : (
+                <>
+                  <svg
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                    className="h-5 w-5 flex-none"
+                  >
+                    <path
+                      fill="#FFC107"
+                      d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+                    />
+                    <path
+                      fill="#FF3D00"
+                      d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+                    />
+                    <path
+                      fill="#4CAF50"
+                      d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+                    />
+                    <path
+                      fill="#1976D2"
+                      d="M43.611 20.083H42V20H24v8h11.303c-.795 2.251-2.252 4.171-4.084 5.57l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+                    />
+                  </svg>
+                  Continua con Google
+                </>
+              )}
+              <LogIn className="h-5 w-5 flex-none" />
+            </button>
+          </form>
+
+          <div className="mt-7 rounded-2xl border border-av-line bg-av-bg-2/50 p-4 sm:p-5">
+            <p className="text-xs uppercase tracking-[0.18em] text-av-green">
+              Note
+            </p>
+            <ul className="mt-3 space-y-2 text-sm leading-relaxed text-av-muted">
+              <li>
+                • Accedendo confermi la lettura della{' '}
+                <Link href="/privacy" className="link-underline text-white">
+                  Privacy Policy
+                </Link>
+                .
+              </li>
+              <li>
+                • L&apos;area membri è in fase di allestimento: l&apos;accesso è
+                disponibile ma alcune sezioni potrebbero essere in lavorazione.
+              </li>
+            </ul>
+          </div>
+        </GlassCard>
+      </div>
+    </>
+  );
+}
