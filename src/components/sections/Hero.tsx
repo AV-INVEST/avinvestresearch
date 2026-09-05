@@ -1,3 +1,4 @@
+﻿import Link from 'next/link';
 import { ArrowRight, Phone } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GridBackground from '@/components/visuals/GridBackground';
@@ -10,7 +11,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative isolate overflow-hidden pt-24 sm:pt-28 lg:pt-32"
+      className="relative isolate overflow-hidden pt-24 sm:pt-28 lg:pt-32 scroll-mt-28"
       aria-labelledby="hero-heading"
     >
       <GridBackground />
@@ -49,22 +50,22 @@ export default function Hero() {
             <div
               className="mt-8 flex flex-col gap-3 animate-fade-in-up [animation-delay:360ms] sm:flex-row sm:flex-wrap"
             >
-              <a
-                href="#percorsi"
+              <Link
+                href="/#percorsi"
                 className="btn-ghost-lg inline-flex items-center justify-center gap-2"
               >
                 SCOPRI I PERCORSI
                 <ArrowRight className="h-5 w-5" />
-              </a>
+              </Link>
               <a
                 href={siteConfig.calendlyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary-lg shadow-glow-green inline-flex items-center justify-center gap-2"
-                aria-label="Call Me — prenota una call orientativa (link esterno, si apre in nuova scheda)"
+                aria-label="Prenota una call orientativa (link esterno, si apre in nuova scheda)"
               >
                 <Phone className="h-5 w-5" />
-                CALL ME — PRENOTA UNA CALL
+                PRENOTA UNA CALL
               </a>
             </div>
 

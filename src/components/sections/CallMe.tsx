@@ -1,4 +1,4 @@
-import { Phone, CalendarDays, Clock } from 'lucide-react';
+﻿import { Phone, CalendarDays, Clock } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import NeonBeams from '@/components/visuals/NeonBeams';
@@ -7,7 +7,7 @@ export default function CallMe() {
   return (
     <section
       id="call-me"
-      className="relative isolate overflow-hidden py-24 sm:py-32"
+      className="relative isolate overflow-hidden py-24 sm:py-32 scroll-mt-28"
       aria-labelledby="call-heading"
     >
       <div
@@ -65,10 +65,10 @@ export default function CallMe() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary-lg inline-flex items-center justify-center gap-2 shadow-glow-green-lg"
-                  aria-label="Call Me — scegli data e ora su Calendly (link esterno)"
+                  aria-label="Prenota una call: scegli data e ora (link esterno)"
                 >
                   <Phone className="h-5 w-5" />
-                  CALL ME — SCEGLI DATA E ORA
+                  PRENOTA UNA CALL
                 </a>
               </div>
             </div>

@@ -24,7 +24,7 @@ const steps = [
 
 export default function Method() {
   return (
-    <section id="metodo" className="relative py-24 sm:py-32" aria-labelledby="metodo-heading">
+    <section id="metodo" className="relative py-24 sm:py-32 scroll-mt-28" aria-labelledby="metodo-heading">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow">Il metodo</span>

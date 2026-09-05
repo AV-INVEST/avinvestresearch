@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ArrowRight, Phone, TrendingUp } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import MarketLine from '@/components/visuals/MarketLine';
@@ -6,7 +7,7 @@ export default function FinalCTA() {
   return (
     <section
       id="inizia"
-      className="relative isolate overflow-hidden py-24 sm:py-32"
+      className="relative isolate overflow-hidden py-24 sm:py-32 scroll-mt-28"
       aria-labelledby="final-heading"
     >
       <div
@@ -38,19 +39,19 @@ export default function FinalCTA() {
             competenze, processo e criteri. Il resto è conseguenza.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
-            <a
-              href="#percorsi"
+            <Link
+              href="/#percorsi"
               className="btn-primary-lg inline-flex items-center justify-center gap-2 shadow-glow-green-sm"
             >
               ESPLORA I PERCORSI
               <ArrowRight className="h-5 w-5" />
-            </a>
+            </Link>
             <a
               href={siteConfig.calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost-lg inline-flex items-center justify-center gap-2"
-              aria-label="Prenota una Call Me (link esterno)"
+              aria-label="Prenota una call (link esterno)"
             >
               <Phone className="h-5 w-5 text-av-green" />
               PRENOTA UNA CALL

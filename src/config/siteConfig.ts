@@ -1,4 +1,4 @@
-export const siteConfig = {
+﻿export const siteConfig = {
   name: 'AV-INVEST RESEARCH',
   shortName: 'AV-INVEST',
   tagline: 'Non seguire il mercato. Impara a leggerlo.',
@@ -11,11 +11,13 @@ export const siteConfig = {
   calendlyUrl: 'https://calendly.com/REPLACE-ME',
   contactEmail: 'info@avinvestresearch.com',
 
+  featureFlags: {
+    memberAreaEnabled: false,
+  },
+
   social: {
-    linkedin: 'https://www.linkedin.com/company/av-invest-research',
-    instagram: 'https://www.instagram.com/avinvestresearch',
-    youtube: 'https://www.youtube.com/@avinvestresearch',
-    x: 'https://x.com/avinvestresearch',
+    linkedin: 'https://www.linkedin.com/in/andreavivace/',
+    instagram: 'https://www.instagram.com/avinvestresearch/',
   },
 
   founder: {
@@ -38,7 +40,7 @@ export const siteConfig = {
         'Indicatori',
         'Gestione del rischio',
       ],
-      price: 497,
+      price: 297,
       currency: 'EUR',
       available: false,
     },
@@ -56,7 +58,7 @@ export const siteConfig = {
         'Position sizing',
         'Gestione dell\'operazione',
       ],
-      price: 897,
+      price: 497,
       currency: 'EUR',
       available: false,
     },
@@ -75,24 +77,111 @@ export const siteConfig = {
     ],
   },
 
+  performance: {
+    measuredAtLabel: '5 settembre 2026',
+    entries: [
+      {
+        id: '2024h',
+        label: '2024 - dal 9 luglio',
+        value: 14.13,
+        suffix: '%',
+        positive: true,
+      },
+      {
+        id: '2025f',
+        label: '2025 - anno completo',
+        value: 33.88,
+        suffix: '%',
+        positive: true,
+      },
+      {
+        id: 'copiers',
+        label: 'Investitori in copia attuali',
+        value: 138,
+        suffix: '',
+        positive: true,
+      },
+      {
+        id: 'aum',
+        label: 'Capitale in copia: fascia $300K-$1M',
+        value: 0,
+        suffix: '',
+        positive: false,
+        displayValue: '$300K - $1M',
+      },
+    ],
+    disclaimer:
+      'I rendimenti passati non costituiscono un indicatore affidabile dei risultati futuri. Investire comporta il rischio di perdita del capitale.',
+    sourceNote:
+      'Dati del portafoglio pubblico AV-INVEST, rilevati il 5 settembre 2026.',
+  },
+
+  testimonials: [
+    {
+      id: 't1',
+      author: 'Feedback pubblico di un investitore',
+      text: 'Un messaggio estremamente chiaro, trasparente e maturo. Dimostra una visione strategica lucida e una gestione delle emozioni essenziale per chi gestisce capitale.',
+    },
+    {
+      id: 't2',
+      author: 'Feedback pubblico di un investitore',
+      text: 'Personalmente, anche se investo quello che posso, il risultato ottenuto è positivo. Grazie.',
+    },
+    {
+      id: 't3',
+      author: 'Feedback pubblico di un investitore',
+      text: 'Complimenti, continua così. Sono felice di copiarti.',
+    },
+    {
+      id: 't4',
+      author: 'Feedback pubblico di un investitore',
+      text: 'Ho piena fiducia in te, continua così.',
+    },
+  ],
+
   navigation: [
-    { label: 'Percorsi', href: '#percorsi' },
-    { label: 'Research Club', href: '#research-club' },
-    { label: 'Metodo', href: '#metodo' },
-    { label: 'Chi sono', href: '#chi-sono' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'Percorsi', href: '/#percorsi' },
+    { label: 'Research Club', href: '/#research-club' },
+    { label: 'Metodo', href: '/#metodo' },
+    { label: 'Chi sono', href: '/#chi-sono' },
+    { label: 'FAQ', href: '/#faq' },
   ],
 
   legal: {
     companyName: 'AV-INVEST Research',
-    address: 'Indirizzo sede legale — inserire dopo revisione legale',
-    vatId: 'P.IVA — inserire dopo revisione legale',
-    fiscalCode: 'Codice Fiscale — inserire dopo revisione legale',
+    lastUpdated: '5 settembre 2026',
     disclaimer:
       'I contenuti hanno finalità esclusivamente informative ed educative e non costituiscono consulenza finanziaria personalizzata, sollecitazione all\'investimento o promessa di rendimento.',
-    draftNotice:
-      'Documento in bozza. Richiede revisione legale professionale prima della pubblicazione definitiva.',
+    extendedDisclaimer: [
+      'Tutti i contenuti del sito, dei corsi, delle ricerche e del materiale didattico hanno esclusivamente finalità educative e informative.',
+      'Nulla di quanto pubblicato costituisce consulenza finanziaria personalizzata, consulenza legale, fiscale o di investimento.',
+      'Nessun contenuto deve essere interpretato come raccomandazione, sollecitazione all\'investimento o suggerimento di strategia.',
+      'Non sono garantiti rendimenti, profitti o performance futuri di alcun tipo.',
+      'I mercati finanziari comportano rischi significativi, inclusa la possibile perdita totale del capitale investito.',
+      'I risultati storici e le performance passate non costituiscono garanzia di risultati futuri.',
+      'Grafici, esempi e scenari pubblicati possono essere rappresentazioni illustrative a scopo didattico.',
+      'L\'acquisto di un corso o l\'accesso a contenuti formativi non dà diritto a ricevere segnali di investimento, consigli personalizzati o risultati garantiti.',
+    ],
+    identity: {
+      address: null as string | null,
+      vatId: null as string | null,
+      fiscalCode: null as string | null,
+      companyRegister: null as string | null,
+      pec: null as string | null,
+    },
   },
 } as const;
 
 export type SiteConfig = typeof siteConfig;
+
+export function computeCheckoutEnabled(cfg: typeof siteConfig): boolean {
+  if (!cfg.courses.foundations.available || !cfg.courses.tradingLab.available) return false;
+  const { identity } = cfg.legal;
+  const required = [identity.address, identity.vatId, identity.fiscalCode, identity.companyRegister] as const;
+  for (const field of required) {
+    if (!field || typeof field !== 'string' || field.trim().length === 0) return false;
+  }
+  return true;
+}
+
+export const checkoutEnabled = computeCheckoutEnabled(siteConfig);

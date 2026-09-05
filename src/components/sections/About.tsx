@@ -4,7 +4,7 @@ import GlassCard from '@/components/ui/GlassCard';
 
 export default function About() {
   return (
-    <section id="chi-sono" className="relative py-24 sm:py-32" aria-labelledby="about-heading">
+    <section id="chi-sono" className="relative py-24 sm:py-32 scroll-mt-28" aria-labelledby="about-heading">
       <div className="container-page">
         <div className="grid items-center gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">

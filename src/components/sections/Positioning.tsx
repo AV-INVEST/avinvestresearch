@@ -21,7 +21,7 @@ const pillars = [
 
 export default function Positioning() {
   return (
-    <section id="posizionamento" className="relative py-24 sm:py-32" aria-labelledby="pos-heading">
+    <section id="posizionamento" className="relative py-24 sm:py-32 scroll-mt-28" aria-labelledby="pos-heading">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow">Perché AV‑INVEST</span>

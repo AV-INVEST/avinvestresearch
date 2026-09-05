@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { siteConfig } from '@/config/siteConfig';
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const showMember = siteConfig.featureFlags.memberAreaEnabled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -38,10 +39,10 @@ export default function Navbar() {
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
         <Link
           href="/"
-          className="group flex items-center gap-2"
-          aria-label="AV-INVEST Research — Home"
+          className="group flex items-center gap-2 min-w-0"
+          aria-label="AV-INVEST Research - Home"
         >
-          <span className="grid h-8 w-8 place-items-center rounded-lg border border-av-green-deep/60 bg-av-green/10 text-av-green">
+          <span className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-av-green-deep/60 bg-av-green/10 text-av-green">
             <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
               <path
                 d="M3 17l5-5 4 4 9-10"
@@ -53,18 +54,17 @@ export default function Navbar() {
               />
             </svg>
           </span>
-          <span className="font-display text-sm font-semibold tracking-wide text-white sm:text-base">
-            AV‑INVEST{' '}
-            <span className="text-av-green">RESEARCH</span>
+          <span className="font-display truncate text-sm font-semibold tracking-wide text-white sm:text-base">
+            AV-INVEST <span className="text-av-green">RESEARCH</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Navigazione principale">
+        <nav className="hidden items-center gap-6 xl:flex" aria-label="Navigazione principale">
           {siteConfig.navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="link-underline text-sm font-medium"
+              className="link-underline text-sm font-medium whitespace-nowrap"
             >
               {item.label}
             </Link>
@@ -72,25 +72,27 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Link href="#accesso" className="link-underline text-sm font-medium">
-            Accedi
-          </Link>
+          {showMember ? (
+            <Link href="/#accesso" className="link-underline text-sm font-medium whitespace-nowrap">
+              Accedi
+            </Link>
+          ) : null}
           <a
             href={siteConfig.calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary !py-2.5 !px-4 text-sm shadow-glow-green-sm"
-            aria-label="Prenota una Call Me — Link Calendly (si apre in una nuova scheda)"
+            className="btn-primary !py-2.5 !px-4 text-sm shadow-glow-green-sm whitespace-nowrap"
+            aria-label="Prenota una call - Link Calendly (si apre in una nuova scheda)"
           >
-            <Phone className="h-4 w-4" />
-            CALL ME
+            <Phone className="h-4 w-4 flex-none" />
+            <span className="truncate">PRENOTA UNA CALL</span>
           </a>
         </div>
 
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-av-line bg-av-surface/60 text-white lg:hidden"
+          className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-lg border border-av-line bg-av-surface/60 text-white lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? 'Chiudi menu' : 'Apri menu'}
@@ -102,7 +104,7 @@ export default function Navbar() {
       <div
         id="mobile-menu"
         className={`lg:hidden overflow-hidden border-t border-av-line bg-av-bg/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 ${
-          open ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'
+          open ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         <nav className="container-page flex flex-col gap-1 py-4" aria-label="Menu mobile">
@@ -116,23 +118,26 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="#accesso"
-            onClick={() => setOpen(false)}
-            className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white"
-          >
-            Accedi
-          </Link>
+          {showMember ? (
+            <Link
+              href="/#accesso"
+              onClick={() => setOpen(false)}
+              className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white"
+            >
+              Accedi
+            </Link>
+          ) : null}
           <div className="mt-3 flex flex-col gap-2 px-1 pb-2">
             <a
               href={siteConfig.calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="btn-primary-lg w-full shadow-glow-green-sm"
+              className="btn-primary-lg w-full shadow-glow-green-sm break-words"
+              aria-label="Prenota una call - Link Calendly (si apre in una nuova scheda)"
             >
-              <Phone className="h-5 w-5" />
-              CALL ME — PRENOTA UNA CALL
+              <Phone className="h-5 w-5 flex-none" />
+              PRENOTA UNA CALL
             </a>
           </div>
         </nav>

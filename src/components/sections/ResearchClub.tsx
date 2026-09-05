@@ -1,4 +1,4 @@
-import { Lock, Radar, Building2, AlertTriangle, Archive } from 'lucide-react';
+﻿import { Lock, Radar, Building2, AlertTriangle, Archive } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 
@@ -8,7 +8,7 @@ export default function ResearchClub() {
   return (
     <section
       id="research-club"
-      className="relative py-24 sm:py-32"
+      className="relative py-24 sm:py-32 scroll-mt-28"
       aria-labelledby="rc-heading"
     >
       <div
@@ -40,7 +40,7 @@ export default function ResearchClub() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-av-green opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-av-green" />
               </span>
-              IN ARRIVO — TI TERREMO AGGIORNATO
+              IN ARRIVO - TI TERREMO AGGIORNATO
             </button>
           </div>
 
