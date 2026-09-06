@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { auth, signOut } from '@/auth';
@@ -15,6 +16,25 @@ import {
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Area membri',
+    template: '%s - Area membri',
+  },
+  description: 'Sezione riservata ai membri di AV-INVEST Research.',
+  alternates: { canonical: '/area-membri' },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      'max-image-preview': 'none',
+      'max-snippet': -1,
+    },
+  },
+};
 
 async function logoutAction() {
   'use server';

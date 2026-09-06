@@ -1,4 +1,4 @@
-﻿import LegalLayout from '@/components/legal/LegalLayout';
+import LegalLayout from '@/components/legal/LegalLayout';
 import type { Metadata } from 'next';
 import { siteConfig } from '@/config/siteConfig';
 import { cookieCategories, cookieTable } from '@/config/cookieConfig';
@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   title: 'Cookie Policy',
   description:
     'Informativa sui cookie e sulle tecnologie simili utilizzati su avinvestresearch.com, con tabella dei cookie realmente impiegati.',
-  alternates: { canonical: '/cookie' },
+  alternates: { canonical: 'https://avinvestresearch.com/cookie' },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };
 
 export default function CookiePage() {

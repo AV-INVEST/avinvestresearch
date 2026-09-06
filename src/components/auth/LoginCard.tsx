@@ -139,10 +139,6 @@ export default function LoginCard({ callbackUrl, error, guardMessage }: Props) {
                 </Link>
                 .
               </li>
-              <li>
-                • L&apos;area membri è in fase di allestimento: l&apos;accesso è
-                disponibile ma alcune sezioni potrebbero essere in lavorazione.
-              </li>
             </ul>
           </div>
         </GlassCard>

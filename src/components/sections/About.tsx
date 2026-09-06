@@ -1,4 +1,4 @@
-import { User } from 'lucide-react';
+import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 
@@ -9,25 +9,17 @@ export default function About() {
         <div className="grid items-center gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <GlassCard className="overflow-hidden p-2 sm:p-3">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-av-bg-2">
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,255,106,0.18),transparent_60%)]"
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-grid-trading bg-grid-trading opacity-40"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative flex flex-col items-center">
-                    <div className="grid h-28 w-28 place-items-center rounded-full border border-av-green-deep/60 bg-av-bg-2 shadow-glow-green sm:h-36 sm:w-36">
-                      <User className="h-14 w-14 text-av-green sm:h-18 sm:w-18" />
-                    </div>
-                    <div className="mt-5 rounded-full border border-av-green-deep/50 bg-av-green/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-av-green">
-                      {siteConfig.founder.name}
-                    </div>
-                  </div>
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-av-bg-2 transition-transform duration-500 hover:scale-[1.02] opacity-0 animate-fade-in-up [animation-delay:150ms]">
+                <div className="absolute inset-0">
+                  <Image
+                    src="/images/andrea-founder.webp"
+                    alt="Andrea Vivace, fondatore di AV-INVEST Research"
+                    fill
+                    sizes="(max-width: 1023px) 100vw, 380px"
+                    className="object-cover object-[50%_15%]"
+                  />
                 </div>
+                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-between border-t border-av-line bg-av-bg/80 px-4 py-3 backdrop-blur">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-av-green animate-pulse" />

@@ -16,19 +16,16 @@ export default function MemberAreaCard({ name, email, image, signOutAction }: Pr
       icon: BookOpen,
       title: 'Materiale didattico',
       description: 'Dispense, esercitazioni e slide dei percorsi formativi.',
-      status: 'In preparazione',
     },
     {
       icon: BarChart3,
       title: 'Research',
       description: 'Analisi di contesto, watchlist e note di mercato.',
-      status: 'In preparazione',
     },
     {
       icon: MessageSquare,
       title: 'Community',
       description: 'Aggiornamenti e confronti dedicati ai membri.',
-      status: 'In preparazione',
     },
   ];
 
@@ -98,11 +95,7 @@ export default function MemberAreaCard({ name, email, image, signOutAction }: Pr
               key={p.title}
               className="rounded-2xl border border-av-line bg-av-bg-2/60 p-5 transition-colors hover:border-av-green-deep/50"
             >
-              <p className="inline-flex items-center gap-1.5 rounded-full bg-av-green/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-av-green">
-                <p.icon className="h-3 w-3" />
-                {p.status}
-              </p>
-              <h3 className="mt-4 font-display text-lg font-semibold text-white">
+              <h3 className="font-display text-lg font-semibold text-white">
                 {p.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-av-muted">

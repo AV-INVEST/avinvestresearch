@@ -41,11 +41,11 @@ export default function Method() {
         <div className="relative mt-16">
           <div
             aria-hidden="true"
-            className="absolute left-[1.75rem] top-10 hidden h-px w-[calc(100%-3.5rem)] bg-gradient-to-r from-transparent via-av-green-deep/70 to-transparent md:block"
+            className="absolute left-[1.75rem] top-10 z-0 hidden h-px w-[calc(100%-3.5rem)] bg-gradient-to-r from-transparent via-av-green-deep/70 to-transparent md:block"
           />
-          <div className="grid gap-5 md:grid-cols-3">
-            {steps.map((s, i) => (
-              <GlassCard key={s.num} hover className="relative p-6 sm:p-7">
+          <div className="relative z-10 grid auto-rows-fr gap-5 md:grid-cols-3">
+            {steps.map((s) => (
+              <GlassCard key={s.num} hover className="h-full relative p-6 sm:p-7">
                 <div className="flex items-center justify-between">
                   <div className="grid h-12 w-12 place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
                     <s.icon className="h-6 w-6" />
@@ -60,12 +60,6 @@ export default function Method() {
                 <p className="mt-3 text-sm leading-relaxed text-av-muted sm:text-base">
                   {s.text}
                 </p>
-                {i < steps.length - 1 ? (
-                  <div
-                    aria-hidden="true"
-                    className="absolute -right-3 top-10 z-10 hidden h-6 w-6 rotate-45 border-r border-t border-av-green-deep/60 bg-av-surface md:grid"
-                  />
-                ) : null}
               </GlassCard>
             ))}
           </div>

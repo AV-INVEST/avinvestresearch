@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: 'Accedi',
   description: 'Accedi all\'area membri di AV-INVEST Research tramite Google.',
   alternates: { canonical: '/login' },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      'max-image-preview': 'none',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default async function LoginPage({

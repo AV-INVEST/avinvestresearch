@@ -1,4 +1,4 @@
-﻿import LegalLayout from '@/components/legal/LegalLayout';
+import LegalLayout from '@/components/legal/LegalLayout';
 import type { Metadata } from 'next';
 import { siteConfig } from '@/config/siteConfig';
 
@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   title: 'Termini e condizioni',
   description:
     'Termini e condizioni di utilizzo del sito e dei servizi pubblici di AV-INVEST Research.',
-  alternates: { canonical: '/termini' },
+  alternates: { canonical: 'https://avinvestresearch.com/termini' },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };
 
 export default function TerminiPage() {

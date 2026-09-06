@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useId } from 'react';
-import { Quote, ChevronLeft, ChevronRight, UserRound, Pause, Play } from 'lucide-react';
+import { Quote, ChevronLeft, ChevronRight, UserRound, Pause, Play, Star } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import { siteConfig } from '@/config/siteConfig';
 
@@ -91,7 +91,7 @@ export default function Testimonials() {
             window.setTimeout(() => setPaused(false), 5500);
           }}
         >
-          <GlassCard className="overflow-hidden p-5 sm:p-8">
+          <GlassCard className="overflow-hidden p-4 sm:p-6">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-av-green/90">
                 <Quote className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -131,11 +131,23 @@ export default function Testimonials() {
                       className="flex-none px-1 sm:px-2"
                       style={{ width: `${100 / items.length}%` }}
                     >
-                      <blockquote className="rounded-2xl border border-av-line bg-av-bg-2/50 p-5 sm:p-7">
+                      <blockquote className="rounded-2xl border border-av-line bg-av-bg-2/50 p-4 sm:p-5">
+                        <div
+                          className={`mb-3 flex gap-1 ${reduced ? '' : 'transition-[opacity,transform] duration-500 ease-out'}`}
+                          style={reduced ? undefined : { opacity: i === idx ? 1 : 0, transform: i === idx ? 'translateY(0)' : 'translateY(-6px)' }}
+                        >
+                          {[0, 1, 2, 3, 4].map((n) => (
+                            <Star
+                              key={n}
+                              aria-hidden="true"
+                              className="h-4 w-4 text-av-green drop-shadow-[0_0_4px_rgba(0,255,106,0.55)]"
+                            />
+                          ))}
+                        </div>
                         <p className="text-base leading-relaxed text-white sm:text-lg">
                           &ldquo;{t.text}&rdquo;
                         </p>
-                        <footer className="mt-6 flex items-center gap-3">
+                        <footer className="mt-4 sm:mt-5 flex items-center gap-3">
                           <span className="grid h-10 w-10 flex-none place-items-center rounded-full border border-av-green-deep/50 bg-av-green/10 text-av-green">
                             <UserRound className="h-5 w-5" />
                           </span>

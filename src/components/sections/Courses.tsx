@@ -142,6 +142,56 @@ export default function Courses() {
         })}
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Course',
+            name: siteConfig.courses.foundations.title,
+            description: siteConfig.courses.foundations.description,
+            provider: {
+              '@type': 'Organization',
+              name: siteConfig.name,
+              url: siteConfig.url,
+            },
+            offers: {
+              '@type': 'Offer',
+              price: siteConfig.courses.foundations.price,
+              priceCurrency: siteConfig.courses.foundations.currency,
+              availability: siteConfig.courses.foundations.available
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/PreOrder',
+              url: `${siteConfig.url}/#percorsi`,
+            },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Course',
+            name: siteConfig.courses.tradingLab.title,
+            description: siteConfig.courses.tradingLab.description,
+            provider: {
+              '@type': 'Organization',
+              name: siteConfig.name,
+              url: siteConfig.url,
+            },
+            offers: {
+              '@type': 'Offer',
+              price: siteConfig.courses.tradingLab.price,
+              priceCurrency: siteConfig.courses.tradingLab.currency,
+              availability: siteConfig.courses.tradingLab.available
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/PreOrder',
+              url: `${siteConfig.url}/#percorsi`,
+            },
+          }),
+        }}
+      />
     </section>
   );
 }

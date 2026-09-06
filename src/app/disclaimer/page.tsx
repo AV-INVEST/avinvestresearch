@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   title: 'Disclaimer finanziario',
   description:
     'Disclaimer finanziario: natura educativa dei contenuti, limiti di responsabilità, rischi di mercato e garanzie.',
-  alternates: { canonical: '/disclaimer' },
+  alternates: { canonical: 'https://avinvestresearch.com/disclaimer' },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };
 
 export default function DisclaimerPage() {

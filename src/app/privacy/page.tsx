@@ -1,4 +1,4 @@
-﻿import LegalLayout from '@/components/legal/LegalLayout';
+import LegalLayout from '@/components/legal/LegalLayout';
 import type { Metadata } from 'next';
 import { siteConfig } from '@/config/siteConfig';
 
@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
     'Informativa sul trattamento dei dati personali di AV-INVEST Research, ai sensi del GDPR e del D.Lgs. 196/2003 come modificato dal D.Lgs. 101/2018.',
-  alternates: { canonical: '/privacy' },
+  alternates: { canonical: 'https://avinvestresearch.com/privacy' },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };
 
 export default function PrivacyPage() {

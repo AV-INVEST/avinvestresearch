@@ -80,6 +80,9 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/guide" className="link-underline text-sm">Guide</Link>
+              </li>
             </ul>
           </div>
 

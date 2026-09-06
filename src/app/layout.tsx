@@ -8,6 +8,7 @@ import CookieConsent from '@/components/cookie/CookieConsent';
 import { CookieProvider } from '@/components/cookie/CookieConsentContext';
 import FooterManagerBridge from '@/components/cookie/FooterManagerBridge';
 import SessionProvider from '@/components/auth/SessionProvider';
+import StructuredDataGlobal from '@/components/seo/StructuredDataGlobal';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,20 +33,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} - ${siteConfig.tagline}`,
-    template: `%s - ${siteConfig.name}`,
+    default: 'AV-INVEST Research | Formazione finanziaria e analisi tecnica',
+    template: '%s - AV-INVEST RESEARCH',
   },
-  description: siteConfig.description,
+  description: 'Formazione finanziaria, analisi tecnica e gestione del rischio per comprendere i mercati e prendere decisioni più consapevoli.',
   applicationName: siteConfig.name,
-  keywords: [
-    'formazione finanziaria',
-    'analisi tecnica',
-    'trading',
-    'mercati finanziari',
-    'investimenti',
-    'educazione finanziaria',
-    'ricerca di mercato',
-  ],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
@@ -56,14 +48,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    locale: siteConfig.locale,
+    locale: 'it_IT',
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} - ${siteConfig.tagline}`,
-    description: siteConfig.description,
+    title: 'AV-INVEST Research | Formazione finanziaria e analisi tecnica',
+    description: 'Formazione finanziaria, analisi tecnica e gestione del rischio per comprendere i mercati e prendere decisioni più consapevoli.',
     images: [
       {
-        url: siteConfig.ogImage,
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -72,9 +64,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${siteConfig.name} - ${siteConfig.tagline}`,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
+    title: 'AV-INVEST Research | Formazione finanziaria e analisi tecnica',
+    description: 'Formazione finanziaria, analisi tecnica e gestione del rischio per comprendere i mercati e prendere decisioni più consapevoli.',
+    images: ['/twitter-image.png'],
   },
   robots: {
     index: true,
@@ -88,10 +80,13 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: '/',
+    canonical: 'https://avinvestresearch.com',
     languages: {
       'it-IT': '/',
     },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
   },
 };
 
@@ -114,6 +109,7 @@ export default function RootLayout({
             </main>
             <CookieConsent />
             <FooterManagerBridge />
+            <StructuredDataGlobal />
             <Footer />
           </CookieProvider>
         </SessionProvider>
