@@ -210,28 +210,6 @@ export default async function PercorsiPage() {
             </GlassCard>
           );
         })}
-
-        <GlassCard className="overflow-hidden p-5 sm:p-6 border-dashed opacity-80">
-          <div className="flex items-start gap-3 min-h-[180px]">
-            <div className="grid h-14 w-14 flex-none place-items-center rounded-2xl border border-av-line bg-av-bg-2/60 text-av-muted">
-              <Sparkles className="h-7 w-7" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-display text-lg font-semibold text-white/80">
-                  Prossimo percorso
-                </h3>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-av-muted">
-                  Presto disponibile
-                </span>
-              </div>
-              <p className="mt-4 text-sm leading-relaxed text-av-muted">
-                Nuove esperienze formative saranno aggiunte in futuro. Tutte le novità
-                verranno comunicate sui canali ufficiali.
-              </p>
-            </div>
-          </div>
-        </GlassCard>
       </div>
     </div>
   );

@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     siteName: 'AV-INVEST RESEARCH',
     title: 'Formazione finanziaria: le basi per iniziare | AV-INVEST Research',
     description: 'Guida alla formazione finanziaria: alfabetizzazione, bilancio famigliare, obiettivi, risparmio, strumenti e approccio consapevole ai mercati.',
-    images: [{ url: 'https://avinvestresearch.com/opengraph-image.png', width: 1200, height: 630, alt: 'AV-INVEST RESEARCH' }],
+    images: [{ url: 'https://avinvestresearch.com/images/av-invest-social-v2.png', width: 1200, height: 630, alt: 'AV-INVEST RESEARCH' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Formazione finanziaria: le basi per iniziare | AV-INVEST Research',
     description: 'Guida alla formazione finanziaria: alfabetizzazione, bilancio famigliare, obiettivi, risparmio, strumenti e approccio consapevole ai mercati.',
-    images: ['https://avinvestresearch.com/twitter-image.png'],
+    images: ['https://avinvestresearch.com/images/av-invest-twitter-v2.png'],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };

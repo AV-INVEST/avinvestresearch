@@ -54,9 +54,9 @@ export default function CookiePage() {
           3. Cookie e tecnologie realmente utilizzati
         </h2>
         <p>
-          La tabella seguente riporta le voci attualmente utilizzate dal sito. Nuove voci
-          saranno aggiunte solo a seguito di reale implementazione e, ove previsto, dopo
-          raccolta del consenso.
+          La tabella seguente riporta le voci attualmente utilizzate dal sito. Eventuali
+          nuove voci sono aggiunte in occasione della loro reale implementazione e, ove
+          previsto, dopo raccolta del consenso.
         </p>
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">

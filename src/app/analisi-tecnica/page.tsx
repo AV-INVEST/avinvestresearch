@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     siteName: 'AV-INVEST RESEARCH',
     title: 'Analisi tecnica: grafici, trend e livelli chiave | AV-INVEST Research',
     description: 'Analisi tecnica spiegata in modo semplice: grafici a candele, trend, supporti e resistenze, volumi, indicatori e limiti di questo approccio.',
-    images: [{ url: 'https://avinvestresearch.com/opengraph-image.png', width: 1200, height: 630, alt: 'AV-INVEST RESEARCH' }],
+    images: [{ url: 'https://avinvestresearch.com/images/av-invest-social-v2.png', width: 1200, height: 630, alt: 'AV-INVEST RESEARCH' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Analisi tecnica: grafici, trend e livelli chiave | AV-INVEST Research',
     description: 'Analisi tecnica spiegata in modo semplice: grafici a candele, trend, supporti e resistenze, volumi, indicatori e limiti di questo approccio.',
-    images: ['https://avinvestresearch.com/twitter-image.png'],
+    images: ['https://avinvestresearch.com/images/av-invest-twitter-v2.png'],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };

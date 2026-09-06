@@ -16,6 +16,8 @@ const FAVICON_OUT = resolve(ROOT, 'src', 'app', 'favicon.ico');
 const OG_OUT = resolve(ROOT, 'src', 'app', 'opengraph-image.png');
 const TWITTER_OUT = resolve(ROOT, 'src', 'app', 'twitter-image.png');
 const ANDREA_OUT = resolve(ROOT, 'public', 'images', 'andrea-founder.webp');
+const SOCIAL_V2_OUT = resolve(ROOT, 'public', 'images', 'av-invest-social-v2.png');
+const TWITTER_V2_OUT = resolve(ROOT, 'public', 'images', 'av-invest-twitter-v2.png');
 
 function ensureDir(filePath) {
   const dir = dirname(filePath);
@@ -130,6 +132,38 @@ async function createOpenGraph() {
     .toFile(OG_OUT);
 }
 
+async function createSocialV2() {
+  ensureDir(SOCIAL_V2_OUT);
+  const AV_SRC = ICON_OUT;
+  const avSize = 260;
+  const avX = Math.round((1200 - avSize) / 2);
+  const avY = 90;
+
+  const avBuffer = await sharp(AV_SRC)
+    .resize(avSize, avSize, { fit: 'inside' })
+    .toBuffer();
+  const avBase64 = avBuffer.toString('base64');
+
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="25%" r="55%">
+      <stop offset="0%" stop-color="#00ff6a" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#050705" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#050705"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <image xlink:href="data:image/png;base64,${avBase64}" x="${avX}" y="${avY}" width="${avSize}" height="${avSize}"/>
+  <text x="600" y="440" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Inter, sans-serif" font-size="70" font-weight="700" fill="#ffffff" letter-spacing="0.5">AV-INVEST RESEARCH</text>
+  <text x="600" y="515" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Inter, sans-serif" font-size="34" fill="#a9b5ad">Formazione finanziaria, analisi e metodo.</text>
+</svg>`;
+
+  await sharp(Buffer.from(svg))
+    .png({ quality: 95 })
+    .toFile(SOCIAL_V2_OUT);
+}
+
 async function createAndreaWebp() {
   ensureDir(ANDREA_OUT);
   await sharp(ANDREA_SRC)
@@ -150,23 +184,29 @@ async function printFileInfo(filePath, label) {
 async function main() {
   console.log('== AV-INVEST Asset Generation ==\n');
 
-  console.log('Step 1/6: Generating src/app/icon.png (512x512)...');
+  console.log('Step 1/8: Generating src/app/icon.png (512x512)...');
   await createIconWithBackground(512, 435, ICON_OUT);
 
-  console.log('Step 2/6: Generating src/app/apple-icon.png (180x180)...');
+  console.log('Step 2/8: Generating src/app/apple-icon.png (180x180)...');
   await createIconWithBackground(180, 153, APPLE_ICON_OUT);
 
-  console.log('Step 3/6: Generating src/app/favicon.ico (48x48 ICO)...');
+  console.log('Step 3/8: Generating src/app/favicon.ico (48x48 ICO)...');
   await createFavicon();
 
-  console.log('Step 4/6: Generating src/app/opengraph-image.png (1200x630)...');
+  console.log('Step 4/8: Generating src/app/opengraph-image.png (1200x630)...');
   await createOpenGraph();
 
-  console.log('Step 5/6: Copying to src/app/twitter-image.png...');
+  console.log('Step 5/8: Copying to src/app/twitter-image.png...');
   copyFileSync(OG_OUT, TWITTER_OUT);
 
-  console.log('Step 6/6: Generating public/images/andrea-founder.webp...');
+  console.log('Step 6/8: Generating public/images/andrea-founder.webp...');
   await createAndreaWebp();
+
+  console.log('Step 7/8: Generating public/images/av-invest-social-v2.png (1200x630)...');
+  await createSocialV2();
+
+  console.log('Step 8/8: Copying to public/images/av-invest-twitter-v2.png...');
+  copyFileSync(SOCIAL_V2_OUT, TWITTER_V2_OUT);
 
   console.log('\n== Generated Files Summary ==\n');
   await printFileInfo(ICON_OUT, 'icon.png');
@@ -178,6 +218,8 @@ async function main() {
   await printFileInfo(OG_OUT, 'opengraph-image.png');
   await printFileInfo(TWITTER_OUT, 'twitter-image.png');
   await printFileInfo(ANDREA_OUT, 'andrea-founder.webp');
+  await printFileInfo(SOCIAL_V2_OUT, 'av-invest-social-v2.png');
+  await printFileInfo(TWITTER_V2_OUT, 'av-invest-twitter-v2.png');
 
   console.log('\n✅ Done.');
 }

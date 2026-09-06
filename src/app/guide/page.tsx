@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Guide | AV-INVEST Research',
     description: 'Le guide di AV-INVEST Research su formazione finanziaria, analisi tecnica, gestione del rischio e psicologia del trading. Contenuti educativi chiari e senza artifici.',
-    images: ['https://avinvestresearch.com/twitter-image.png'],
+    images: ['https://avinvestresearch.com/images/av-invest-twitter-v2.png'],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };

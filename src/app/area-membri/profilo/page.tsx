@@ -179,27 +179,26 @@ export default async function ProfiloPage() {
                 id="danger-zone-title"
                 className="font-display text-lg font-semibold text-white"
               >
-                Eliminazione dati e account
+                Gestione ed eliminazione dei dati
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-av-muted">
-                Al momento non conserviamo un profilo persistente nel nostro
-                database. L&apos;accesso all&apos;area membri si basa su una
-                sessione JWT rilasciata tramite il tuo account Google.
-                Eventuali dati futuri (corsi acquistati, registrazioni
-                economiche o altre tracce necessarie per obblighi legali)
-                potrebbero essere conservati separatamente.
+                L&apos;accesso all&apos;area membri avviene tramite il tuo account
+                Google. AV-INVEST Research non salva la password del tuo account
+                Google.
               </p>
               <ul className="mt-4 space-y-2 text-sm leading-relaxed text-av-muted">
-                <li>• Per chiudere la sessione attiva usa il pulsante LOGOUT.</li>
                 <li>
-                  • Per richiedere la cancellazione di eventuali dati o futuri
-                  record associati al tuo account, invia una email tramite il
-                  pulsante seguente (oggetto e corpo precompilati).
+                  • Per terminare la sessione attiva utilizza il pulsante LOGOUT.
                 </li>
                 <li>
-                  • I dati fiscali o transazionali che devono essere
-                  conservati per obbligo legale non saranno eliminati ma
-                  gestiti secondo la normativa e la Privacy Policy.
+                  • Per esercitare i tuoi diritti sui dati personali, inclusa la
+                  cancellazione quando applicabile, invia una richiesta tramite il
+                  pulsante seguente.
+                </li>
+                <li>
+                  • I dati fiscali o transazionali soggetti a obblighi legali sono
+                  conservati per il periodo previsto dalla normativa e gestiti
+                  secondo la Privacy Policy.
                 </li>
               </ul>
               <div className="mt-5 flex flex-wrap gap-3">
@@ -208,16 +207,9 @@ export default async function ProfiloPage() {
                   className="btn-ghost border-red-500/40 text-red-200 hover:border-red-500/60 hover:text-white !py-2.5 !px-4 text-sm items-center justify-center gap-2"
                 >
                   <Mail className="h-4 w-4 text-red-300" />
-                  Richiedi eliminazione via email
+                  Richiedi eliminazione dati
                 </a>
               </div>
-              <p className="mt-4 text-xs text-av-muted">
-                Nota: non viene richiesta la digitazione di una conferma per
-                ora in quanto non esiste una cancellazione server-side diretta
-                degli utenti. Quando verr&agrave; introdotta una persistenza
-                dedicata, questa sezione verr&agrave; aggiornata con il flusso
-                di conferma e revoca.
-              </p>
             </div>
           </div>
         </GlassCard>

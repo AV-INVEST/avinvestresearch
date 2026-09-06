@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     siteName: 'AV-INVEST RESEARCH',
     title: 'Psicologia del trading: disciplina ed emozioni | AV-INVEST Research',
     description: 'Psicologia del trading e investimenti: disciplina, pazienza, bias cognitivi, FOMO, loss aversion e diario operativo per migliorare nel tempo.',
-    images: [{ url: 'https://avinvestresearch.com/opengraph-image.png', width: 1200, height: 630, alt: 'AV-INVEST RESEARCH' }],
+    images: [{ url: 'https://avinvestresearch.com/images/av-invest-social-v2.png', width: 1200, height: 630, alt: 'AV-INVEST RESEARCH' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Psicologia del trading: disciplina ed emozioni | AV-INVEST Research',
     description: 'Psicologia del trading e investimenti: disciplina, pazienza, bias cognitivi, FOMO, loss aversion e diario operativo per migliorare nel tempo.',
-    images: ['https://avinvestresearch.com/twitter-image.png'],
+    images: ['https://avinvestresearch.com/images/av-invest-twitter-v2.png'],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };

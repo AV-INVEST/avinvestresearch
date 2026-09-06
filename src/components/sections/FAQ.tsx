@@ -17,12 +17,12 @@ const faqs: FAQItem[] = [
       'Sì: il sito e i contenuti sono progettati per essere fruibili anche da mobile. Video, dispense e materiale sono consultabili da smartphone, tablet e desktop con lo stesso account. Alcuni esercizi e grafici sono più comodi su schermo più ampio, ma non obbligatori.',
   },
   {
-    question: 'Come funzionerà il Research Club?',
+    question: 'Come funziona il Research Club?',
     answer:
-      'Sarà un ambiente riservato con approfondimenti settimanali su mercati, aziende e settori: analisi documentate, scenari, catalizzatori e rischi. Non è un segnale, non sostituisce la tua valutazione e non promette risultati. È materiale di ricerca e studio, pensato per approfondire e allenare il processo decisionale.',
+      'È un ambiente riservato con approfondimenti settimanali su mercati, aziende e settori: analisi documentate, scenari, catalizzatori e rischi. Non è un segnale, non sostituisce la tua valutazione e non promette risultati. È materiale di ricerca e studio, pensato per approfondire e allenare il processo decisionale.',
   },
   {
-    question: 'Riceverò segnali di acquisto o vendita?',
+    question: 'Il servizio include segnali di acquisto o vendita?',
     answer:
       'No. AV‑INVEST Research non emette segnali, non fornisce consigli personalizzati e non promette rendimenti. I contenuti sono esclusivamente formativi e di ricerca: ti forniamo metodo, strumenti e contesti per costruire le tue valutazioni in autonomia.',
   },
@@ -32,9 +32,9 @@ const faqs: FAQItem[] = [
       'No. La call è una chiamata orientativa: serve a capire il tuo punto di partenza, i tuoi obiettivi formativi e quale percorso può essere più adatto. Non vengono forniti consigli su strumenti, portafogli o operazioni specifiche.',
   },
   {
-    question: 'Quali metodi di pagamento saranno disponibili?',
+    question: 'Quali metodi di pagamento sono disponibili?',
     answer:
-      'Saranno supportate carte di credito e debito principali (Visa, Mastercard, ecc.) e, se disponibile, bonifico. I pagamenti saranno gestiti tramite un gateway sicuro (Stripe) e rispettano le normative vigenti in tema di pagamenti elettronici.',
+      'Puoi pagare con le principali carte di credito e debito tramite Stripe. Gli eventuali altri metodi disponibili vengono mostrati direttamente durante il checkout. I pagamenti sono gestiti tramite una connessione sicura.',
   },
 ];
 

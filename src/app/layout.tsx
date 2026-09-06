@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     description: 'Formazione finanziaria, analisi tecnica e gestione del rischio per comprendere i mercati e prendere decisioni più consapevoli.',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: 'https://avinvestresearch.com/images/av-invest-social-v2.png',
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'AV-INVEST Research | Formazione finanziaria e analisi tecnica',
     description: 'Formazione finanziaria, analisi tecnica e gestione del rischio per comprendere i mercati e prendere decisioni più consapevoli.',
-    images: ['/twitter-image.png'],
+    images: ['https://avinvestresearch.com/images/av-invest-twitter-v2.png'],
   },
   robots: {
     index: true,

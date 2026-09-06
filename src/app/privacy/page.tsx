@@ -141,9 +141,9 @@ export default function PrivacyPage() {
         </h2>
         <p>
           La presente informativa descrive il trattamento dei dati in relazione al sito e
-          ai servizi pubblici oggi disponibili. All&apos;attivazione di servizi aggiuntivi
-          (corsi a pagamento, Research Club, aree riservate) saranno fornite specifiche
-          informative integrate.
+          ai servizi pubblici oggi disponibili. Per servizi aggiuntivi (corsi a pagamento,
+          Research Club, aree riservate) sono fornite specifiche informative integrate
+          contestualmente all&apos;attivazione o all&apos;acquisto.
         </p>
       </section>
     </LegalLayout>

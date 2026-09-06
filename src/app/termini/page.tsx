@@ -105,13 +105,12 @@ export default function TerminiPage() {
           6. Corsi e servizi a pagamento
         </h2>
         <p>
-          All&apos;attivazione ufficiale di servizi a pagamento saranno pubblicate
-          condizioni specifiche, prezzi, IVA, tempi di accesso, modalità di pagamento ed
-          eventuale politica di rimborso, disponibili nella pagina di vendita e durante la
-          procedura d&apos;ordine. Fino a quella data i pulsanti di acquisto rimangono
-          disabilitati. In ogni caso l&apos;acquisto di un corso o di un servizio non
-          attribuisce diritto a ricevere segnali, consigli personalizzati o rendimenti
-          garantiti.
+          I corsi e i servizi a pagamento disponibili sono pubblicati nella
+          pagina dedicata, con prezzi, IVA, tempi di accesso, modalit&agrave;
+          di pagamento ed eventuale politica di rimborso specificate prima di
+          ogni ordine e durante la procedura d&apos;acquisto. L&apos;acquisto di
+          un corso o di un servizio non attribuisce diritto a ricevere
+          segnali, consigli personalizzati o rendimenti garantiti.
         </p>
       </section>
 

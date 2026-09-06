@@ -83,8 +83,7 @@ export default function MemberAreaCard({ name, email, image, signOutAction }: Pr
               Area membri
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base">
-              Benvenuto nella sezione riservata. Nuove sezioni e contenuti saranno
-              attivati progressivamente.
+              Benvenuto nella sezione riservata.
             </p>
           </div>
         </div>
