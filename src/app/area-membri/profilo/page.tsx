@@ -5,8 +5,13 @@ import { redirect } from 'next/navigation';
 import { auth, signOut } from '@/auth';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
+import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
+import { normalizeEmail } from '@/lib/stripe/normalize';
+import { productTitleBySlug } from '@/lib/stripe/pricing';
+import type { PurchaseStatus } from '@prisma/client';
 import {
   ArrowLeft,
+  ArrowRight,
   LogOut,
   Mail,
   ShieldCheck,
@@ -14,6 +19,10 @@ import {
   Cookie,
   Lock,
   UserRound,
+  ExternalLink,
+  CalendarDays,
+  Receipt,
+  CheckCircle2,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -45,6 +54,44 @@ export default async function ProfiloPage() {
     `Ciao AV-INVEST,\n\nVorrei richiedere la eliminazione dei miei dati e la chiusura dell'account.\n\nNome: ${name}\nEmail: ${email}\nID sessione Google (se disponibile): ${session.user.id || 'N/A'}\n\nNote:\n- Confermo di voler procedere con la richiesta di cancellazione.\n\nData: ${new Date().toISOString()}\n`,
   );
   const deleteMailto = `mailto:${siteConfig.contactEmail}?subject=${delSubject}&body=${delBody}`;
+
+  const normalizedEmail = normalizeEmail(email);
+  let purchases: Array<{
+    id: string;
+    productSlug: string;
+    amountTotal: number;
+    currency: string;
+    status: PurchaseStatus;
+    purchasedAt: Date | null;
+    refundedAt: Date | null;
+    refundedAmount: number | null;
+    invoiceHostedUrl: string | null;
+    invoicePdfUrl: string | null;
+    createdAt: Date;
+  }> = [];
+  if (isDatabaseConfigured() && normalizedEmail) {
+    try {
+      purchases = await prisma.purchase.findMany({
+        where: { userEmail: normalizedEmail },
+        orderBy: [{ purchasedAt: 'desc' }, { createdAt: 'desc' }],
+        select: {
+          id: true,
+          productSlug: true,
+          amountTotal: true,
+          currency: true,
+          status: true,
+          purchasedAt: true,
+          refundedAt: true,
+          refundedAmount: true,
+          invoiceHostedUrl: true,
+          invoicePdfUrl: true,
+          createdAt: true,
+        },
+      });
+    } catch {
+      purchases = [];
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -212,6 +259,171 @@ export default async function ProfiloPage() {
               </div>
             </div>
           </div>
+        </GlassCard>
+      </section>
+
+      <section aria-labelledby="billing-title">
+        <GlassCard className="overflow-hidden p-5 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3 min-w-0">
+              <span className="grid h-11 w-11 flex-none place-items-center rounded-xl border border-av-green-deep/40 bg-av-green/10 text-av-green">
+                <Receipt className="h-5 w-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h2
+                  id="billing-title"
+                  className="font-display text-lg font-semibold text-white"
+                >
+                  Acquisti e fatturazione
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                  Cronologia degli acquisti, stato dei pagamenti e accesso alle
+                  ricevute fiscali.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {purchases.length === 0 ? (
+            <div className="mt-6 rounded-2xl border border-dashed border-av-line bg-av-bg-2/40 p-5 sm:p-6">
+              <div className="flex items-start gap-3">
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-line bg-av-bg-2/60 text-av-muted">
+                  <CalendarDays className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-display text-base font-semibold text-white sm:text-lg">
+                    Nessun acquisto registrato
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                    Quando completerai un acquisto, troverai qui il riepilogo del
+                    pagamento e il link alla ricevuta.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Link
+                      href="/#percorsi"
+                      className="btn-primary shadow-glow-green-sm !py-2.5 !px-4 text-sm items-center justify-center gap-2"
+                    >
+                      Scopri i percorsi
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-3">
+              {purchases.map((p) => {
+                const title = productTitleBySlug(p.productSlug);
+                const amount = new Intl.NumberFormat('it-IT', {
+                  style: 'currency',
+                  currency: (p.currency || 'EUR').toUpperCase(),
+                  maximumFractionDigits: 2,
+                }).format((p.amountTotal || 0) / 100);
+                const date = p.purchasedAt ?? p.createdAt;
+                const dateLabel = date.toLocaleDateString('it-IT', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                });
+                let statusLabel = 'In attesa';
+                let statusClass =
+                  'border-av-line bg-av-bg-2/60 text-av-muted';
+                if (p.status === 'succeeded') {
+                  statusLabel = 'Completato';
+                  statusClass =
+                    'border-av-green-deep/50 bg-av-green/10 text-av-green';
+                } else if (p.status === 'refunded') {
+                  statusLabel = 'Rimborsato';
+                  statusClass =
+                    'border-red-500/40 bg-red-500/10 text-red-300';
+                } else if (p.status === 'failed') {
+                  statusLabel = 'Fallito';
+                  statusClass =
+                    'border-amber-500/40 bg-amber-500/10 text-amber-300';
+                }
+                const refunded =
+                  p.refundedAmount != null && p.refundedAmount > 0 ? p.refundedAmount : 0;
+                const refundAmountLabel =
+                  refunded > 0
+                    ? new Intl.NumberFormat('it-IT', {
+                        style: 'currency',
+                        currency: (p.currency || 'EUR').toUpperCase(),
+                        maximumFractionDigits: 2,
+                      }).format(refunded / 100)
+                    : null;
+                const receiptUrl = p.invoiceHostedUrl || p.invoicePdfUrl || null;
+                return (
+                  <div
+                    key={p.id}
+                    className="rounded-2xl border border-av-line bg-av-bg-2/40 p-4 sm:p-5"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-display text-base font-semibold text-white sm:text-lg truncate">
+                            {title}
+                          </p>
+                          <span
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusClass}`}
+                          >
+                            {p.status === 'succeeded' ? (
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                            ) : null}
+                            {statusLabel}
+                          </span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-av-muted">
+                          <span className="inline-flex items-center gap-1.5">
+                            <CalendarDays className="h-3.5 w-3.5" />
+                            Data acquisto:{' '}
+                            <time dateTime={date.toISOString()}>
+                              {dateLabel}
+                            </time>
+                          </span>
+                          <span>Importo: <span className="font-semibold text-white">{amount}</span></span>
+                        </div>
+                        {refundAmountLabel ? (
+                          <div className="mt-2 text-xs sm:text-sm text-red-300/90">
+                            Importo rimborsato:{' '}
+                            <span className="font-semibold">
+                              {refundAmountLabel}
+                            </span>
+                            {p.refundedAt ? (
+                              <span className="text-av-muted">
+                                {' '}
+                                ·{' '}
+                                <time dateTime={p.refundedAt.toISOString()}>
+                                  {p.refundedAt.toLocaleDateString('it-IT')}
+                                </time>
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
+                        {receiptUrl ? (
+                          <a
+                            href={receiptUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-ghost !py-2 !px-3.5 text-xs sm:text-sm items-center justify-center gap-1.5 whitespace-nowrap"
+                          >
+                            <ExternalLink className="h-4 w-4 text-av-green" />
+                            Apri ricevuta
+                          </a>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 rounded-xl border border-av-line bg-av-bg-2/50 px-3 py-2 text-[11px] sm:text-xs text-av-muted">
+                            <Receipt className="h-3.5 w-3.5" />
+                            Ricevuta in elaborazione
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </GlassCard>
       </section>
     </div>

@@ -35,7 +35,7 @@ export default async function PercorsiPage() {
       '/login?callbackUrl=' + encodeURIComponent('/area-membri/percorsi');
     redirect(target);
   }
-  const entitlements = await getEntitlements(session.user.id);
+  const entitlements = await getEntitlements(session.user.id, session.user.email);
 
   const baseCourses: CourseCardData[] = [
     {

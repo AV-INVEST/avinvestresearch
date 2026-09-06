@@ -1,6 +1,7 @@
-import { Check, Clock, Sparkles } from 'lucide-react';
+import { Check, Sparkles } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
+import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
 import type { ComponentType } from 'react';
 
 interface CourseMeta {
@@ -111,32 +112,25 @@ export default function Courses() {
                 </ul>
               </div>
 
-              <div className="mt-8 flex items-end justify-between border-t border-av-line pt-6">
-                <div>
-                  <p className="text-xs font-medium text-av-muted">Prezzo</p>
-                  <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
-                    {formatPrice(course.price, course.currency)}
-                    <span className="ml-2 text-sm font-medium text-av-muted">+ IVA</span>
-                  </p>
+              <div className="mt-8 flex flex-col gap-3 border-t border-av-line pt-6">
+                <div className="flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-av-muted">Prezzo</p>
+                    <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
+                      {formatPrice(course.price, course.currency)}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-av-muted">
+                    <Check className="h-3.5 w-3.5 text-av-green" />
+                    Accesso illimitato
+                  </span>
                 </div>
-                <span className="inline-flex items-center gap-1.5 text-xs text-av-muted">
-                  <Clock className="h-3.5 w-3.5" />
-                  Accesso illimitato
-                </span>
+                <p className="text-xs font-medium text-av-green">
+                  Pagamento unico - IVA inclusa
+                </p>
               </div>
 
-              <button
-                type="button"
-                disabled
-                aria-disabled="true"
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-av-line bg-av-bg-2/70 px-5 py-3.5 text-sm font-semibold text-av-muted transition-colors sm:text-base"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-av-green opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-av-green" />
-                </span>
-                DISPONIBILE PROSSIMAMENTE
-              </button>
+              <CourseCheckoutButton slug={course.slug} />
             </GlassCard>
           );
         })}

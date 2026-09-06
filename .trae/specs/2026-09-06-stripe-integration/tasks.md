@@ -1,0 +1,256 @@
+# Integrazione Stripe - Implementation Plan
+
+## Task 1: Setup dipendenze, Prisma iniziale e variabili ambiente
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: None
+- **Description**:
+  - Installare `stripe`, `prisma` (dev), `@prisma/client`.
+  - Inizializzare Prisma con `prisma init --datasource-provider postgresql` (cartella prisma/ e schema base).
+  - Aggiungere script `"prisma:generate": "prisma generate"` e `"postinstall": "prisma generate"` in package.json (prima dei comandi esistenti).
+  - Aggiornare `.env.example`:
+    - Aggiungere `STRIPE_PRICE_AV_FOUNDATIONS=` e `STRIPE_PRICE_AV_TRADING_LAB=` (gia esistenti su Vercel ma mancanti nel file).
+    - Lasciare DATABASE_URL e DIRECT_URL come placeholder esistenti.
+    - NON aggiungere valori reali.
+- **Acceptance Criteria Addressed**: AC-9, AC-10, FR-16, NFR-8
+- **Test Requirements**:
+  - `rule` TR-1.1: `npm install` termina senza `--legacy-peer-deps` o `--force`; package-lock.json aggiornato; pacchetti installati: `stripe`, `prisma` (devDependencies), `@prisma/client` (dependencies). Evidence: log install + package.json diff.
+  - `rule` TR-1.2: `.env.example` contiene le 4 variabili Stripe (SECRET_KEY, WEBHOOK_SECRET, PRICE_FOUNDATIONS, PRICE_TRADING_LAB) piu Publishable Key (gia presente), DATABASE_URL, DIRECT_URL, senza valori. Evidence: cat .env.example.
+  - `rubric` TR-1.3: Aderenza alle dipendenze e alla struttura minima; scale 1-5; anchors 1=duplicazioni o versioni incompatibili, 3=installato ma senza postinstall, 5=installazione pulita, postinstall genera Prisma client, versioni stabili; threshold >= 4. Evidence: package.json.
+- **Notes**: Usare versioni LTS correnti di stripe e Prisma compatibili con Node 24 e Next 15.
+
+## Task 2: Schema Prisma (User, Purchase, StripeEvent)
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 1
+- **Description**:
+  - Definire nel file `prisma/schema.prisma` tre modelli:
+    - `User`: id (cuid o uuid), email String @unique @db.VarChar(255), googleId String? @unique, name String?, image String?, createdAt, updatedAt.
+    - `StripeEvent`: id, eventId String @unique (UNIQUE per idempotenza), type String, receivedAt DateTime, processedAt DateTime.
+    - `Purchase`: id, userEmail String @db.VarChar(255), productSlug String @db.VarChar(64), checkoutSessionId String @unique, customerId String?, paymentIntentId String?, invoiceId String?, amountTotal Int (centesimi), currency String @db.VarChar(8), status String @db.VarChar(32) (succeeded|refunded|failed|pending), purchasedAt DateTime?, refundedAt DateTime?, refundedAmount Int?, invoiceHostedUrl String?, invoicePdfUrl String?, createdAt DateTime @default(now()), updatedAt.
+  - Creare indice su Purchase(userEmail, status) per query entitlement.
+  - Eseguire `prisma format` e `prisma validate`.
+  - NON eseguire migrate deploy (l'utente lo fara dopo aver creato il DB).
+  - Documentare alla fine del lavoro i passaggi manuali per creare DB Neon e `prisma migrate dev`/`prisma migrate deploy`.
+- **Acceptance Criteria Addressed**: FR-9, FR-10, FR-11, AC-5, NFR-2
+- **Test Requirements**:
+  - `rule` TR-2.1: `npx prisma validate` restituisce "The schema at ... is valid". Evidence: output comando.
+  - `rule` TR-2.2: Schema contiene UNIQUE su User.email, StripeEvent.eventId, Purchase.checkoutSessionId. Evidence: grep prisma/schema.prisma per @unique.
+  - `rule` TR-2.3: Purchase contiene tutti i campi: productSlug, amountTotal, currency, status, purchasedAt, refundedAt, refundedAmount, invoiceHostedUrl, invoicePdfUrl, customerId, paymentIntentId, invoiceId, userEmail. Evidence: ispezione schema.
+  - `rubric` TR-2.4: Qualita modellazione dati; scale 1-5; anchors 1=chiavi mancanti o tipi sbagliati, 3=completo ma senza indici o normalizzazione email, 5=campi ottimizzati, indici sulle query, tipi corretti per currency/amount, threshold >= 4. Evidence: schema.prisma.
+- **Notes**: amount in centesimi (Int) per evitare float; status enum o stringa a scelta ma comunque validata nel codice applicativo.
+
+## Task 3: Librerie helper server-side (DB singleton, Stripe client, allowlist)
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 2
+- **Description**:
+  - Creare `src/lib/db/prisma.ts`: singleton PrismaClient (globalThis caching pattern per Next.js hot-reload).
+  - Creare `src/lib/stripe/client.ts`: singleton Stripe client con apiKey = STRIPE_SECRET_KEY, apiVersion '2024-06-20' (o ultimo stabile). Esporta `getStripeClient()` e valida che la key sia presente (throw errore chiaro ma non logga la key).
+  - Creare `src/lib/stripe/pricing.ts`: oggetto `PRODUCT_SLUGS` = { foundations: 'foundations', tradingLab: 'trading-lab' } come const; oggetto `PRODUCT_ALLOWLIST`: Record<string, { priceIdEnv: string; title: string; slug: string }> che mappa `foundations -> STRIPE_PRICE_AV_FOUNDATIONS`, `trading-lab -> STRIPE_PRICE_AV_TRADING_LAB`. Esporta funzione `resolveProduct(slug: string)` che cerca nella allowlist e restituisce { slug, priceId, title } o null.
+  - Creare `src/lib/stripe/normalize.ts`: `normalizeEmail(email: string | null | undefined): string | null` che fa `.trim().toLowerCase()` e valida formato base.
+  - Creare `src/lib/stripe/site-url.ts`: `getSiteUrl()` che legge NEXT_PUBLIC_SITE_URL con fallback ad `AUTH_URL` e fallback finale a localhost.
+  - NESSUN file creato in questo task deve avere direttiva "use client".
+- **Acceptance Criteria Addressed**: AC-1, AC-2, AC-3, AC-9, NFR-2
+- **Test Requirements**:
+  - `rule` TR-3.1: Nessun file in src/lib/stripe o src/lib/db contiene "use client"; stringhe segrete (sk_, whsec_, STRIPE_PRICE_) non appaiono in file "use client" o in componenti sotto components/. Evidence: grep -R "use client" su src/lib/ e controllo incrociato.
+  - `rule` TR-3.2: `resolveProduct('foundations')` restituisce entry leggendo da env; `resolveProduct('hacked')` restituisce null. Evidence: analisi statica codice.
+  - `rule` TR-3.3: normalizeEmail standardizza le email (trim + lowercase). Evidence: analisi codice.
+  - `rubric` TR-3.4: Pulizia della separazione dei concern; scale 1-5; anchors 1=tutto appiattito in singolo file, 3=separato ma senza singleton, 5=patterni standard Next.js singleton, tipo TypeScript rigoroso; threshold >= 4. Evidence: struttura file.
+
+## Task 4: Route handler Checkout (POST /api/stripe/checkout)
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 3
+- **Description**:
+  - Creare `src/app/api/stripe/checkout/route.ts` con:
+    - `export const dynamic = 'force-dynamic'`.
+    - Solo metodo `POST`.
+    - Ottieni sessione con `auth()`; se assente: 401 `{ error: 'Authentication required' }` (con callback URL hint se utile; il redirect a login viene fatto dal chiamante lato client).
+    - Parse body JSON: ottieni `slug`.
+    - `resolveProduct(slug)`: se null -> 400.
+    - Verifica che l'email della sessione esista; usa normalizeEmail.
+    - Chiama `stripe.checkout.sessions.create` con:
+      - mode: 'payment'
+      - customer_email: email normalizzata (oppure customer creation se preferito Stripe, ma customer_email basta per one-shot)
+      - line_items: [{ price: resolved.priceId, quantity: 1 }]
+      - success_url: `${siteUrl}/area-membri?checkout=success&session_id={CHECKOUT_SESSION_ID}`
+      - cancel_url: `${siteUrl}/#percorsi?checkout=cancelled`
+      - invoice_creation: { enabled: true, invoice_data: {} }
+      - metadata: { product_slug: slug, user_email: emailNormalized }
+      - submit_type: 'pay'
+      - billing_address_collection: 'required' o 'auto' (a scelta, per fattura)
+    - Risposta 200 `{ url: session.url, sessionId: session.id }`.
+  - NON leggere MAI dal body: prezzo, currency, priceId, email.
+- **Acceptance Criteria Addressed**: AC-1, AC-2, AC-3, NFR-1
+- **Test Requirements**:
+  - `rule` TR-4.1: Il codice del route handler NON usa alcun valore di prezzo/currency dal body; solo slug e lookup allowlist. Evidence: analisi codice.
+  - `rule` TR-4.2: route.ts non ha 'use client'; e` un file App Router server. Evidence: prima riga file.
+  - `rule` TR-4.3: invoice_creation.enabled = true (fattura/ricevuta Stripe per one-shot). Evidence: ispezione parametri create.
+  - `rubric` TR-4.4: Robustezza gestione errori; scale 1-5; anchors 1=throw generici senza catch, 3=catch ma messaggi poco chiari, 5=try/catch stratificati, messaggi errore senza leak segreti, status HTTP corretti; threshold >= 4. Evidence: codice route.ts.
+
+## Task 5: Route handler Webhook (POST /api/stripe/webhook)
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 3, Task 4
+- **Description**:
+  - Creare `src/app/api/stripe/webhook/route.ts`:
+    - `export const dynamic = 'force-dynamic'`.
+    - Solo metodo `POST`.
+    - Leggi raw body: `const rawBody = await request.text()`.
+    - Leggi signature: `const sig = request.headers.get('stripe-signature') ?? ''`.
+    - Verifica: `stripe.webhooks.constructEvent(rawBody, sig, webhookSecret)` dentro try/catch; se errore -> 400 `{ error: 'Webhook signature verification failed' }`.
+    - Dopo verifica: controlla idempotenza tabella `StripeEvent`. Se eventId gia presente -> return 200 `{ received: true, duplicate: true }`. Altrimenti crea record `StripeEvent` e procedi.
+    - Switch su `event.type`:
+      1. `checkout.session.completed`:
+         - `const session = event.data.object as Stripe.Checkout.Session`.
+         - `expand` (se non gia disponibile) o recupera `payment_status` e `payment_intent`.
+         - Solo se `payment_status === 'paid'`: procedi a grant access.
+         - Altrimenti (pending): crea Purchase con status pending (utile nel caso async_payment successivo).
+         - `upsertPurchase`: userEmail da metadata.product_slug / customer_email; productSlug da metadata; tutti gli ID (checkoutSessionId, customerId, paymentIntent, invoice). Recupera `hosted_invoice_url` e `invoice_pdf` caricando invoice se necessario (fetch invoice via Stripe API se session.invoice e` string ID).
+         - Set status = 'succeeded', purchasedAt = now.
+      2. `checkout.session.async_payment_succeeded`:
+         - Carica la Checkout Session originale (o leggi metadata dall'evento).
+         - Aggiorna Purchase status = 'succeeded', purchasedAt = now.
+      3. `checkout.session.async_payment_failed`:
+         - Aggiorna status = 'failed' (non revoca perche non e` mai stato concesso, ma marca).
+      4. `charge.refunded`:
+         - `const charge = event.data.object as Stripe.Charge`.
+         - Trova Purchase per `paymentIntentId === charge.payment_intent`.
+         - `amount_refunded = charge.amount_refunded`, `amount_total = charge.amount`.
+         - Tolerance = 1 cent (EUR 0,01): se `amount_refunded + 1 >= amount_total` -> rimborso TOTALE: `status = 'refunded'`, `refundedAt = now`, `refundedAmount = amount_refunded`.
+         - Altrimenti PARZIALE: solo `refundedAmount = amount_refunded`, status rimane 'succeeded'.
+    - Tutti i case avvolti in transaction Prisma dove serve per atomicita.
+  - Error handling: 200 sempre su eventi gia processati o non gestiti (per non far ripetere Stripe all'infinito); 500 solo in caso di errori interni irreversibili da analizzare.
+- **Acceptance Criteria Addressed**: AC-4, AC-5, AC-6, FR-5, FR-6, FR-7, FR-8, FR-9
+- **Test Requirements**:
+  - `rule` TR-5.1: Il webhook usa request.text() per raw body, non request.json(). Evidence: ispezione codice.
+  - `rule` TR-5.2: constructEvent e` in try/catch e in caso di errore restituisce status 400. Evidence: ispezione.
+  - `rule` TR-5.3: Prima di processare, controlla UNIQUE su StripeEvent.eventId e risponde 200 in caso di duplicato senza modifiche. Evidence: ispezione idempotenza.
+  - `rule` TR-5.4: Rimborso totale (amount_refunded >= amount con tolleranza) imposta refunded; parziale no. Evidence: codice soglia.
+  - `rubric` TR-5.5: Gestione errori e logging; scale 1-5; anchors 1=logga tutto incluse chiavi, 3=logga ma troppo verboso, 5=log solo ID operativi, nessun segreto, status HTTP corretti; threshold >= 4. Evidence: codice webhook.
+
+## Task 6: Aggiornamento entitlements (getEntitlements da DB)
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 2, Task 5 (per schema stabile)
+- **Description**:
+  - Modificare `src/lib/entitlements.ts`:
+    - Importa prisma singleton.
+    - `getEntitlements(userId?: string)`:
+      - Prima di tutto: se non c'e` DATABASE_URL configurato (o connessione fallisce), fallback a `buildLockedEntitlements()` per non rompere le pagine durante setup.
+      - Ottieni l'email dell'utente: bisogna risalire da userId -> User via prisma, oppure passare email direttamente (NOTA: Auth.js session ha email; valutare di aggiungere firma email al JWT callback o cercare User per googleId). Alternativa pulita: aggiungere email al JWT e a session (aggiornare callbacks in src/auth.ts per mettere email nel token e propagarla).
+      - Query Purchase con `userEmail = email` AND `status = 'succeeded'`.
+      - Per ogni corso in siteConfig.courses: se c'e un purchase succeeded -> status 'available', purchasedAt = purchase.purchasedAt; altrimenti 'locked'.
+      - Restituisci `EntitlementsState` con i dati popolati.
+  - Aggiornare callbacks JWT/session in `src/auth.ts` per includere l'email normalizzata nella sessione se non gia presente (lo e`, ma assicurarsi sia affidabile e presente in `session.user.email`).
+- **Acceptance Criteria Addressed**: AC-7, FR-12
+- **Test Requirements**:
+  - `rule` TR-6.1: `getEntitlements` interroga Purchase su DB e marca available per succeeded. Evidence: analisi codice.
+  - `rule` TR-6.2: Un Purchase refunded o failed NON sblocca. Evidence: analisi filtro status.
+  - `rule` TR-6.3: Fallback gracefully se DB non configurato (tutto locked) senza crash. Evidence: try/catch attorno prisma query con fallback.
+  - `rubric` TR-6.4: Efficienza query (singola query, NON n+1); scale 1-5; anchors 1=N+1 o query separata per corso, 3=una query ma campi ridondanti, 5=singola where IN su userEmail con select minima; threshold >= 4. Evidence: codice query.
+
+## Task 7: Componente client per pulsante Acquista + aggiornamento Courses.tsx
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 4
+- **Description**:
+  - Creare `src/components/sections/CourseCheckoutButton.tsx` ('use client'):
+    - Props: `slug: 'foundations' | 'trading-lab'`.
+    - Stati: idle, loading, error.
+    - Al click:
+      - Chiama `fetch('/api/auth/session')` per verificare login (oppure usa useSession di next-auth/react se disponibile).
+      - Se non autenticato: `window.location.assign('/login?callbackUrl=' + encodeURIComponent('/#percorsi'))`.
+      - Se autenticato:
+        - `POST /api/stripe/checkout` con `{ slug }`.
+        - In caso 200: `window.location.assign(data.url)`.
+        - In caso 401: redirect to login.
+        - In caso 400/500: mostra errore inline o toast semplice.
+    - UI: loading spinner, testo errore, stato disabled.
+  - Modificare `src/components/sections/Courses.tsx`:
+    - Rimuovere testo "+ IVA" dal prezzo (IVA inclusa) -> mostrare "IVA inclusa" nel footer del prezzo o nella riga payment info.
+    - Sostituire il badge/disabled button "DISPONIBILE PROSSIMAMENTE" con pulsante attivo "Acquista ora".
+    - Sotto il prezzo (dove c'era "Accesso illimitato") aggiungere una seconda riga: "Pagamento unico - IVA inclusa".
+    - Integrare `<CourseCheckoutButton slug="...">` per ciascun corso.
+  - Aggiornare `siteConfig.ts`:
+    - Impostare `available: true` per foundations e tradingLab.
+    - Aggiornare `computeCheckoutEnabled` di conseguenza (o rimuovere le condizioni di identity richieste se non piu necessarie, dato che l'utente vuole checkout attivo). Decisione: rendere `available: true` e aggiornare `computeCheckoutEnabled` per considerare solo se Stripe e configurato (env vars presenti) invece che i dati identity.
+    - Aggiornare i due JSON-LD Course: Offer availability = InStock.
+- **Acceptance Criteria Addressed**: AC-1, AC-11, FR-1, FR-4, NFR-4, NFR-5
+- **Test Requirements**:
+  - `rule` TR-7.1: Pulsante nel componente Courses.tsx NON e disabled. Evidence: ispezione JSX.
+  - `rule` TR-7.2: Il prezzo mostra "IVA inclusa" e non "+ IVA". Evidence: ispezione Courses.tsx.
+  - `rule` TR-7.3: CourseCheckoutButton e` 'use client' e nel body POST invia solo `{ slug }`. Evidence: codice componente.
+  - `rubric` TR-7.4: Stati UX (loading, errore); scale 1-5; anchors 1=nessun feedback, 3=loading ma no errore, 5=loading, messaggio errore chiaro, stato disabled durante richiesta; threshold >= 4. Evidence: codice.
+
+## Task 8: Sezione "Acquisti e fatturazione" nell'area profilo
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 2, Task 6 (dato che legge da Purchase)
+- **Description**:
+  - Modificare `src/app/area-membri/profilo/page.tsx`:
+    - Dopo il blocco "Gestione ed eliminazione dei dati" e prima della chiusura, aggiungere una nuova `<section aria-labelledby="billing-title">`.
+    - Titolo: `Acquisti e fatturazione`.
+    - Sottotitolo: "Cronologia degli acquisti, stato dei pagamenti e accesso alle ricevute fiscali.".
+    - Server-side: query prisma su Purchase where `userEmail = emailNormalizzata`, orderBy `purchasedAt`/`createdAt` desc.
+    - Mostrare per ogni acquisto una card GlassCard con:
+      - Riga: titolo prodotto (da siteConfig in base a productSlug), badge stato (verde "Completato"/rosso "Rimborsato"/grigio "In attesa"/arancione "Fallito").
+      - Riga 2: importo formattato EUR, data acquisto.
+      - Riga 3: se refundedAmount > 0: rimborsato X EUR (data).
+      - Riga 4: se invoiceHostedUrl o invoicePdfUrl presenti -> link "Apri ricevuta" target="_blank" rel="noopener noreferrer" con icona ExternalLink.
+    - Nessun acquisto: messaggio esplicativo con link a `/`.
+- **Acceptance Criteria Addressed**: FR-13, AC-8, NFR-4
+- **Test Requirements**:
+  - `rule` TR-8.1: La sezione legge da Purchase tramite Prisma. Evidence: codice page.tsx.
+  - `rule` TR-8.2: Link ricevuta usa `target="_blank" rel="noopener noreferrer"`. Evidence: ispezione JSX.
+  - `rule` TR-8.3: Gestisce caso vuoto (nessun acquisto). Evidence: JSX condition.
+  - `rubric` TR-8.4: Coerenza grafica con il resto di area-membri (GlassCard, colori badge, spaziature); scale 1-5; anchors 1=stili completamente diversi, 3=funzionale ma con disallineamenti, 5=identico stile delle card esistenti in profilo; threshold >= 4. Evidence: screenshot/confronto.
+
+## Task 9: Validazione (typecheck, lint, build) e test logici di flusso
+- **Status**: `pending`
+- **Priority**: high
+- **Depends On**: Task 1..8 tutti
+- **Description**:
+  - Eseguire `npm run typecheck`, `npm run lint`, `npm run build`.
+  - Risolvere qualsiasi errore TypeScript o lint (incluso warning).
+  - Test logici del codice (grep-based / analisi statica):
+    - Verifica che i file "use client" non contengano STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET o STRIPE_PRICE_* (grep).
+    - Verifica allowlist checkout.
+    - Verifica raw body webhook + constructEvent.
+    - Verifica idempotenza su StripeEvent.eventId.
+    - Verifica Purchase unique checkoutSessionId.
+    - Verifica che entitlement sblocchi solo status = 'succeeded'.
+    - Verifica refund totale vs parziale.
+  - Compilare una lista di variabili Vercel mancanti (es. DATABASE_URL, DIRECT_URL) e passaggi manuali:
+    - Creazione DB Neon/Vercel Postgres.
+    - `npx prisma migrate dev --name init` in locale.
+    - `prisma generate` (gia in postinstall).
+    - `prisma migrate deploy` in pipeline/produzione o manuale.
+    - Aggiunta variabili a Vercel.
+- **Acceptance Criteria Addressed**: AC-10, AC-9, NFR-6, NFR-7
+- **Test Requirements**:
+  - `rule` TR-9.1: `npm run typecheck` exit 0. Evidence: log.
+  - `rule` TR-9.2: `npm run lint` exit 0. Evidence: log.
+  - `rule` TR-9.3: `npm run build` exit 0. Evidence: log.
+  - `rule` TR-9.4: Grep non trova segreti nei file client. Evidence: output grep.
+  - `rubric` TR-9.5: Completezza della documentazione passaggi manuali per DB; scale 1-5; anchors 1=nessuna guida, 3=guida incompleta, 5=passaggi chiari, copertura dev e deploy, nomi esatti variabili; threshold >= 4. Evidence: sezione passaggi manuali nel report finale.
+- **Notes**: Se Prisma migrate richiede DATABASE_URL per la validazione, simulare con SQLite in locale NON e` permesso; bisogna usare `prisma validate` e `prisma format` come nella TR-2.1.
+
+## Task 10: Aggiornamento page Panoramica e Percorsi (messaggi + card status)
+- **Status**: `pending`
+- **Priority**: medium
+- **Depends On**: Task 6
+- **Description**:
+  - Aggiornare `src/app/area-membri/page.tsx`:
+    - Se availableCount > 0 il GlassCard "Non hai ancora acquistato..." viene nascosta e sostituita con una card di riepilogo che mostra i percorsi acquistati (analoga logica ma con stato diverso).
+    - Mantenere la card "scopri i percorsi" solo se availableCount < totale corsi.
+  - Aggiornare `src/app/area-membri/percorsi/page.tsx`:
+    - Messaggio "non hai ancora acquistato" mostrato solo se anyAvailable === false.
+    - Il pulsante "Continua percorso" (attualmente disabled) puo rimanere disabled (non ci sono ancora i moduli), ma assicurarsi che appaia il badge corretto (Disponibile per chi ha purchased). L'obiettivo di questo task e` solo allineamento messaggistica e lettura dati, NON implementazione video.
+- **Acceptance Criteria Addressed**: AC-7, NFR-4
+- **Test Requirements**:
+  - `rule` TR-10.1: Panoramica nasconde il messaggio "non hai acquistato" quando availableCount > 0. Evidence: ispezione JSX.
+  - `rule` TR-10.2: Badge stato nelle card percorsi corrisponde all'entitlement (Disponibile/Bloccato). Evidence: JSX condizionale.
+  - `rubric` TR-10.3: Coerenza messaggi; scale 1-5; anchors 1=messaggi confusi ancora in allestimento, 3=funzionale ma fraseggio non chiaro, 5=messaggi puliti e corrispondenti a stato reale; threshold >= 4. Evidence: stringhe testo.
+- **Notes**: Verificare che NON rimangano diciture tipo "in allestimento" o "prossimamente" in area membri oltre al valore di siteConfig.researchClub.badge (ResearchClub fuori scope da lasciare invariato per richiesta utente: "Non modificare parti del sito estranee a Stripe, acquisti e area membri." - ma researchClub badge e' sezione home fuori da area membri quindi va bene lasciarlo).

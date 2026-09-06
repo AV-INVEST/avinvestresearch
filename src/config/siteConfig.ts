@@ -1,4 +1,4 @@
-﻿export const siteConfig = {
+export const siteConfig = {
   name: 'AV-INVEST RESEARCH',
   shortName: 'AV-INVEST',
   tagline: 'Non seguire il mercato. Impara a leggerlo.',
@@ -42,7 +42,7 @@
       ],
       price: 297,
       currency: 'EUR',
-      available: false,
+      available: true,
     },
     tradingLab: {
       slug: 'trading-lab',
@@ -52,7 +52,7 @@
         'Un percorso avanzato dedicato a strategia, contesto, conferme, invalidazione, dimensionamento e disciplina operativa.',
       topics: [
         'Analisi multi-timeframe',
-        'Qualità del setup',
+        'Qualita del setup',
         'Conferme',
         'Invalidazione',
         'Position sizing',
@@ -60,7 +60,7 @@
       ],
       price: 497,
       currency: 'EUR',
-      available: false,
+      available: true,
     },
   },
 
@@ -176,10 +176,14 @@ export type SiteConfig = typeof siteConfig;
 
 export function computeCheckoutEnabled(cfg: typeof siteConfig): boolean {
   if (!cfg.courses.foundations.available || !cfg.courses.tradingLab.available) return false;
-  const { identity } = cfg.legal;
-  const required = [identity.address, identity.vatId, identity.fiscalCode, identity.companyRegister] as const;
-  for (const field of required) {
-    if (!field || typeof field !== 'string' || field.trim().length === 0) return false;
+  const sk = process.env.STRIPE_SECRET_KEY;
+  const wsec = process.env.STRIPE_WEBHOOK_SECRET;
+  const p1 = process.env.STRIPE_PRICE_AV_FOUNDATIONS;
+  const p2 = process.env.STRIPE_PRICE_AV_TRADING_LAB;
+  if (!sk || !wsec || !p1 || !p2) return false;
+  const forbidden = ['replace', 'REPLACE', '---', 'xxx', 'XXX'];
+  for (const v of [sk, wsec, p1, p2]) {
+    if (forbidden.some((f) => v.includes(f)) || v.trim().length === 0) return false;
   }
   return true;
 }

@@ -83,7 +83,7 @@ export default async function LessonPage({
   if (!resolved) notFound();
   const { module, lesson }: { module: Module; lesson: Lesson } = resolved;
 
-  const entitlements = await getEntitlements(session.user.id);
+  const entitlements = await getEntitlements(session.user.id, session.user.email);
   const ent = entitlements.courses[course.slug];
   const courseLocked = !ent || ent.status === 'locked';
 

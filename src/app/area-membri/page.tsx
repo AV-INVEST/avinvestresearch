@@ -30,10 +30,11 @@ export default async function PanoramicaPage() {
     redirect(target);
   }
   const name = session.user.name || 'Membro AV-INVEST';
-  const entitlements = await getEntitlements(session.user.id);
+  const entitlements = await getEntitlements(session.user.id, session.user.email);
 
   const courses = Object.values(entitlements.courses);
-  const availableCount = courses.filter((c) => c.status !== 'locked').length;
+  const availableCourses = courses.filter((c) => c.status !== 'locked');
+  const availableCount = availableCourses.length;
   const overallProgress =
     courses.length === 0
       ? 0
@@ -143,33 +144,77 @@ export default async function PanoramicaPage() {
         </GlassCard>
       </div>
 
-      <GlassCard className="overflow-hidden p-5 sm:p-6">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
-                <Compass className="h-5 w-5" />
-              </span>
-              <div>
-                <h2 className="font-display text-xl font-semibold text-white">
-                  Non hai ancora acquistato alcun percorso
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base">
-                  Quando avrai attivato un percorso, troverai qui i progressi, i
-                  moduli e le lezioni a cui puoi accedere.
-                </p>
+      {availableCount === 0 ? (
+        <GlassCard className="overflow-hidden p-5 sm:p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
+                  <Compass className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-semibold text-white">
+                    Non hai ancora acquistato alcun percorso
+                  </h2>
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base">
+                    Quando avrai attivato un percorso, troverai qui i progressi, i
+                    moduli e le lezioni a cui puoi accedere.
+                  </p>
+                </div>
               </div>
             </div>
+            <Link
+              href="/#percorsi"
+              className="btn-primary shadow-glow-green-sm whitespace-nowrap"
+            >
+              Scopri i percorsi
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-          <Link
-            href="/#percorsi"
-            className="btn-primary shadow-glow-green-sm whitespace-nowrap"
-          >
-            Scopri i percorsi
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </GlassCard>
+        </GlassCard>
+      ) : (
+        <GlassCard className="overflow-hidden p-5 sm:p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
+                  <CheckCircle2 className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-semibold text-white">
+                    Percorsi attivi: {availableCount}
+                  </h2>
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base">
+                    Hai accesso a:{' '}
+                    {availableCourses
+                      .map((c) => c.title)
+                      .join(', ')}
+                    . Vai ai percorsi per iniziare o continuare.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {availableCount < courses.length ? (
+                <Link
+                  href="/#percorsi"
+                  className="btn-ghost !py-2.5 !px-4 text-sm items-center justify-center gap-2"
+                >
+                  Scopri tutti i percorsi
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              ) : null}
+              <Link
+                href="/area-membri/percorsi"
+                className="btn-primary shadow-glow-green-sm whitespace-nowrap"
+              >
+                Apri i miei percorsi
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </GlassCard>
+      )}
     </div>
   );
 }

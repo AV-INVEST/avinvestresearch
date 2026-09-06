@@ -1,11 +1,17 @@
 import NextAuth, { type DefaultSession } from 'next-auth';
 import Google from 'next-auth/providers/google';
+import { normalizeEmail } from '@/lib/stripe/normalize';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      email: string;
     } & DefaultSession['user'];
+  }
+  interface JWT {
+    id?: string;
+    email?: string;
   }
 }
 
@@ -40,11 +46,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user?.id) token.id = user.id;
+      if (user?.email) {
+        const normalized = normalizeEmail(user.email);
+        if (normalized) token.email = normalized;
+      } else if (token.email) {
+        const normalized = normalizeEmail(token.email);
+        if (normalized) token.email = normalized;
+      }
       return token;
     },
     async session({ session, token }) {
       if (token.id && session.user) {
         session.user.id = String(token.id);
+      }
+      if (session.user) {
+        const normalized = normalizeEmail(session.user.email ?? token.email);
+        if (normalized) {
+          session.user.email = normalized;
+        }
       }
       return session;
     },
