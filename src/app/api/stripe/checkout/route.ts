@@ -13,10 +13,23 @@ interface CheckoutPayload {
 }
 
 function resolveBaseUrl(req: Request): string {
+  const PRODUCTION_URL = siteConfig.url.replace(/\/+$/, '');
+  const isProduction = process.env.NODE_ENV === 'production';
+
   const fromPublic = process.env.NEXT_PUBLIC_SITE_URL;
   if (fromPublic && typeof fromPublic === 'string' && fromPublic.length > 0) {
-    return fromPublic.replace(/\/+$/, '');
+    const cleaned = fromPublic.replace(/\/+$/, '');
+    if (isProduction) {
+      if (cleaned.startsWith('https://avinvestresearch.com')) return cleaned;
+      return PRODUCTION_URL;
+    }
+    return cleaned;
   }
+
+  if (isProduction) {
+    return PRODUCTION_URL;
+  }
+
   const origin = req.headers.get('origin');
   if (origin && typeof origin === 'string' && origin.length > 0 && origin.startsWith('http')) {
     return origin.replace(/\/+$/, '');
@@ -29,7 +42,7 @@ function resolveBaseUrl(req: Request): string {
   if (finalHost) {
     return `${proto}://${finalHost}`.replace(/\/+$/, '');
   }
-  return siteConfig.url.replace(/\/+$/, '');
+  return PRODUCTION_URL;
 }
 
 interface SafeStripeErrorLog {
@@ -124,14 +137,8 @@ export async function POST(req: Request): Promise<Response> {
       },
       success_url: successUrl.toString(),
       cancel_url: cancelUrl.toString(),
-      automatic_tax: { enabled: false },
+      automatic_tax: { enabled: true },
       allow_promotion_codes: false,
-      payment_intent_data: {
-        metadata: {
-          product_slug: resolved.slug,
-          user_email: userEmail,
-        },
-      },
     });
 
     if (!checkoutSession.url) {
