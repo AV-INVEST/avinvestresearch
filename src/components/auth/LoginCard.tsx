@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, LogIn, AlertCircle, ShieldCheck, Loader2 } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 import GlassCard from '@/components/ui/GlassCard';
 
 interface Props {
@@ -14,13 +15,13 @@ interface Props {
 export default function LoginCard({ callbackUrl, error, guardMessage }: Props) {
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onGoogleSignIn = async () => {
     setLoading(true);
-    const url = new URL('/api/auth/signin/google', window.location.origin);
-    if (callbackUrl) url.searchParams.set('callbackUrl', callbackUrl);
-    url.searchParams.set('csrf', 'true');
-    window.location.href = url.toString();
+    try {
+      await signIn('google', { callbackUrl: callbackUrl || '/area-membri' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,9 +84,10 @@ export default function LoginCard({ callbackUrl, error, guardMessage }: Props) {
             </div>
           ) : null}
 
-          <form className="mt-7 space-y-3" onSubmit={onSubmit}>
+          <div className="mt-7 space-y-3">
             <button
-              type="submit"
+              type="button"
+              onClick={onGoogleSignIn}
               disabled={!!guardMessage || loading}
               className="btn-primary w-full !py-3.5 items-center justify-center shadow-glow-green-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
@@ -123,7 +125,7 @@ export default function LoginCard({ callbackUrl, error, guardMessage }: Props) {
               )}
               <LogIn className="h-5 w-5 flex-none" />
             </button>
-          </form>
+          </div>
 
           <div className="mt-7 rounded-2xl border border-av-line bg-av-bg-2/50 p-4 sm:p-5">
             <p className="text-xs uppercase tracking-[0.18em] text-av-green">
