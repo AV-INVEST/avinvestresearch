@@ -342,6 +342,12 @@ export default function CandlestickShowcase() {
           <h3 className="mt-4 font-display text-xl font-semibold text-white sm:text-2xl md:text-3xl">
             Tre scenari per allenare l&apos;occhio sul prezzo
           </h3>
+          <p
+            className="mt-3 inline-flex items-center gap-2 rounded-full border border-av-line bg-av-bg-2/60 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] sm:text-xs"
+            style={{ color: current.accent }}
+          >
+            Scenario attuale · {current.label}
+          </p>
           <p className="mt-3 text-sm leading-relaxed text-av-muted sm:text-base">
             {current.description}
           </p>
@@ -349,7 +355,7 @@ export default function CandlestickShowcase() {
       </div>
 
       <div
-        className="mt-5 grid w-full grid-cols-3 gap-1.5 sm:gap-2 md:hidden"
+        className="mt-5 max-sm:mt-3 grid w-full grid-cols-3 gap-1 max-sm:gap-1 sm:gap-2 md:hidden"
         role="tablist"
         aria-label="Scenari di mercato - mobile"
       >
@@ -422,7 +428,7 @@ export default function CandlestickShowcase() {
       </div>
 
       <div
-        className="mt-5"
+        className="mt-5 max-sm:mt-3"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={(e) => {
@@ -446,14 +452,9 @@ export default function CandlestickShowcase() {
           role="tabpanel"
           id={panelId(idx)}
           aria-labelledby={tabId(idx)}
-          className="relative isolate w-full overflow-hidden rounded-2xl border border-av-line bg-av-bg-2 [box-sizing:border-box]"
-          style={{
-            maxWidth: '100%',
-            minWidth: 0,
-            aspectRatio: '16 / 9',
-          }}
+          className="relative isolate w-full overflow-hidden rounded-2xl border border-av-line bg-av-bg-2 [box-sizing:border-box] aspect-[16/9] max-md:aspect-[4/3] max-md:min-h-[300px]"
         >
-          <div className="absolute inset-0 p-3 sm:p-4">
+          <div className="absolute inset-0 p-2 max-sm:p-2.5 sm:p-4">
             <svg
               viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
               className="h-full w-full"
@@ -715,40 +716,6 @@ export default function CandlestickShowcase() {
                 </text>
               ))}
             </svg>
-          </div>
-
-          <div
-            className="pointer-events-none absolute left-3 top-3 z-10 max-w-[calc(100%-24px)] sm:left-4 sm:top-4"
-            style={{ boxSizing: 'border-box' }}
-          >
-            <div
-              className="pointer-events-auto w-full rounded-xl border sm:rounded-2xl sm:border"
-              style={{
-                boxSizing: 'border-box',
-                minHeight: '56px',
-                maxWidth: 'calc(100% - 0px)',
-                borderColor: `${current.accent}55`,
-                background:
-                  'linear-gradient(135deg, rgba(0,0,0,0.72) 0%, rgba(5,7,5,0.86) 100%)',
-                backdropFilter: 'blur(6px)',
-                padding: 'clamp(12px, 2.8vw, 16px) clamp(12px, 2.8vw, 16px)',
-                boxShadow: `0 0 0 1px ${current.accent}18 inset, 0 8px 36px rgba(0,0,0,0.5)`,
-              }}
-            >
-              <p
-                className="text-[10px] font-semibold uppercase sm:text-xs"
-                style={{
-                  letterSpacing: '0.14em',
-                  color: current.accent,
-                  fontFamily: 'ui-monospace, Menlo, monospace',
-                }}
-              >
-                SCENARIO · {current.label.toUpperCase()}
-              </p>
-              <p className="mt-2 text-xs leading-relaxed text-white sm:text-sm sm:leading-relaxed">
-                {current.summary}
-              </p>
-            </div>
           </div>
         </div>
 

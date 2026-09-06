@@ -1,13 +1,17 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Menu, X, Phone, User } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { siteConfig } from '@/config/siteConfig';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { data: session, status } = useSession();
+  const authLoading = status === 'loading';
+  const authenticated = !authLoading && !!session?.user;
   const showMember = siteConfig.featureFlags.memberAreaEnabled;
 
   useEffect(() => {
@@ -73,14 +77,25 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-2.5 lg:flex">
           {showMember ? (
-            <Link
-              href="/login"
-              className="btn-ghost !py-2.5 !px-3.5 text-sm whitespace-nowrap"
-              aria-label="Accedi all'area membri"
-            >
-              <User className="h-4 w-4 flex-none text-av-green" />
-              Accedi
-            </Link>
+            authenticated ? (
+              <Link
+                href="/area-membri"
+                className="btn-ghost !py-2.5 !px-3.5 text-sm whitespace-nowrap"
+                aria-label="Vai all'area membri"
+              >
+                <User className="h-4 w-4 flex-none text-av-green" />
+                Area membri
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="btn-ghost !py-2.5 !px-3.5 text-sm whitespace-nowrap"
+                aria-label="Accedi all'area membri"
+              >
+                <User className="h-4 w-4 flex-none text-av-green" />
+                Accedi
+              </Link>
+            )
           ) : null}
           <a
             href={siteConfig.calendlyUrl}
@@ -124,14 +139,25 @@ export default function Navbar() {
             </Link>
           ))}
           {showMember ? (
-            <Link
-              href="/login"
-              onClick={() => setOpen(false)}
-              className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white inline-flex items-center gap-3"
-            >
-              <User className="h-5 w-5 flex-none text-av-green" />
-              Accedi all&apos;area membri
-            </Link>
+            authenticated ? (
+              <Link
+                href="/area-membri"
+                onClick={() => setOpen(false)}
+                className="rounded-xl px-4 py-3 text-base font-medium text-white transition-colors hover:bg-av-surface inline-flex items-center gap-3"
+              >
+                <User className="h-5 w-5 flex-none text-av-green" />
+                Area membri
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white inline-flex items-center gap-3"
+              >
+                <User className="h-5 w-5 flex-none text-av-green" />
+                Accedi all&apos;area membri
+              </Link>
+            )
           ) : null}
           <div className="mt-3 flex flex-col gap-2 px-1 pb-2">
             <a

@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { siteConfig } from '@/config/siteConfig';
@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer';
 import CookieConsent from '@/components/cookie/CookieConsent';
 import { CookieProvider } from '@/components/cookie/CookieConsentContext';
 import FooterManagerBridge from '@/components/cookie/FooterManagerBridge';
+import SessionProvider from '@/components/auth/SessionProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -102,18 +103,20 @@ export default function RootLayout({
   return (
     <html lang="it-IT" className={`${inter.variable} ${display.variable}`}>
       <body className="antialiased">
-        <CookieProvider>
-          <a href="#main" className="sr-only-focus">
-            Salta al contenuto principale
-          </a>
-          <Navbar />
-          <main id="main" className="relative">
-            {children}
-          </main>
-          <CookieConsent />
-          <FooterManagerBridge />
-          <Footer />
-        </CookieProvider>
+        <SessionProvider>
+          <CookieProvider>
+            <a href="#main" className="sr-only-focus">
+              Salta al contenuto principale
+            </a>
+            <Navbar />
+            <main id="main" className="relative">
+              {children}
+            </main>
+            <CookieConsent />
+            <FooterManagerBridge />
+            <Footer />
+          </CookieProvider>
+        </SessionProvider>
       </body>
     </html>
   );
