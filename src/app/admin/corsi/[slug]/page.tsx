@@ -19,9 +19,9 @@ import {
 import {
   LessonRowActions,
   CreateLessonBlock,
-  lessonSourceLabel,
 } from '@/components/admin/AdminCourseComponents';
 import { buildLessonHref } from '@/lib/db/course-queries';
+import { lessonSourceLabel } from '@/lib/admin/course-labels';
 
 export const dynamic = 'force-dynamic';
 
