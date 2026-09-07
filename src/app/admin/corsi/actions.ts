@@ -8,10 +8,21 @@ import {
   setLessonStatus,
   reorderLessonAdmin,
   createLessonAdmin,
+  deleteLessonAdmin,
   type AdminLessonFormValues,
 } from '@/lib/admin/course-admin';
 
-export async function actionCreateLesson(_prev: unknown, formData: FormData) {
+function asFormData(a: unknown, b: unknown): FormData {
+  if (a instanceof FormData) return a;
+  if (b instanceof FormData) return b;
+  throw new Error('Invalid server action invocation: expected FormData.');
+}
+
+export async function actionCreateLesson(
+  a: unknown,
+  b?: unknown,
+) {
+  const formData = asFormData(a, b);
   const moduleId = String(formData.get('moduleId') || '');
   const title = String(formData.get('title') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
@@ -20,7 +31,11 @@ export async function actionCreateLesson(_prev: unknown, formData: FormData) {
   return result;
 }
 
-export async function actionPublishLesson(_prev: unknown, formData: FormData) {
+export async function actionPublishLesson(
+  a: unknown,
+  b?: unknown,
+) {
+  const formData = asFormData(a, b);
   const lessonId = String(formData.get('lessonId') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
   const result = await setLessonStatus(lessonId, 'PUBLISHED');
@@ -28,7 +43,11 @@ export async function actionPublishLesson(_prev: unknown, formData: FormData) {
   return result;
 }
 
-export async function actionUnpublishLesson(_prev: unknown, formData: FormData) {
+export async function actionUnpublishLesson(
+  a: unknown,
+  b?: unknown,
+) {
+  const formData = asFormData(a, b);
   const lessonId = String(formData.get('lessonId') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
   const result = await setLessonStatus(lessonId, 'DRAFT');
@@ -36,7 +55,11 @@ export async function actionUnpublishLesson(_prev: unknown, formData: FormData) 
   return result;
 }
 
-export async function actionReorderLesson(_prev: unknown, formData: FormData) {
+export async function actionReorderLesson(
+  a: unknown,
+  b?: unknown,
+) {
+  const formData = asFormData(a, b);
   const lessonId = String(formData.get('lessonId') || '');
   const direction = String(formData.get('direction') || 'up') as 'up' | 'down';
   const courseSlug = String(formData.get('courseSlug') || '');
@@ -45,7 +68,11 @@ export async function actionReorderLesson(_prev: unknown, formData: FormData) {
   return result;
 }
 
-export async function actionSaveLesson(_prev: unknown, formData: FormData) {
+export async function actionSaveLesson(
+  a: unknown,
+  b?: unknown,
+) {
+  const formData = asFormData(a, b);
   const lessonId = String(formData.get('lessonId') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
   const moduleSlug = String(formData.get('moduleSlug') || '');
@@ -80,5 +107,24 @@ export async function actionSaveLesson(_prev: unknown, formData: FormData) {
     }
   }
 
+  return result;
+}
+
+export async function actionDeleteLesson(
+  a: unknown,
+  b?: unknown,
+) {
+  const formData = asFormData(a, b);
+  const lessonId = String(formData.get('lessonId') || '');
+  const courseSlug = String(formData.get('courseSlug') || '');
+  const result = await deleteLessonAdmin(lessonId);
+  if (courseSlug) {
+    revalidatePath(`/admin/corsi/${courseSlug}`, 'page');
+    revalidatePath(`/admin/corsi/${courseSlug}/lezioni/${lessonId}`, 'page');
+    revalidatePath(`/area-membri/corsi/${courseSlug}`, 'layout');
+  }
+  if (result.ok) {
+    redirect(`/admin/corsi/${courseSlug}`);
+  }
   return result;
 }

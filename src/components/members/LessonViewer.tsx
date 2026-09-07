@@ -75,8 +75,13 @@ interface Props {
   completedLessonIds?: string[];
 }
 
-function buildLessonHref(courseSlug: string, moduleSlug: string, lessonSlug: string) {
-  return `/area-membri/corsi/${encodeURIComponent(courseSlug)}/${encodeURIComponent(moduleSlug)}/${encodeURIComponent(lessonSlug)}`;
+function buildLessonHref(
+  courseSlug: string,
+  moduleSlug: string,
+  lessonSlug: string,
+  previewSuffix = '',
+) {
+  return `/area-membri/corsi/${encodeURIComponent(courseSlug)}/${encodeURIComponent(moduleSlug)}/${encodeURIComponent(lessonSlug)}${previewSuffix}`;
 }
 
 export default function LessonViewer({
@@ -186,7 +191,8 @@ export default function LessonViewer({
         const isActive = l.lessonId === activeId;
         const isCompleted = completedIds.has(l.lessonId);
         const lessonDraft = l.status !== 'PUBLISHED';
-        const href = buildLessonHref(l.courseSlug, l.moduleSlug, l.lessonSlug);
+        const previewSuffix = isPreview ? '?preview=1' : '';
+        const href = buildLessonHref(l.courseSlug, l.moduleSlug, l.lessonSlug, previewSuffix);
         return (
           <Link
             key={l.lessonId}

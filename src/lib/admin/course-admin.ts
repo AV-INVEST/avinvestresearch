@@ -456,3 +456,34 @@ export async function reorderLessonAdmin(
     };
   }
 }
+
+export async function deleteLessonAdmin(lessonId: string): Promise<AdminActionResult> {
+  const guard = await requireAdmin();
+  if (!guard.ok) return { ok: false, error: guard.error };
+  try {
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId },
+      select: { id: true, moduleId: true, order: true },
+    });
+    if (!lesson) return { ok: false, error: 'Lezione non trovata.' };
+
+    await prisma.$transaction([
+      prisma.lessonProgress.deleteMany({ where: { lessonId: lesson.id } }),
+      prisma.lesson.delete({ where: { id: lesson.id } }),
+      prisma.lesson.updateMany({
+        where: {
+          moduleId: lesson.moduleId,
+          order: { gt: lesson.order },
+        },
+        data: { order: { decrement: 1 } },
+      }),
+    ]);
+
+    return { ok: true, message: 'Lezione eliminata.' };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Errore eliminazione lezione.',
+    };
+  }
+}

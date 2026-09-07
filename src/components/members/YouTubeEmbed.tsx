@@ -92,7 +92,12 @@ export default function YouTubeEmbed({ youtubeId, lessonTitle, startSec, onTimeU
   const safeStart = Math.max(0, Math.floor(startSec ?? 0));
   const iframeSrcParams = new URLSearchParams({ rel: '0' });
   if (safeStart > 0) iframeSrcParams.set('start', String(safeStart));
-  if (onTimeUpdate || onPause) iframeSrcParams.set('enablejsapi', '1');
+  if (onTimeUpdate || onPause) {
+    iframeSrcParams.set('enablejsapi', '1');
+    if (typeof window !== 'undefined' && window?.location?.origin) {
+      iframeSrcParams.set('origin', window.location.origin);
+    }
+  }
   const iframeSrc = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId!)}?${iframeSrcParams.toString()}`;
 
   return (
@@ -104,7 +109,7 @@ export default function YouTubeEmbed({ youtubeId, lessonTitle, startSec, onTimeU
           title={iframeTitle}
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="no-referrer"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         />
       ) : (

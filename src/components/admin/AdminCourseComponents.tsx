@@ -14,6 +14,7 @@ import {
   Eye,
   Sparkles,
   FileWarning,
+  Trash2,
 } from 'lucide-react';
 import type { AdminActionResult, ExtractYouTubeResult } from '@/lib/admin/course-admin';
 import type { ContentStatus, VideoSourceType } from '@prisma/client';
@@ -23,6 +24,7 @@ import {
   actionReorderLesson,
   actionCreateLesson,
   actionSaveLesson,
+  actionDeleteLesson,
 } from '@/app/admin/corsi/actions';
 
 interface LessonRowActionsProps {
@@ -138,6 +140,26 @@ export function LessonRowActions(props: LessonRowActionsProps) {
         <SmallButton type="submit" aria-label="Sposta giu">
           <ArrowDown className="h-3.5 w-3.5" />
           Giu
+        </SmallButton>
+      </form>
+
+      <form
+        action={actionDeleteLesson as any}
+        onSubmit={(e) => {
+          if (!window.confirm('Vuoi davvero eliminare questa lezione?')) {
+            e.preventDefault();
+          }
+        }}
+      >
+        <div style={{ display: 'none' }}>{commonHiddens}</div>
+        <SmallButton
+          type="submit"
+          tone="warn"
+          aria-label="Elimina lezione"
+          title="Elimina lezione"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          Elimina
         </SmallButton>
       </form>
     </div>

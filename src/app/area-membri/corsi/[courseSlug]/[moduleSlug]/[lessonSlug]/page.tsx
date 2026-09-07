@@ -178,17 +178,19 @@ export default async function LessonPage({
     description: structure.description,
   };
 
+  const previewSuffix = allowPreview ? '?preview=1' : '';
+
   const prev = nav?.prev
     ? {
         label: nav.prev.title,
-        href: buildLessonHref(p.courseSlug, nav.prev.moduleSlug, nav.prev.lessonSlug),
+        href: buildLessonHref(p.courseSlug, nav.prev.moduleSlug, nav.prev.lessonSlug) + previewSuffix,
       }
     : undefined;
 
   const next = nav?.next
     ? {
         label: nav.next.title,
-        href: buildLessonHref(p.courseSlug, nav.next.moduleSlug, nav.next.lessonSlug),
+        href: buildLessonHref(p.courseSlug, nav.next.moduleSlug, nav.next.lessonSlug) + previewSuffix,
       }
     : undefined;
 
