@@ -1,17 +1,15 @@
-import NextAuth, { type DefaultSession, type JWT, type Session, type User } from 'next-auth';
+import NextAuth, { type DefaultSession, type NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      email: string;
+    user?: {
+      id?: string;
     } & DefaultSession['user'];
   }
   interface JWT {
     id?: string;
-    email?: string;
   }
 }
 
@@ -28,7 +26,7 @@ export function getAuthEnvGuardMessage(): string | null {
   return null;
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const authConfig = {
   trustHost: true,
   providers: [
     Google({
@@ -44,18 +42,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/login',
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User | undefined }) {
+    async jwt({ token, user }) {
       if (user?.id) token.id = user.id;
-      if (user?.email) {
-        const normalized = normalizeEmail(user.email);
-        if (normalized) token.email = normalized;
-      } else if (token.email) {
-        const normalized = normalizeEmail(token.email);
-        if (normalized) token.email = normalized;
-      }
+      const normalized = normalizeEmail(user?.email ?? token.email);
+      if (normalized) token.email = normalized;
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, token }) {
       if (token.id && session.user) {
         session.user.id = String(token.id);
       }
@@ -67,10 +60,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session;
     },
-    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+    async redirect({ url, baseUrl }) {
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       if (new URL(url).origin === baseUrl) return url;
       return `${baseUrl}/area-membri`;
     },
   },
-});
+} satisfies NextAuthConfig;
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
