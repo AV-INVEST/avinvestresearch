@@ -61,7 +61,7 @@ I testi, i prezzi, i link e le informazioni legali si trovano in `src/config/sit
 - Elementi navigazione, founder, Research Club
 - Informazioni legali placeholder (`legal.*`)
 
-Il Calendly di default è `https://calendly.com/REPLACE-ME` e viene usato da tutti i pulsanti *Call Me*.
+L'URL Calendly viene letto dalla variabile d'ambiente pubblica `NEXT_PUBLIC_CALENDLY_URL` e viene usato da tutti i pulsanti "PRENOTA UNA CALL". Valorizzare `NEXT_PUBLIC_CALENDLY_URL` in `.env.local` o nel pannello Vercel (es. `https://calendly.com/your-username/your-event-type`). Se la variabile manca o contiene un placeholder, i pulsanti rimangono inattivi senza errori a runtime e viene stampato un warning in sviluppo.
 
 ## Note fase 1
 

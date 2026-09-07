@@ -1,3 +1,28 @@
+export function computeCalendlyUrl(): string | undefined {
+  const raw = process.env.NEXT_PUBLIC_CALENDLY_URL;
+  if (!raw || typeof raw !== 'string') {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        '[siteConfig] NEXT_PUBLIC_CALENDLY_URL non è configurato. I pulsanti "Prenota una call" non navigheranno verso Calendly fino a quando la variabile non sarà impostata.',
+      );
+    }
+    return undefined;
+  }
+  const trimmed = raw.trim();
+  const forbidden = ['replace', 'REPLACE', '---', 'xxx', 'XXX', 'esempio', 'example'];
+  if (forbidden.some((f) => trimmed.toLowerCase().includes(f.toLowerCase())) || trimmed.length === 0) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        '[siteConfig] NEXT_PUBLIC_CALENDLY_URL contiene un valore placeholder non valido. I pulsanti "Prenota una call" rimarranno inattivi finché non sarà configurato un URL reale.',
+      );
+    }
+    return undefined;
+  }
+  return trimmed;
+}
+
+export const calendlyUrl = computeCalendlyUrl();
+
 export const siteConfig = {
   name: 'AV-INVEST RESEARCH',
   shortName: 'AV-INVEST',
@@ -8,7 +33,7 @@ export const siteConfig = {
   locale: 'it-IT',
   ogImage: '/og.png',
 
-  calendlyUrl: 'https://calendly.com/REPLACE-ME',
+  calendlyUrl,
   contactEmail: 'avinvestresearch@gmail.com',
 
   featureFlags: {
