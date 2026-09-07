@@ -303,15 +303,21 @@ export default async function PanoramicaPage() {
 
           <div className="flex flex-col items-stretch gap-3 lg:w-[320px] flex-none">
             {rcEntitlement.accessGranted ? (
-              <div className="rounded-2xl border border-av-green-deep/40 bg-av-green/[0.04] p-4">
+              <div className={`rounded-2xl border p-4 ${
+                rcEntitlement.status === 'cancel_at_period_end'
+                  ? 'border-amber-500/40 bg-amber-500/[0.04]'
+                  : rcEntitlement.status === 'payment_problem'
+                    ? 'border-red-500/40 bg-red-500/[0.04]'
+                    : 'border-av-green-deep/40 bg-av-green/[0.04]'
+              }`}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C9A961]">
                       19,90 € / mese
                     </p>
                     <p className="mt-1 text-sm font-semibold text-white">
-                      {rcEntitlement.status === 'cancel_at_period_end'
-                        ? 'Accesso disponibile fino'
+                      {rcEntitlement.status === 'cancel_at_period_end' || rcEntitlement.status === 'ended'
+                        ? 'Accesso attivo fino'
                         : 'Prossimo rinnovo'}
                       :{' '}
                       <span className="text-av-muted text-xs font-normal">
@@ -323,15 +329,15 @@ export default async function PanoramicaPage() {
                   </div>
                   {rcEntitlement.status === 'active' ? (
                     <span className="inline-flex items-center gap-1 rounded-full border border-av-green-deep/40 bg-av-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-av-green">
-                      <CheckCircle2 className="h-3 w-3" /> Attivo
+                      <CheckCircle2 className="h-3 w-3" /> ATTIVO
                     </span>
                   ) : rcEntitlement.status === 'cancel_at_period_end' ? (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-av-yellow-deep/40 bg-av-yellow/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-av-yellow">
-                      <XCircle className="h-3 w-3" /> Rinnovo disattivato
+                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                      RINNOVO DISATTIVATO
                     </span>
                   ) : rcEntitlement.status === 'payment_problem' ? (
                     <span className="inline-flex items-center gap-1 rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-red-300">
-                      <ShieldAlert className="h-3 w-3" /> Pag. problema
+                      <ShieldAlert className="h-3 w-3" /> PAG. PROBLEMA
                     </span>
                   ) : null}
                 </div>

@@ -11,6 +11,7 @@ import { normalizeEmail } from '@/lib/stripe/normalize';
 import { productTitleBySlug } from '@/lib/stripe/pricing';
 import { getResearchClubEntitlement } from '@/lib/entitlements';
 import type { PurchaseStatus } from '@prisma/client';
+import { loadBillingHistory, type BillingRow } from '@/lib/stripe/billing-history';
 import {
   ArrowLeft,
   ArrowRight,
@@ -62,7 +63,7 @@ export default async function ProfiloPage() {
   const deleteMailto = `mailto:${siteConfig.contactEmail}?subject=${delSubject}&body=${delBody}`;
 
   const normalizedEmail = normalizeEmail(email);
-  let purchases: Array<{
+  let rawPurchases: Array<{
     id: string;
     productSlug: string;
     amountTotal: number;
@@ -77,7 +78,7 @@ export default async function ProfiloPage() {
   }> = [];
   if (isDatabaseConfigured() && normalizedEmail) {
     try {
-      purchases = await prisma.purchase.findMany({
+      rawPurchases = await prisma.purchase.findMany({
         where: { userEmail: normalizedEmail },
         orderBy: [{ purchasedAt: 'desc' }, { createdAt: 'desc' }],
         select: {
@@ -95,8 +96,30 @@ export default async function ProfiloPage() {
         },
       });
     } catch {
-      purchases = [];
+      rawPurchases = [];
     }
+  }
+
+  const purchaseRows = rawPurchases.map((p): import('@/lib/stripe/billing-history').PurchaseBillingRow => ({
+    kind: 'purchase',
+    id: `purchase:${p.id}`,
+    title: productTitleBySlug(p.productSlug),
+    productSlug: p.productSlug,
+    date: p.purchasedAt ?? p.createdAt,
+    amountTotal: p.amountTotal,
+    currency: (p.currency || 'EUR').toUpperCase(),
+    status: p.status,
+    hostedInvoiceUrl: p.invoiceHostedUrl,
+    invoicePdfUrl: p.invoicePdfUrl,
+    refundedAt: p.refundedAt,
+    refundedAmount: p.refundedAmount,
+  }));
+
+  let billingRows: BillingRow[] = [];
+  try {
+    billingRows = await loadBillingHistory(normalizedEmail, purchaseRows);
+  } catch {
+    billingRows = purchaseRows;
   }
 
   const rcEntitlement = normalizedEmail
@@ -243,37 +266,57 @@ export default async function ProfiloPage() {
                   {rcEntitlement?.status === 'active' ? (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/50 bg-av-green/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-av-green">
                       <CheckCircle2 className="h-3.5 w-3.5" />
-                      Attivo
+                      ATTIVO
                     </span>
                   ) : rcEntitlement?.status === 'cancel_at_period_end' ? (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-300">
-                      Rinnovo disattivato
+                      RINNOVO DISATTIVATO
                     </span>
                   ) : rcEntitlement?.status === 'payment_problem' ? (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-300">
                       <AlertTriangle className="h-3.5 w-3.5" />
-                      Problema pagamento
+                      PAGAMENTO PROBLEMA
                     </span>
                   ) : rcEntitlement?.status === 'ended' ? (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-av-muted">
                       <XCircle className="h-3.5 w-3.5" />
-                      Scaduto
+                      SCADUTO
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-av-muted">
-                      Nessun abbonamento
+                      NESSUN ABBONAMENTO
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-sm leading-relaxed text-av-muted">
-                  {rcEntitlement?.status === 'none' || !rcEntitlement
-                    ? 'Analisi e ricerche di mercato riservate ai membri. Abbonamento ricorrente 19,90 €/mese.'
-                    : rcEntitlement.message}
-                </p>
-                {rcEntitlement?.nextDate && rcEntitlement.status !== 'none' ? (
+                {rcEntitlement?.status === 'active' ? (
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                    Abbonamento attivo. Il rinnovo automatico &egrave; attivo.
+                  </p>
+                ) : rcEntitlement?.status === 'cancel_at_period_end' ? (
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                    Accesso attivo fino al{' '}
+                    <span className="font-medium text-white">
+                      {rcEntitlement.nextDate?.toLocaleDateString('it-IT', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      })}
+                    </span>
+                    . Il rinnovo automatico &egrave; stato disattivato. Nessun nuovo addebito sar&agrave; effettuato.
+                  </p>
+                ) : rcEntitlement?.status === 'none' || !rcEntitlement ? (
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                    Analisi e ricerche di mercato riservate ai membri. Abbonamento ricorrente 19,90 €/mese.
+                  </p>
+                ) : (
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                    {rcEntitlement.message}
+                  </p>
+                )}
+                {rcEntitlement?.nextDate && rcEntitlement.status !== 'none' && rcEntitlement.status !== 'cancel_at_period_end' ? (
                   <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-3 py-1 text-xs text-av-muted">
                     <CalendarDays className="h-3.5 w-3.5 text-[#C9A961]" />
-                    {rcEntitlement.status === 'cancel_at_period_end' || rcEntitlement.status === 'ended'
+                    {rcEntitlement.status === 'ended'
                       ? 'Accesso disponibile fino al '
                       : 'Prossimo rinnovo: '}
                     <time className="font-medium text-white" dateTime={rcEntitlement.nextDate.toISOString()}>
@@ -395,7 +438,7 @@ export default async function ProfiloPage() {
             </div>
           </div>
 
-          {purchases.length === 0 ? (
+          {billingRows.length === 0 ? (
             <div className="mt-6 rounded-2xl border border-dashed border-av-line bg-av-bg-2/40 p-5 sm:p-6">
               <div className="flex items-start gap-3">
                 <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-line bg-av-bg-2/60 text-av-muted">
@@ -423,71 +466,102 @@ export default async function ProfiloPage() {
             </div>
           ) : (
             <div className="mt-6 grid gap-3">
-              {purchases.map((p) => {
-                const title = productTitleBySlug(p.productSlug);
+              {billingRows.map((row) => {
                 const amount = new Intl.NumberFormat('it-IT', {
                   style: 'currency',
-                  currency: (p.currency || 'EUR').toUpperCase(),
+                  currency: (row.currency || 'EUR').toUpperCase(),
                   maximumFractionDigits: 2,
-                }).format((p.amountTotal || 0) / 100);
-                const date = p.purchasedAt ?? p.createdAt;
-                const dateLabel = date.toLocaleDateString('it-IT', {
+                }).format((row.amountTotal || 0) / 100);
+                const dateLabel = row.date.toLocaleDateString('it-IT', {
                   day: '2-digit',
                   month: 'short',
                   year: 'numeric',
                 });
+
                 let statusLabel = 'In attesa';
                 let statusClass =
                   'border-av-line bg-av-bg-2/60 text-av-muted';
-                if (p.status === 'succeeded') {
-                  statusLabel = 'Completato';
-                  statusClass =
-                    'border-av-green-deep/50 bg-av-green/10 text-av-green';
-                } else if (p.status === 'refunded') {
-                  statusLabel = 'Rimborsato';
-                  statusClass =
-                    'border-red-500/40 bg-red-500/10 text-red-300';
-                } else if (p.status === 'failed') {
-                  statusLabel = 'Fallito';
-                  statusClass =
-                    'border-amber-500/40 bg-amber-500/10 text-amber-300';
+                let statusIcon: React.ReactNode = null;
+                let datePrefixLabel = 'Data acquisto';
+                let refundAmountLabel: string | null = null;
+                let refundedAt: Date | null = null;
+
+                if (row.kind === 'purchase') {
+                  datePrefixLabel = 'Data acquisto';
+                  if (row.status === 'succeeded') {
+                    statusLabel = 'Completato';
+                    statusClass =
+                      'border-av-green-deep/50 bg-av-green/10 text-av-green';
+                    statusIcon = <CheckCircle2 className="h-3.5 w-3.5" />;
+                  } else if (row.status === 'refunded') {
+                    statusLabel = 'Rimborsato';
+                    statusClass =
+                      'border-red-500/40 bg-red-500/10 text-red-300';
+                  } else if (row.status === 'failed') {
+                    statusLabel = 'Fallito';
+                    statusClass =
+                      'border-amber-500/40 bg-amber-500/10 text-amber-300';
+                  }
+                  const refunded =
+                    row.refundedAmount != null && row.refundedAmount > 0 ? row.refundedAmount : 0;
+                  if (refunded > 0) {
+                    refundAmountLabel = new Intl.NumberFormat('it-IT', {
+                      style: 'currency',
+                      currency: (row.currency || 'EUR').toUpperCase(),
+                      maximumFractionDigits: 2,
+                    }).format(refunded / 100);
+                    refundedAt = row.refundedAt;
+                  }
+                } else {
+                  datePrefixLabel = 'Data pagamento';
+                  if (row.status === 'paid') {
+                    statusLabel = 'Completato';
+                    statusClass =
+                      'border-av-green-deep/50 bg-av-green/10 text-av-green';
+                    statusIcon = <CheckCircle2 className="h-3.5 w-3.5" />;
+                  } else if (row.status === 'open' || row.status === 'payment_pending') {
+                    statusLabel = 'In attesa';
+                    statusClass =
+                      'border-amber-500/40 bg-amber-500/10 text-amber-300';
+                  } else if (row.status === 'draft') {
+                    statusLabel = 'Bozza';
+                    statusClass =
+                      'border-av-line bg-av-bg-2/60 text-av-muted';
+                  } else if (row.status === 'void') {
+                    statusLabel = 'Annullato';
+                    statusClass =
+                      'border-av-line bg-av-bg-2/60 text-av-muted';
+                  } else if (row.status === 'uncollectible') {
+                    statusLabel = 'Incassabile';
+                    statusClass =
+                      'border-red-500/40 bg-red-500/10 text-red-300';
+                  }
                 }
-                const refunded =
-                  p.refundedAmount != null && p.refundedAmount > 0 ? p.refundedAmount : 0;
-                const refundAmountLabel =
-                  refunded > 0
-                    ? new Intl.NumberFormat('it-IT', {
-                        style: 'currency',
-                        currency: (p.currency || 'EUR').toUpperCase(),
-                        maximumFractionDigits: 2,
-                      }).format(refunded / 100)
-                    : null;
-                const receiptUrl = p.invoiceHostedUrl || p.invoicePdfUrl || null;
+
+                const receiptUrl = row.hostedInvoiceUrl || row.invoicePdfUrl || null;
                 return (
                   <div
-                    key={p.id}
+                    key={row.id}
                     className="rounded-2xl border border-av-line bg-av-bg-2/40 p-4 sm:p-5"
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="font-display text-base font-semibold text-white sm:text-lg truncate">
-                            {title}
+                            {row.title}
                           </p>
                           <span
                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusClass}`}
                           >
-                            {p.status === 'succeeded' ? (
-                              <CheckCircle2 className="h-3.5 w-3.5" />
-                            ) : null}
+                            {statusIcon}
                             {statusLabel}
                           </span>
                         </div>
                         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-av-muted">
                           <span className="inline-flex items-center gap-1.5">
                             <CalendarDays className="h-3.5 w-3.5" />
-                            Data acquisto:{' '}
-                            <time dateTime={date.toISOString()}>
+                            {datePrefixLabel}:{' '}
+                            <time dateTime={row.date.toISOString()}>
                               {dateLabel}
                             </time>
                           </span>
@@ -499,12 +573,12 @@ export default async function ProfiloPage() {
                             <span className="font-semibold">
                               {refundAmountLabel}
                             </span>
-                            {p.refundedAt ? (
+                            {refundedAt ? (
                               <span className="text-av-muted">
                                 {' '}
                                 ·{' '}
-                                <time dateTime={p.refundedAt.toISOString()}>
-                                  {p.refundedAt.toLocaleDateString('it-IT')}
+                                <time dateTime={refundedAt.toISOString()}>
+                                  {refundedAt.toLocaleDateString('it-IT')}
                                 </time>
                               </span>
                             ) : null}
