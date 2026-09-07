@@ -79,10 +79,14 @@ export default async function ResearchClub() {
                   </span>
                   <Link
                     href="/area-membri/research-club"
-                    className="btn-primary items-center gap-2 !py-3 !px-5 text-sm shadow-glow-green-sm"
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-[#C9A961]/70 bg-[#0a0906] !py-3 !px-5 text-sm font-semibold text-white transition-all duration-200 ease-out hover:border-[#D4B46A] hover:shadow-glow-gold-sm focus-visible:outline-[#C9A961] sm:text-base"
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(180deg, rgba(201,169,97,0.12), rgba(201,169,97,0.02))',
+                    }}
                   >
                     Vai all&apos;archivio ricerche
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-4 w-4 text-[#C9A961]" />
                   </Link>
                 </div>
               ) : (

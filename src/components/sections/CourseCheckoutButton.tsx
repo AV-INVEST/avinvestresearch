@@ -1,13 +1,19 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { AlertCircle, ArrowRight, CreditCard, Loader2 } from 'lucide-react';
+import { AlertCircle, ArrowRight, CreditCard, Loader2, Clock } from 'lucide-react';
+import { siteConfig } from '@/config/siteConfig';
 
 interface Props {
   slug: 'foundations' | 'trading-lab';
 }
 
 type ButtonState = 'idle' | 'loading' | 'error';
+
+const SLUG_TO_CONFIG_KEY: Record<Props['slug'], 'foundations' | 'tradingLab'> = {
+  foundations: 'foundations',
+  'trading-lab': 'tradingLab',
+};
 
 export default function CourseCheckoutButton({ slug }: Props) {
   const [state, setState] = useState<ButtonState>('idle');
@@ -72,6 +78,25 @@ export default function CourseCheckoutButton({ slug }: Props) {
 
   const isLoading = state === 'loading';
   const hasError = state === 'error';
+
+  const configKey = SLUG_TO_CONFIG_KEY[slug];
+  const purchasable = siteConfig.courses[configKey].purchasable !== false;
+
+  if (!purchasable) {
+    return (
+      <div className="mt-6 w-full space-y-3">
+        <button
+          type="button"
+          disabled
+          aria-disabled="true"
+          className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-av-line bg-av-bg-2/50 px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-av-muted/80 opacity-80 sm:text-base"
+        >
+          <Clock className="h-5 w-5" />
+          IN ARRIVO
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-6 w-full space-y-3">

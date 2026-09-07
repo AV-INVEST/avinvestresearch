@@ -347,14 +347,14 @@ export default async function ResearchClubPage() {
                     href={`/api/research-pdf/${doc.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`btn-primary w-full items-center justify-center gap-2 !py-2.5 text-sm shadow-glow-green-sm border ${GOLD.border}/60`}
+                    className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#C9A961]/70 bg-[#0a0906] !py-2.5 text-sm font-semibold text-white transition-all duration-200 ease-out hover:border-[#D4B46A] hover:shadow-glow-gold-sm focus-visible:outline-[#C9A961]`}
                     style={{
                       backgroundImage:
-                        'linear-gradient(180deg, rgba(201,169,97,0.10), rgba(201,169,97,0.02))',
+                        'linear-gradient(180deg, rgba(201,169,97,0.12), rgba(201,169,97,0.02))',
                     }}
                   >
                     <ExternalLink className={`h-4 w-4 ${GOLD.text}`} />
-                    <span className={GOLD.text}>APRI RICERCA</span>
+                    <span>APRI RICERCA</span>
                   </Link>
                 ) : (
                   <button

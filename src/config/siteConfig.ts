@@ -23,6 +23,8 @@ export function computeCalendlyUrl(): string | undefined {
 
 export const calendlyUrl = computeCalendlyUrl();
 
+export const SITE_LAST_UPDATED = '7 settembre 2026';
+
 export const siteConfig = {
   name: 'AV-INVEST RESEARCH',
   shortName: 'AV-INVEST',
@@ -68,6 +70,7 @@ export const siteConfig = {
       price: 297,
       currency: 'EUR',
       available: true,
+      purchasable: false,
     },
     tradingLab: {
       slug: 'trading-lab',
@@ -86,6 +89,7 @@ export const siteConfig = {
       price: 497,
       currency: 'EUR',
       available: true,
+      purchasable: false,
     },
   },
 
@@ -109,7 +113,7 @@ export const siteConfig = {
   },
 
   performance: {
-    measuredAtLabel: '5 settembre 2026',
+    measuredAtLabel: SITE_LAST_UPDATED,
     entries: [
       {
         id: '2024h',
@@ -144,7 +148,7 @@ export const siteConfig = {
     disclaimer:
       'I rendimenti passati non costituiscono un indicatore affidabile dei risultati futuri. Investire comporta il rischio di perdita del capitale.',
     sourceNote:
-      'Dati del portafoglio pubblico AV-INVEST, rilevati il 5 settembre 2026.',
+      `Dati del portafoglio pubblico AV-INVEST, rilevati il ${SITE_LAST_UPDATED}.`,
   },
 
   testimonials: [
@@ -180,7 +184,7 @@ export const siteConfig = {
 
   legal: {
     companyName: 'AV-INVEST Research',
-    lastUpdated: '5 settembre 2026',
+    lastUpdated: SITE_LAST_UPDATED,
     disclaimer:
       'I contenuti hanno finalità esclusivamente informative ed educative e non costituiscono consulenza finanziaria personalizzata, sollecitazione all\'investimento o promessa di rendimento.',
     extendedDisclaimer: [
