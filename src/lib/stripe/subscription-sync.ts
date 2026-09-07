@@ -136,6 +136,9 @@ function extractSubscriptionPriceId(sub: Stripe.Subscription): string | null {
 export function extractCurrentPeriodEnd(sub: Stripe.Subscription): Date | null {
   const subAny = sub as any;
   const candidates: number[] = [];
+  if (typeof subAny.cancel_at === 'number' && subAny.cancel_at > 0) {
+    candidates.push(subAny.cancel_at);
+  }
   if (Array.isArray(sub.items?.data)) {
     for (const item of sub.items.data) {
       const itemAny = item as any;
@@ -175,8 +178,11 @@ export function extractCurrentPeriodStart(sub: Stripe.Subscription): Date | null
   return new Date(minTs * 1000);
 }
 
-export function extractCancelAtPeriodEnd(sub: Stripe.Subscription): boolean {
+export function isScheduledCancellation(sub: Stripe.Subscription): boolean {
   const subAny = sub as any;
+  if (typeof subAny.cancel_at === 'number' && subAny.cancel_at > 0) {
+    return true;
+  }
   const itemFlags: boolean[] = [];
   if (Array.isArray(sub.items?.data)) {
     for (const item of sub.items.data) {
@@ -287,8 +293,7 @@ export async function handleSubscriptionUpsertFromStripe(
   }
   const priceId = extractSubscriptionPriceId(sub);
   const stripeStatus = mapStripeSubscriptionStatus(sub.status);
-  const subAny = sub as any;
-  const cancelAtPeriodEnd = extractCancelAtPeriodEnd(sub);
+  const cancelAtPeriodEnd = isScheduledCancellation(sub);
   const currentPeriodEnd = extractCurrentPeriodEnd(sub);
   const hasPaymentProblem = opts?.forcePaymentProblem === true;
   const clearPaymentProblem = opts?.clearPaymentProblem === true;
