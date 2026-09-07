@@ -5,7 +5,7 @@ import { siteConfig } from '@/config/siteConfig';
 export const metadata: Metadata = {
   title: 'Termini e condizioni',
   description:
-    'Termini e condizioni di utilizzo del sito e dei servizi pubblici di AV-INVEST Research.',
+    'Termini e condizioni di utilizzo del sito e dei servizi di AV-INVEST Research.',
   alternates: { canonical: 'https://avinvestresearch.com/termini' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };
@@ -14,135 +14,557 @@ export default function TerminiPage() {
   return (
     <LegalLayout
       title="Termini e condizioni d'uso"
-      subtitle="Condizioni generali per l'accesso e l'utilizzo del sito avinvestresearch.com e dei servizi pubblici correlati."
+      subtitle="Condizioni generali per l'accesso e l'utilizzo del sito avinvestresearch.com e dei servizi correlati."
     >
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
           1. Oggetto e accettazione
         </h2>
         <p>
-          L&apos;accesso e l&apos;utilizzo del sito sono subordinati all&apos;accettazione e
-          al rispetto dei presenti termini. La semplice navigazione sul sito implica la
-          conoscenza e l&apos;accettazione integrale delle presenti condizioni. Il Titolare
-          si riserva il diritto di modificare i termini in qualsiasi momento; le modifiche
-          sono efficaci dal momento della pubblicazione.
+          L&apos;accesso e l&apos;utilizzo del sito avinvestresearch.com (il
+          &quot;Sito&quot;) e dei servizi in esso offerti sono subordinati
+          all&apos;accettazione e al rispetto integrale dei presenti Termini e
+          condizioni d&apos;uso (i &quot;Termini&quot;). La semplice navigazione
+          sul Sito, la registrazione di un account e l&apos;acquisto di servizi
+          implicano la conoscenza e l&apos;accettazione senza riserve dei
+          presenti Termini.
+        </p>
+        <p className="mt-2">
+          Il Titolare si riserva il diritto di modificare i Termini in qualsiasi
+          momento. Le modifiche sono efficaci dal momento della pubblicazione
+          sul Sito. L&apos;utilizzo continuato del Sito dopo la pubblicazione
+          delle modifiche implica l&apos;accettazione dei Termini aggiornati.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          2. Servizi e contenuti
+          2. Servizi e contenuti: natura esclusivamente educativa
         </h2>
         <p>
-          Il sito fornisce contenuti a finalità esclusivamente formative, informative e
-          educative su temi finanziari, analisi tecnica, gestione del rischio e metodo
-          operativo. Nulla di quanto pubblicato costituisce consulenza finanziaria, legale,
-          fiscale o di investimento, né sollecitazione al pubblico all&apos;investimento.
+          Il Sito fornisce contenuti a finalità esclusivamente formative,
+          informative e educative su temi finanziari, analisi tecnica, gestione
+          del rischio, metodo operativo e ricerca di mercato. Nulla di quanto
+          pubblicato sul Sito, nei corsi, nelle ricerche PDF, nel Research Club
+          o in qualsiasi materiale di qualsiasi tipo costituisce consulenza
+          finanziaria, legale, fiscale o di investimento personalizzata, né
+          sollecitazione al pubblico all&apos;investimento, né raccomandazione
+          di acquisto o vendita di strumenti finanziari, azioni, ETF, obbligazioni
+          o qualsiasi altro bene o servizio finanziario.
         </p>
-        <p>
-          I percorsi formativi, il Research Club e gli altri servizi a pagamento non sono
-          ancora attivi: i riferimenti ai prezzi, alle caratteristiche e ai pulsanti di
-          acquisto sono indicativi di una roadmap di prodotto e non costituiscono offerta
-          al pubblico. Fino all&apos;attivazione ufficiale, i pagamenti e la consegna dei
-          servizi non sono disponibili.
+        <p className="mt-2">
+          I servizi attualmente offerti sul Sito sono:
         </p>
-      </section>
-
-      <section>
-        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          3. Proprietà intellettuale
-        </h2>
-        <p>
-          Tutti i contenuti del sito (testi, grafica, loghi, icone, design, illustrazioni,
-          slide, esercitazioni, nomi di prodotti e marchi) sono di proprietà del Titolare o
-          dei rispettivi autori e sono tutelati dalle normative vigenti in materia di
-          diritto d&apos;autore e proprietà industriale. È vietata ogni riproduzione,
-          distribuzione, comunicazione al pubblico, modifica o uso commerciale non
-          autorizzata, anche parziale.
-        </p>
-      </section>
-
-      <section>
-        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          4. Obblighi dell&apos;utente
-        </h2>
-        <ul className="space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
-            Utilizzare il sito in modo conforme a legge, morale e buon costume.
+            <strong className="text-white">Corsi digitali educativi</strong>
+            {' '}
+            (AV Foundations e AV Trading Lab): forniti in modalit&agrave;
+            one-time con pagamento a tantum e accesso permanente all&apos;area
+            membri per il contenuto del corso acquistato.
           </li>
           <li>
-            Non introdurre malware, virus, codice dannoso o contenuti offensivi,
-            diffamatori o illeciti.
+            <strong className="text-white">AV Research Club</strong>
+            : servizio in abbonamento mensile che include l&apos;accesso a
+            ricerche PDF, analisi riservate e archivio storico del materiale
+            pubblicato per gli abbonati.
           </li>
           <li>
-            Non compiere attività volte a compromettere la sicurezza, la disponibilità o
-            la regolare fruizione del sito da parte di terzi.
+            <strong className="text-white">Area membri</strong>
+            : piattaforma riservata agli utenti autenticati tramite account
+            Google per la fruizione di corsi, ricerche PDF e tracciamento
+            del progresso personale.
           </li>
           <li>
-            Non compiere scraping, data-mining o estrazione automatizzata di contenuti
-            senza autorizzazione scritta.
+            <strong className="text-white">Prenotazione call informative</strong>
+            : tramite link esterno a Calendly per richieste di orientamento
+            iniziale sui servizi formativi.
           </li>
         </ul>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          5. Limitazione di responsabilità
+          3. Nessuna promessa di rendimento o risultato
         </h2>
         <p>
-          Il sito è fornito &quot;così com&apos;è&quot;. Il Titolare adotta ogni misura
-          organizzativa e tecnica ragionevole per garantire la disponibilità e
-          l&apos;accuratezza dei contenuti, ma non garantisce la completezza,
-          l&apos;esaustività, l&apos;assenza di errori o l&apos;aggiornamento in tempo
-          reale. In nessun caso il Titolare sarà responsabile per decisioni di
-          investimento, operazioni di trading, perdite economiche o altri danni derivanti
-          dall&apos;uso dei contenuti pubblicati.
+          Nessun contenuto o servizio del Sito promette, garantisce o anche solo
+          suggerisce l&apos;ottenimento di rendimenti, profitti o risultati di
+          investimento specifici. Performance storiche, esempi operativi,
+          casi studio, backtest, simulazioni, dati di portafoglio pubblico o
+          qualsiasi altra metrica riportata sul Sito hanno esclusivamente scopo
+          illustrativo e didattico e non costituiscono indicazione di risultati
+          futuri ottenibili. Non esistono strategie, metodi, indicatori o
+          strumenti in grado di eliminare il rischio di perdita o garantire
+          profitti in ogni scenario di mercato.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          6. Corsi e servizi a pagamento
+          4. Accuratezza dei dati e fonti
         </h2>
         <p>
-          I corsi e i servizi a pagamento disponibili sono pubblicati nella
-          pagina dedicata, con prezzi, IVA, tempi di accesso, modalit&agrave;
-          di pagamento ed eventuale politica di rimborso specificate prima di
-          ogni ordine e durante la procedura d&apos;acquisto. L&apos;acquisto di
-          un corso o di un servizio non attribuisce diritto a ricevere
-          segnali, consigli personalizzati o rendimenti garantiti.
+          I contenuti del Sito si basano su fonti ritenute affidabili al momento
+          della pubblicazione. Il Titolare adotta ogni ragionevole sforzo per
+          garantire la correttezza delle informazioni pubblicate, ma non
+          garantisce in alcun modo l&apos;assenza di errori, omissioni,
+          approssimazioni, ritardi nell&apos;aggiornamento o modifiche
+          sopravvenute a dati, valutazioni e scenari riportati. I mercati
+          finanziari e le informazioni su aziende, strumenti e contesti
+          macroeconomici possono cambiare rapidamente e senza preavviso.
+          L&apos;utente riconosce che qualsiasi dato o valutazione pu&ograve;
+          risultare non aggiornato, incompleto o non accurato al momento
+          della consultazione.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          7. Link esterni
+          5. Propriet&agrave; intellettuale
         </h2>
         <p>
-          Il sito può contenere link a siti di terze parti (es. social network,
-          Calendly). Il Titolare non controlla tali siti e non è responsabile per
-          contenuti, prodotti, servizi o pratiche di trattamento dati ivi adottati.
+          Tutti i contenuti del Sito e dei servizi offerti - inclusi, a titolo
+          esemplificativo e non esaustivo, testi, grafica, loghi, icone, design,
+          illustrazioni, slide, video, esercitazioni, dispense, ricerche PDF,
+          analisi, nomi di prodotti e marchi - sono di propriet&agrave; esclusiva
+          del Titolare o dei rispettivi autori e sono tutelati dalle normative
+          vigenti in materia di diritto d&apos;autore, propriet&agrave;
+          industriale e normativa sulla concorrenza sleale.
+        </p>
+        <p className="mt-2">
+          &Egrave; espressamente vietata, senza autorizzazione scritta e
+          preventiva del Titolare, ogni riproduzione, distribuzione,
+          comunicazione al pubblico, modifica, adattamento, traduzione,
+          creazione di opere derivate, uso commerciale, rivendita, sublicenza,
+          pubblicazione o trasmissione in qualsiasi forma o con qualsiasi mezzo,
+          anche parziale, dei contenuti protetti.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          8. Legge applicabile e controversie
+          6. Uso consentito: personale, non trasferibile e non condiviso
         </h2>
         <p>
-          I presenti termini sono regolati dalla legge italiana. Per ogni controversia in
-          ordine a interpretazione, validità ed esecuzione, è competente il Foro del luogo
-          di residenza o domicilio dell&apos;utente, se diverso dal Foro del luogo del
-          Titolare, salvo obblighi di legge in senso contrario.
+          Tutti i servizi e i contenuti acquistati o accessibili tramite
+          abbonamento o licenza sono concessi in uso esclusivamente personale,
+          non esclusivo, non trasferibile e non condivisibile con terzi, nei
+          limiti e per le finalit&agrave; strettamente connesse alla propria
+          formazione individuale.
+        </p>
+        <p className="mt-2">
+          In particolare, e senza limitazione, &egrave; espressamente vietato:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            Condividere le credenziali di accesso all&apos;area membri (account
+            Google) con persone diverse dal titolare legittimo dell&apos;account,
+            anche tra familiari, colleghi o soci.
+          </li>
+          <li>
+            Copiare, scaricare, estrarre, screditare, registrare o pubblicare su
+            qualsiasi piattaforma pubblica o privata (social network, forum,
+            gruppi di messaggistica, siti web, drive condivisi, ecc.) i PDF, le
+            ricerche, i video, le slide o qualsiasi altro materiale riservato
+            del Sito o del Research Club, anche in forma estratta o modificata.
+          </li>
+          <li>
+            Effettuare attivit&agrave; di scraping, crawling, data-mining o
+            qualsiasi estrazione automatizzata di contenuti, dati o materiale
+            dal Sito o dall&apos;area membri.
+          </li>
+          <li>
+            Rivendere, sublicenziare, noleggiare, concedere in uso a terzi o
+            comunque sfruttare commercialmente qualsiasi servizio o contenuto
+            acquistato.
+          </li>
+          <li>
+            Utilizzare i contenuti o il materiale del Sito per creare prodotti
+            o servizi concorrenti o per formare terzi dietro corrispettivo.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          7. Autenticazione e account
+        </h2>
+        <p>
+          L&apos;accesso all&apos;area membri e ai servizi riservati avviene
+          esclusivamente tramite autenticazione con account Google.
+          L&apos;utente &egrave; responsabile della custodia riservata delle
+          proprie credenziali Google e di ogni attivit&agrave; svolta tramite
+          il proprio account. Il Titolare non pu&ograve; e non sarà ritenuto
+          responsabile per accessi non autorizzati conseguenti a condotte
+          imprudenti o negligenti dell&apos;utente nella gestione delle proprie
+          credenziali. Qualsiasi utilizzo dell&apos;account effettuato dopo
+          l&apos;autenticazione Google si intende riferibile al titolare
+          dell&apos;account medesimo.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          9. Contatti
+          8. Pagamenti e acquisti tramite Stripe
         </h2>
         <p>
-          Per ogni domanda relativa ai presenti termini:
+          Tutti i pagamenti per l&apos;acquisto dei corsi digitali e per
+          l&apos;abbonamento al Research Club sono gestiti tramite Stripe,
+          fornitore terzo di servizi di pagamento. Il Titolare non memorizza
+          direttamente sul proprio database dati di carta di credito o strumenti
+          di pagamento completi: tali dati sono gestiti esclusivamente sui
+          sistemi sicuri di Stripe nel rispetto delle normative PCI DSS.
+        </p>
+        <p className="mt-2">
+          Completando una procedura di acquisto, l&apos;utente dichiara di
+          essere autorizzato all&apos;utilizzo dello strumento di pagamento
+          prescelto e accetta i termini e le condizioni di Stripe, disponibili
+          sul sito ufficiale stripe.com. In caso di contestazioni, frodi o
+          mancati pagamenti da parte dell&apos;utente, il Titolare si riserva
+          il diritto di sospendere o revocare l&apos;accesso ai servizi fino
+          alla risoluzione della controversia.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          9. Corsi digitali: licenza one-time
+        </h2>
+        <p>
+          I corsi AV Foundations e AV Trading Lab sono venduti con formula a
+          tantum (pagamento unico una tantum). Dopo l&apos;acquisto completato
+          e la conferma del pagamento da parte di Stripe, viene concesso
+          all&apos;utente il diritto di accesso permanente, personale e non
+          trasferibile ai contenuti del corso, alle lezioni, al materiale
+          didattico associato e alle relative funzionalit&agrave; di tracciamento
+          del progresso nell&apos;area membri. Il prezzo pubblicato nella pagina
+          del corso include l&apos;IVA ove applicabile secondo la normativa
+          vigente.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          10. AV Research Club: abbonamento mensile
+        </h2>
+        <p>
+          Il servizio AV Research Club &egrave; offerto in formula di
+          abbonamento ricorrente con cadenza mensile. L&apos;abbonamento
+          include l&apos;accesso al materiale riservato pubblicato per i
+          membri (ricerche PDF, analisi, approfondimenti) secondo quanto
+          descritto nella pagina di presentazione del servizio. Il numero di
+          pubblicazioni, gli argomenti trattati e la frequenza di aggiornamento
+          dell&apos;archivio possono variare nel tempo senza che ci&ograve;
+          costituisca inadempimento, purch&eacute; il servizio resti coerente
+          con la finalit&agrave; generale di ricerca e approfondimento formativo.
+        </p>
+        <p className="mt-2">
+          L&apos;abbonamento si intende attivato alla data di conferma del
+          primo pagamento da parte di Stripe e ha una durata iniziale di un
+          mese solare.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          11. Rinnovo automatico del Research Club
+        </h2>
+        <p>
+          L&apos;abbonamento al Research Club si rinnova automaticamente alla
+          fine di ogni periodo mensile, sullo stesso giorno del mese in cui
+          &egrave; stato attivato (o nel giorno pi&ugrave; vicino in caso di
+          mese pi&ugrave; corto), previa addebito automatico dello stesso prezzo
+          in vigore nel momento del rinnovo sullo strumento di pagamento
+          registrato su Stripe.
+        </p>
+        <p className="mt-2">
+          L&apos;utente pu&ograve; disattivare il rinnovo automatico in
+          qualsiasi momento tramite il Customer Portal di Stripe, accessibile
+          dalla propria pagina di profilo nell&apos;area membri del Sito.
+          La disattivazione del rinnovo non produce effetti retroattivi e
+          lascia invariato l&apos;accesso al Research Club fino alla fine
+          del periodo gi&agrave; pagato.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          12. Disdetta e fine accesso
+        </h2>
+        <p>
+          L&apos;utente pu&ograve; recedere dall&apos;abbonamento al Research
+          Club disattivando il rinnovo automatico in qualsiasi momento tramite
+          il Customer Portal di Stripe. Dopo la disattivazione, l&apos;abbonamento
+          non sar&agrave; pi&ugrave; rinnovato alla scadenza del periodo corrente.
+        </p>
+        <p className="mt-2">
+          In caso di disdetta del rinnovo automatico, l&apos;accesso ai
+          contenuti del Research Club rimane attivo e pienamente fruibile
+          fino alla fine naturale del periodo gi&agrave; corrisposto, senza
+          possibilit&agrave; di rimborso pro-quota per il periodo residuo.
+          Alla scadenza del periodo pagato, l&apos;utente non abilitato al
+          rinnovo non potr&agrave; pi&ugrave; accedere ai contenuti riservati
+          del Research Club.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          13. Customer Portal e gestione autonoma
+        </h2>
+        <p>
+          La gestione autonoma dell&apos;abbonamento (aggiornamento dei dati di
+          pagamento, disattivazione del rinnovo, visualizzazione dello stato
+          sottoscrizione e consultazione fatture) avviene tramite il Customer
+          Portal ufficiale di Stripe, accessibile direttamente dalla pagina
+          di profilo dell&apos;area membri del Sito. Il Customer Portal &egrave;
+          uno strumento fornito e gestito direttamente da Stripe come titolare
+          autonomo del servizio.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          14. Rimborsi e diritto di recesso
+        </h2>
+        <p>
+          In relazione ai servizi digitali forniti dal Sito (corsi digitali e
+          abbonamento Research Club), i rimborsi e il diritto di recesso sono
+          regolati esclusivamente nei limiti previsti dalla legge applicabile,
+          con particolare riferimento al Codice del Consumo (D.Lgs. 206/2005)
+          e alle disposizioni inderogabili di diritto comunitario e nazionale.
+        </p>
+        <p className="mt-2">
+          Non sono previsti rimborsi discrezionali al di l&agrave; di quanto
+          espressamente previsto da norme imperative di legge. Il Titolare
+          non dichiara rinunce unilaterali ai diritti riconosciuti all&apos;utente
+          consumatore da norme inderogabili. Per servizi di contenuto digitale
+          non forniti su supporto materiale, il diritto di recesso si applica
+          o si esaurisce secondo le condizioni e nei limiti stabiliti dalla
+          legge applicabile, incluso l&apos;eventuale consenso espresso
+          all&apos;inizio della prestazione prima della scadenza del termine
+          di recesso, se e nei casi in cui la normativa lo consenta.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          15. Sospensione e revoca dell&apos;accesso per abuso
+        </h2>
+        <p>
+          Il Titolare si riserva il diritto, a propria esclusiva discrezione
+          e senza necessit&agrave; di preavviso, di sospendere o revocare
+          in modo definitivo o temporaneo l&apos;accesso all&apos;area membri,
+          ai corsi acquistati, al Research Club o a qualsiasi altro servizio,
+          in caso di:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            Violazione dei presenti Termini, inclusi i divieti di condivisione
+            account, copia, redistribuzione o pubblicazione non autorizzata
+            dei contenuti.
+          </li>
+          <li>
+            Utilizzo fraudolento, abusivo o in violazione di leggi o regolamenti
+            applicabili.
+          </li>
+          <li>
+            Mancato pagamento di rate o importi dovuti per abbonamenti o
+            acquisti, dopo idoneo preavviso ove previsto da contratto o da
+            disposizioni di legge.
+          </li>
+          <li>
+            Condotte che compromettano o possano compromettere la sicurezza,
+            la reputazione, il corretto funzionamento o la disponibilit&agrave;
+            del Sito e dei servizi per gli altri utenti.
+          </li>
+        </ul>
+        <p className="mt-2">
+          In caso di revoca per accertata violazione dei presenti Termini,
+          non sono dovuti rimborsi di importi gi&agrave; pagati, salvi i
+          diritti inderogabili del consumatore.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          16. Disponibilit&agrave; del servizio e manutenzioni
+        </h2>
+        <p>
+          Il Titolare adopera ogni ragionevole sforzo per garantire la
+          disponibilit&agrave; continua e regolare del Sito e dei servizi,
+          ma non pu&ograve; garantire che il funzionamento sia privo di
+          interruzioni, errori, rallentamenti o disservizi temporanei dovuti
+          a manutenzioni programmate, aggiornamenti infrastrutturali, guasti
+          tecnici, congestioni di rete, eventi meteorologici eccezionali o
+          cause comunque non direttamente imputabili.
+        </p>
+        <p className="mt-2">
+          Interruzioni temporanee per manutenzione straordinaria o ordinaria
+          possono avvenire senza preavviso, anche se il Titolare si impegna
+          a comunicarle preventivamente quando e nella misura in cui ci&ograve;
+          sia ragionevolmente possibile. Il Titolare non sar&agrave; responsabile
+          per danni derivanti da indisponibilit&agrave; temporanea del servizio
+          ai sensi e nei limiti di quanto stabilito dalle presenti clausole e
+          dalle norme inderogabili di legge.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          17. Servizi di terze parti
+        </h2>
+        <p>
+          Il Sito si avvale di fornitori terzi per l&apos;erogazione dei servizi.
+          In particolare:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            <strong className="text-white">Stripe</strong>: gestione pagamenti,
+            abbonamenti, fatturazione elettronica e Customer Portal.
+          </li>
+          <li>
+            <strong className="text-white">Google (Auth)</strong>: servizio
+            di autenticazione per l&apos;accesso all&apos;area membri.
+          </li>
+          <li>
+            <strong className="text-white">Calendly</strong>: prenotazione di
+            call informative tramite link esterno.
+          </li>
+          <li>
+            <strong className="text-white">Vercel</strong>: hosting,
+            infrastruttura di deployment, CDN, edge network e log tecnici.
+          </li>
+          <li>
+            <strong className="text-white">Neon</strong>: servizio di database
+            PostgreSQL per la memorizzazione di account, acquisti, stato
+            abbonamento e progressi utente.
+          </li>
+          <li>
+            <strong className="text-white">Vercel Blob</strong>: servizio di
+            storage privato per l&apos;archiviazione e la distribuzione dei
+            PDF e dei documenti del Research Club.
+          </li>
+        </ul>
+        <p className="mt-2">
+          Ciascun fornitore terzo opera come titolare autonomo o responsabile
+          del trattamento secondo il proprio ruolo e secondo gli accordi
+          intercorsi. L&apos;utilizzo dei servizi di tali fornitori &egrave;
+          soggetto alle rispettive condizioni d&apos;uso e informative
+          sulla privacy, disponibili sui siti ufficiali di ciascuno. Il
+          Titolare non controlla direttamente i servizi di terzi e non
+          &egrave; responsabile per disservizi, modifiche unilaterali o
+          condotte di tali fornitori.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          18. Responsabilit&agrave; dell&apos;utente e decisioni autonome
+        </h2>
+        <p>
+          Qualsiasi decisione di investimento, finanziaria, patrimoniale,
+          fiscale o legale resta sotto la responsabilit&agrave; esclusiva
+          e insindacabile dell&apos;utente. Il Titolare non fornisce pareri
+          personalizzati e non entra in alcun modo nella valutazione della
+          situazione individuale di un utente. L&apos;utente dichiara di
+          assumere ogni e qualsiasi conseguenza, positiva o negativa, derivante
+          dalle proprie decisioni autonome e di sollevare il Titolare da ogni
+          responsabilit&agrave; per operazioni, investimenti o condotte
+          intraprese sulla base di contenuti formativi o illustrativi
+          pubblicati sul Sito, salvo quanto previsto dalle norme inderogabili
+          di legge.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          19. Limitazione di responsabilit&agrave;
+        </h2>
+        <p>
+          Nei limiti massimi consentiti dalla legge applicabile e fatti salvi
+          in ogni caso i diritti inderogabili del consumatore, il Titolare
+          non sar&agrave; responsabile per danni indiretti, incidentali,
+          speciali, consequenziali o punitivi, inclusa la perdita di profitti,
+          ricavi, opportunit&agrave;, dati o avviamento, derivanti o in
+          qualsiasi modo connessi all&apos;utilizzo o all&apos;impossibilit&agrave;
+          di utilizzo del Sito o dei servizi.
+        </p>
+        <p className="mt-2">
+          Per danni diretti, ove applicabile e nei limiti consentiti dalla
+          legge, la responsabilit&agrave; del Titolare &egrave; in ogni caso
+          limitata all&apos;importo complessivo effettivamente corrisposto
+          dall&apos;utente al Titolare per l&apos;acquisto dei servizi nel
+          periodo di dodici (12) mesi antecedenti l&apos;evento che ha dato
+          origine alla richiesta di risarcimento. Restano impregiudicate le
+          responsabilit&agrave; non eliminabili per dolo o colpa grave e per
+          i casi espressamente previsti da norme imperative di legge.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          20. Forza maggiore e cause esterne
+        </h2>
+        <p>
+          Il Titolare non sar&agrave; ritenuto responsabile per inadempimenti
+          o ritardi nell&apos;esecuzione dei propri obblighi derivanti da cause
+          non imputabili e non prevedibili, tra cui, a titolo esemplificativo
+          e non esaustivo: guasti alle linee telecomunicative o a internet,
+          blackout, disastri naturali, guerre, atti terroristici, crisi
+          pandemiche, interruzioni dei servizi di fornitori terzi (Stripe,
+          Google, Vercel, Neon, Calendly), provvedimenti amministrativi o
+          normativi sopravvenuti, azioni di hackeraggio o attacchi informatici
+          che non siano riconducibili a dolo o colpa grave del Titolare.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          21. Modifiche ai servizi e ai prezzi
+        </h2>
+        <p>
+          Il Titolare si riserva il diritto di modificare, aggiornare, ampliare,
+          limitare o interrompere in tutto o in parte i servizi offerti (inclusi
+          contenuti, funzionalit&agrave;, frequenza delle pubblicazioni nel
+          Research Club e caratteristiche dei corsi), nonch&eacute; di
+          modificare i prezzi e le condizioni economiche, con effetto per i
+          nuovi acquisti o per i rinnovi futuri degli abbonamenti, dandone
+          comunicazione mediante pubblicazione sul Sito o, per quanto possibile,
+          tramite comunicazione diretta agli abbonati attivi prima dell&apos;apposizione
+          della modifica sul rinnovo. Eventuali modifiche non incidono sui
+          servizi gi&agrave; acquistati e pagati.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          22. Legge applicabile e foro competente
+        </h2>
+        <p>
+          I presenti Termini sono regolati dalla legge italiana, con esclusione
+          di ogni norma di rinvio a ordinamenti diversi. Per ogni controversia
+          in ordine a interpretazione, validit&agrave;, esecuzione e risoluzione
+          dei presenti Termini, il Foro competente &egrave; quello del luogo
+          di residenza o domicilio dell&apos;utente consumatore, se diverso dal
+          Foro del luogo del Titolare, nel pieno rispetto delle disposizioni
+          inderogabili in materia di tutela dei consumatori e dei diritti
+          riconosciuti dalla normativa UE e nazionale. Qualsiasi disposizione
+          dei presenti Termini che risultasse in contrasto con norme imperative
+          di legge si intende sostituita di diritto dalla disposizione legale
+          applicabile, senza pregiudizio per la validit&agrave; delle restanti
+          clausole.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          23. Contatti
+        </h2>
+        <p>
+          Per ogni domanda, segnalazione o richiesta relativa ai presenti
+          Termini o ai servizi offerti:
         </p>
         <p>
           <a href={`mailto:${siteConfig.contactEmail}`} className="link-underline">

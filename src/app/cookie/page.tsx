@@ -19,29 +19,79 @@ export default function CookiePage() {
     >
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          1. Cosa sono i cookie
+          1. Cosa sono i cookie e tecnologie simili
         </h2>
         <p>
-          I cookie sono piccoli file di testo inviati dal sito al dispositivo dell&apos;utente
-          e memorizzati al fine di migliorare l&apos;esperienza di navigazione, ricordare
-          preferenze, analizzare il traffico e, solo previo consenso, supportare funzionalità
+          I cookie sono piccoli file di testo inviati dal Sito al dispositivo
+          dell&apos;utente (computer, tablet, smartphone) e memorizzati sul
+          browser o sullo storage locale del dispositivo, al fine di migliorare
+          l&apos;esperienza di navigazione, ricordare preferenze, analizzare il
+          traffico e, solo previo consenso, supportare funzionalit&agrave;
           aggiuntive o di marketing.
+        </p>
+        <p className="mt-2">
+          Insieme ai cookie, il Sito pu&ograve; utilizzare anche tecnologie
+          simili quali localStorage, sessionStorage o identificatori di
+          sessione su storage di primo partito, che hanno finalit&agrave;
+          analoghe e sono disciplinati dalla presente informativa.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          2. Categorie di cookie utilizzate
+          2. Base giuridica
         </h2>
-        <ul className="space-y-3 pl-5 marker:text-av-green [list-style:disc]">
+        <p>
+          L&apos;installazione dei cookie sul dispositivo dell&apos;utente si
+          basa su due distinte basi giuridiche, secondo quanto previsto dal
+          Provvedimento del Garante per la Protezione dei Dati Personali
+          &quot;Linee guida cookie e altri strumenti di tracciamento&quot;
+          (10 giugno 2021, aggiornato al provvedimento 15/05/2024) e dal GDPR:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            <strong className="text-white">Cookie tecnici necessari</strong>:
+            il loro trattamento &egrave; basato sul legittimo interesse del
+            Titolare a garantire il corretto funzionamento, la sicurezza e
+            l&apos;usabilit&agrave; del Sito (art. 6.1.f GDPR). Non
+            richiedono consenso preventivo e non possono essere disattivati
+            tramite le impostazioni del cookie manager.
+          </li>
+          <li>
+            <strong className="text-white">Cookie di preferenze, analitici e marketing</strong>:
+            sono installati sul dispositivo dell&apos;utente solo dopo
+            l&apos;espressione di un consenso libero, specifico, informato e
+            revocabile, tramite le opzioni del banner di primo accesso o
+            del pannello di gestione (art. 6.1.a GDPR e art. 122 D.Lgs.
+            196/2003).
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          3. Categorie di cookie utilizzate
+        </h2>
+        <p>
+          Il Sito distingue le seguenti categorie di cookie o strumenti
+          analoghi. Ogni categoria pu&ograve; essere gestita separatamente
+          tramite il pannello &quot;Gestisci cookie&quot; nel footer, salvo
+          la categoria dei tecnici necessari:
+        </p>
+        <ul className="mt-3 space-y-3 pl-5 marker:text-av-green [list-style:disc]">
           {cookieCategories.map((c) => (
             <li key={c.id}>
               <strong className="text-white">{c.label}:</strong> {c.description}
               {c.alwaysActive ? (
-                <span className="ml-2 text-xs text-av-green">Sempre attivi.</span>
+                <span className="ml-2 text-xs text-av-green">
+                  Sempre attivi - non richiedono consenso.
+                </span>
               ) : (
                 <span className="ml-2 text-xs text-av-muted">
-                  Installati solo previo consenso.
+                  Installati solo previo consenso esplicito. Al momento non
+                  vengono installati cookie di questa categoria finch&eacute;
+                  l&apos;utente non esprime un consenso specifico per tale
+                  funzione.
                 </span>
               )}
             </li>
@@ -51,12 +101,14 @@ export default function CookiePage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          3. Cookie e tecnologie realmente utilizzati
+          4. Cookie e tecnologie realmente utilizzati sul Sito
         </h2>
         <p>
-          La tabella seguente riporta le voci attualmente utilizzate dal sito. Eventuali
-          nuove voci sono aggiunte in occasione della loro reale implementazione e, ove
-          previsto, dopo raccolta del consenso.
+          La tabella seguente riporta esclusivamente le voci attualmente
+          implementate sul Sito al momento dell&apos;ultimo aggiornamento di
+          questa pagina. Eventuali nuove voci sono aggiunte in occasione
+          della loro reale attivazione sul Sito e, ove previsto, dopo
+          l&apos;adeguamento del meccanismo di raccolta del consenso.
         </p>
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
@@ -66,7 +118,7 @@ export default function CookiePage() {
                 <th className="p-3 font-semibold">Tipo / Strumento</th>
                 <th className="p-3 font-semibold">Categoria</th>
                 <th className="p-3 font-semibold">Durata</th>
-                <th className="p-3 font-semibold">Finalità</th>
+                <th className="p-3 font-semibold">Finalit&agrave;</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-av-line">
@@ -82,59 +134,150 @@ export default function CookiePage() {
             </tbody>
           </table>
         </div>
+        <p className="mt-3 text-xs text-av-muted sm:text-sm">
+          Allo stato attuale il Sito non installa cookie di terze parti di
+          preferenze, analitici o marketing sul dispositivo dell&apos;utente
+          durante la navigazione. Tale tipo di cookie potr&agrave; essere
+          attivato solo dopo implementazione di specifici strumenti (es.
+          analytics anonimi) e solo dopo espressione del consenso
+          dell&apos;utente tramite il banner dedicato.
+        </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          4. Gestione del consenso
+          5. Gestione del consenso sul Sito
         </h2>
         <p>
-          Al primo accesso, o quando il consenso non è più valido, viene mostrato un
-          pannello dedicato tramite cui puoi:
+          Al primo accesso, o quando il consenso memorizzato non &egrave; pi&ugrave;
+          valido (es. dopo modifiche sostanziali alla presente policy, dopo
+          aggiornamenti importanti, o a seguito della scadenza naturale del
+          consenso), viene mostrato un pannello dedicato tramite cui l&apos;utente
+          pu&ograve;:
         </p>
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
-          <li>Accettare tutte le categorie non necessarie.</li>
-          <li>Rifiutare tutte le categorie non necessarie.</li>
-          <li>Personalizzare le singole categorie.</li>
+          <li>
+            Accettare tutte le categorie non necessarie in blocco.
+          </li>
+          <li>
+            Rifiutare tutte le categorie non necessarie in blocco.
+          </li>
+          <li>
+            Personalizzare le preferenze, accettando o rifiutando le singole
+            categorie una ad una tramite l&apos;apposita sezione.
+          </li>
         </ul>
         <p className="mt-3">
-          Le preferenze sono memorizzate localmente e possono essere modificate in qualsiasi
-          momento dalla voce &quot;Gestisci cookie&quot; presente nel footer del sito.
+          Le preferenze cos&igrave; espresse sono memorizzate localmente sul
+          dispositivo utente nello storage di primo partito (con la voce
+          <span className="mx-1 font-mono text-xs text-white">av-consent</span>)
+          e hanno validit&agrave; di 12 mesi, salvo revoca o modifica anticipata.
+          Le preferenze possono essere modificate in qualsiasi momento dalla
+          voce &quot;Gestisci cookie&quot; presente nel footer del Sito, che
+          riapre il pannello di gestione.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          5. Link esterni e strumenti di terze parti
+          6. Link esterni, social e servizi di terze parti
         </h2>
         <p>
-          Il sito può contenere link esterni (es. Calendly per la prenotazione di call,
-          profili social). Questi strumenti operano come siti autonomi e titolari di
-          autonomi trattamenti; per essi si rimanda alle rispettive informative. Fino a
-          quando non avviene un vero e proprio embed, i link esterni non installano cookie
-          di terze parti tramite questo sito.
+          Il Sito pu&ograve; contenere link esterni verso siti o strumenti di
+          terze parti, tra cui in particolare:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            <strong className="text-white">Calendly</strong>: per la prenotazione
+            di call informative. L&apos;utente viene instradato al sito
+            calendly.com tramite link testuale.
+          </li>
+          <li>
+            <strong className="text-white">Stripe</strong>: per pagamenti,
+            gestione abbonamenti e Customer Portal.
+          </li>
+          <li>
+            <strong className="text-white">Profilo LinkedIn e Instagram</strong>
+            : link verso i canali social ufficiali del Titolare.
+          </li>
+          <li>
+            <strong className="text-white">Google (Auth)</strong>: per la
+            procedura di login all&apos;area membri tramite account Google.
+          </li>
+        </ul>
+        <p className="mt-2">
+          Fino a quando non avviene un vero e proprio embed diretto sul Sito,
+          il semplice click su un link esterno non installa automaticamente
+          cookie di terze parti tramite questo Sito; una volta raggiunto il
+          sito di destinazione, invece, la gestione dei cookie e delle
+          tecnologie di tracciamento ricade sotto la responsabilit&agrave; e
+          l&apos;informativa del rispettivo titolare autonomo. Si rimanda
+          quindi alle informative cookie e privacy dei singoli siti terzi per
+          ogni dettaglio.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          6. Disabilitazione tramite browser
+          7. Disabilitazione dei cookie tramite impostazioni del browser
         </h2>
         <p>
-          È possibile disabilitare i cookie direttamente dalle impostazioni del proprio
-          browser. Istruzioni aggiornate sono disponibili sui siti ufficiali dei principali
-          browser (Chrome, Firefox, Safari, Edge). La disabilitazione dei cookie tecnici
-          essenziali o delle preferenze può influire sul corretto funzionamento di alcune
-          parti del sito.
+          &Egrave; possibile disabilitare, bloccare o cancellare i cookie e
+          gli elementi di storage locale direttamente dalle impostazioni del
+          proprio browser o del proprio dispositivo. Istruzioni aggiornate
+          sono disponibili sui siti ufficiali dei principali browser:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            <a href="https://support.google.com/chrome/answer/95647?hl=it" target="_blank" rel="noopener noreferrer" className="link-underline">
+              Google Chrome
+            </a>
+          </li>
+          <li>
+            <a href="https://support.mozilla.org/it/kb/protezione-antitracciamento-avanzata-firefox-desktop" target="_blank" rel="noopener noreferrer" className="link-underline">
+              Mozilla Firefox
+            </a>
+          </li>
+          <li>
+            <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="link-underline">
+              Apple Safari
+            </a>
+          </li>
+          <li>
+            <a href="https://support.microsoft.com/it-it/microsoft-edge/eliminare-i-cookie-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener noreferrer" className="link-underline">
+              Microsoft Edge
+            </a>
+          </li>
+        </ul>
+        <p className="mt-2">
+          Si segnala che la disabilitazione dei cookie tecnici necessari o
+          delle preferenze pu&ograve; compromettere o alterare il corretto
+          funzionamento di alcune parti del Sito, inclusa la persistenza
+          delle preferenze sul consenso cookie o alcuni stati di sessione.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          7. Contatti
+          8. Modifiche alla Cookie Policy
         </h2>
         <p>
-          Per domande sulla Cookie Policy o sulle modalità del consenso scrivi a:
+          Il Titolare si riserva il diritto di modificare la presente Cookie
+          Policy in qualsiasi momento, anche in seguito a variazioni normative
+          o all&apos;introduzione di nuove categorie di cookie o strumenti di
+          tracciamento. In caso di modifiche sostanziali che introducono nuove
+          categorie di cookie non necessari, sar&agrave; richiesto nuovamente
+          il consenso dell&apos;utente secondo le modalit&agrave; di legge.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          9. Contatti
+        </h2>
+        <p>
+          Per domande sulla Cookie Policy, sulle modalit&agrave; del consenso
+          o per segnalazioni relative all&apos;utilizzo dei cookie sul Sito:
         </p>
         <p>
           <a href={`mailto:${siteConfig.contactEmail}`} className="link-underline">
