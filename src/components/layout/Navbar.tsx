@@ -124,16 +124,16 @@ export default function Navbar() {
       <div
         id="mobile-menu"
         className={`lg:hidden overflow-hidden border-t border-av-line bg-av-bg/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 ${
-          open ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'
+          open ? 'max-h-[70vh] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <nav className="container-page flex flex-col gap-1 py-4" aria-label="Menu mobile">
+        <nav className="container-page flex flex-col gap-0.5 py-2.5" aria-label="Menu mobile">
           {siteConfig.navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="rounded-xl px-4 py-3 text-base font-medium text-white transition-colors hover:bg-av-surface"
+              className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-av-surface"
             >
               {item.label}
             </Link>
@@ -143,35 +143,22 @@ export default function Navbar() {
               <Link
                 href="/area-membri"
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 text-base font-medium text-white transition-colors hover:bg-av-surface inline-flex items-center gap-3"
+                className="mt-1 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-av-surface inline-flex items-center gap-2.5 border border-av-green-deep/50 bg-av-green/[0.06]"
               >
-                <User className="h-5 w-5 flex-none text-av-green" />
+                <User className="h-4.5 w-4.5 flex-none text-av-green" />
                 Area membri
               </Link>
             ) : (
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 text-base font-medium text-av-muted transition-colors hover:bg-av-surface hover:text-white inline-flex items-center gap-3"
+                className="mt-1 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-av-muted transition-colors hover:bg-av-surface hover:text-white inline-flex items-center gap-2.5 border border-av-line"
               >
-                <User className="h-5 w-5 flex-none text-av-green" />
+                <User className="h-4.5 w-4.5 flex-none text-av-green" />
                 Accedi all&apos;area membri
               </Link>
             )
           ) : null}
-          <div className="mt-3 flex flex-col gap-2 px-1 pb-2">
-            <a
-              href={siteConfig.calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="btn-primary-lg w-full shadow-glow-green-sm break-words"
-              aria-label="Prenota una call - Link Calendly (si apre in una nuova scheda)"
-            >
-              <Phone className="h-5 w-5 flex-none" />
-              PRENOTA UNA CALL
-            </a>
-          </div>
         </nav>
       </div>
     </header>
