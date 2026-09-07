@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import { getResearchClubEntitlement } from '@/lib/entitlements';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
+import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
 
 const icons = [Radar, Building2, AlertTriangle, Archive];
 
@@ -71,7 +72,7 @@ export default async function ResearchClub() {
               </p>
 
               {subscribed ? (
-                <div className="flex flex-wrap items-center gap-3 pt-1">
+                <div className="flex flex-wrap items-center gap-3 pt-1 w-full max-w-md">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/40 bg-av-green/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-green">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Sei dentro
@@ -84,40 +85,13 @@ export default async function ResearchClub() {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
-              ) : session?.user ? (
-                <form
-                  action="/api/stripe/checkout"
-                  method="POST"
-                  className="flex flex-wrap items-center gap-3 pt-1"
-                >
-                  <input type="hidden" name="slug" value="research-club" />
-                  <button
-                    type="submit"
-                    className={`btn-primary items-center gap-2 !py-3 !px-6 text-sm sm:text-base shadow-glow-green-sm border ${GOLD.borderStrong}`}
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(180deg, rgba(201,169,97,0.14), rgba(201,169,97,0.04))',
-                    }}
-                  >
-                    <Crown className={`h-4 w-4 ${GOLD.text}`} />
-                    <span className={GOLD.text}>ENTRA NEL RESEARCH CLUB</span>
-                  </button>
-                </form>
               ) : (
-                <Link
-                  href={
-                    '/login?callbackUrl=' +
-                    encodeURIComponent('/#research-club')
-                  }
-                  className={`btn-primary items-center gap-2 !py-3 !px-6 text-sm sm:text-base shadow-glow-green-sm inline-flex border ${GOLD.borderStrong}`}
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(180deg, rgba(201,169,97,0.14), rgba(201,169,97,0.04))',
-                  }}
-                >
-                  <Crown className={`h-4 w-4 ${GOLD.text}`} />
-                  <span className={GOLD.text}>ENTRA NEL RESEARCH CLUB</span>
-                </Link>
+                <div className="w-full max-w-md pt-1">
+                  <ResearchClubCheckoutButton
+                    label="full"
+                    returnTo="/#research-club"
+                  />
+                </div>
               )}
             </div>
           </div>

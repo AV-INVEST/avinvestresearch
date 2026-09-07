@@ -5,6 +5,7 @@ import { auth } from '@/auth';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { getResearchClubEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
+import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
 import {
   Sparkles,
   FileText,
@@ -146,24 +147,12 @@ export default async function ResearchClubPage() {
                 <p className="mt-2 text-[11px] text-av-muted/85">
                   Abbonamento ricorrente. Prezzo IVA inclusa ove applicabile.
                 </p>
-                <form
-                  action="/api/stripe/checkout"
-                  method="POST"
-                  className="mt-4 flex flex-col gap-2"
-                >
-                  <input type="hidden" name="slug" value="research-club" />
-                  <button
-                    type="submit"
-                    className={`btn-primary w-full items-center justify-center gap-2 !py-2.5 shadow-glow-green-sm border ${GOLD.border}/70`}
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(180deg, rgba(201,169,97,0.12), rgba(201,169,97,0.04))',
-                    }}
-                  >
-                    <Crown className={`h-4 w-4 ${GOLD.text}`} />
-                    <span className={GOLD.text}>ENTRA NEL RESEARCH CLUB</span>
-                  </button>
-                </form>
+                <div className="mt-4 flex flex-col gap-2">
+                  <ResearchClubCheckoutButton
+                    label="full"
+                    returnTo="/area-membri/research-club"
+                  />
+                </div>
                 <Link
                   href="/#research-club"
                   className="btn-ghost w-full items-center justify-center gap-1.5 !py-2 text-xs"

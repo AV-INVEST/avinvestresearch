@@ -235,11 +235,21 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     );
   }
 
-  let payload: CheckoutPayload;
+  let payload: CheckoutPayload = {};
+  const contentType = (req.headers.get('content-type') || '').toLowerCase();
   try {
-    payload = (await req.json()) as CheckoutPayload;
+    if (contentType.includes('application/json')) {
+      payload = (await req.json()) as CheckoutPayload;
+    } else if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
+      const fd = await req.formData();
+      const slugRaw = fd.get('slug');
+      const slug = typeof slugRaw === 'string' ? slugRaw : undefined;
+      payload = { slug };
+    } else {
+      payload = (await req.json()) as CheckoutPayload;
+    }
   } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid body' }, { status: 400 });
   }
 
   const resolved = resolveProduct(payload?.slug);
@@ -387,17 +397,24 @@ export async function POST(req: Request): Promise<Response> {
     const session = await auth().catch(() => null);
     const userEmail = normalizeEmail(session?.user?.email);
 
-    let payload: CheckoutPayload | null = null;
+    let slug: string | null = null;
     try {
       const cloned = req.clone();
-      payload = (await cloned.json()) as CheckoutPayload;
+      const ct = (cloned.headers.get('content-type') || '').toLowerCase();
+      if (ct.includes('application/json')) {
+        const payload = (await cloned.json()) as CheckoutPayload;
+        if (typeof payload.slug === 'string') slug = resolveProduct(payload.slug)?.slug ?? null;
+      } else if (ct.includes('form-urlencoded') || ct.includes('multipart/form-data')) {
+        const fd = await cloned.formData();
+        const s = fd.get('slug');
+        if (typeof s === 'string') slug = resolveProduct(s)?.slug ?? null;
+      } else {
+        const payload = (await cloned.json()) as CheckoutPayload;
+        if (typeof payload.slug === 'string') slug = resolveProduct(payload.slug)?.slug ?? null;
+      }
     } catch {
-      payload = null;
+      slug = null;
     }
-
-    const slug = payload && typeof (payload as CheckoutPayload).slug === 'string'
-      ? resolveProduct((payload as CheckoutPayload).slug)?.slug
-      : null;
 
     let inFlightKey: string | null = null;
     if (userEmail && slug) {

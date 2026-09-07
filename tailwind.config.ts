@@ -29,6 +29,9 @@ const config: Config = {
         'glow-green': '0 0 24px rgba(0, 255, 106, 0.25)',
         'glow-green-lg': '0 0 48px rgba(0, 255, 106, 0.18)',
         'glow-green-sm': '0 0 12px rgba(0, 255, 106, 0.3)',
+        'glow-gold': '0 0 24px rgba(201, 169, 97, 0.28)',
+        'glow-gold-lg': '0 0 48px rgba(201, 169, 97, 0.2)',
+        'glow-gold-sm': '0 0 12px rgba(201, 169, 97, 0.35)',
       },
       backgroundImage: {
         'grid-trading':

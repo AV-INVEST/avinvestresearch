@@ -5,6 +5,7 @@ import { auth } from '@/auth';
 import { isAdminSession } from '@/lib/auth/admin';
 import { getEntitlements, getResearchClubEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
+import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
 import {
   BookOpenCheck,
   CheckCircle2,
@@ -367,24 +368,12 @@ export default async function PanoramicaPage() {
                 <p className="mt-1 text-[11px] text-av-muted/85">
                   Disdici quando vuoi. Accesso garantito fino a fine periodo.
                 </p>
-                <form
-                  action="/api/stripe/checkout"
-                  method="POST"
-                  className="mt-3"
-                >
-                  <input type="hidden" name="slug" value="research-club" />
-                  <button
-                    type="submit"
-                    className="btn-primary w-full !py-2.5 !px-4 text-sm items-center justify-center gap-2 shadow-glow-green-sm border border-[#C9A961]/65"
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(180deg, rgba(201,169,97,0.14), rgba(201,169,97,0.04))',
-                    }}
-                  >
-                    <Crown className="h-4 w-4 text-[#C9A961]" />
-                    <span className="text-[#C9A961]">ENTRA NEL RC</span>
-                  </button>
-                </form>
+                <div className="mt-3">
+                  <ResearchClubCheckoutButton
+                    label="short"
+                    returnTo="/area-membri"
+                  />
+                </div>
                 <Link
                   href="/#research-club"
                   className="mt-2 btn-ghost w-full items-center justify-center gap-1.5 !py-2 text-[12px]"

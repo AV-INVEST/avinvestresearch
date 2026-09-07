@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { auth, signOut } from '@/auth';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
+import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { productTitleBySlug } from '@/lib/stripe/pricing';
@@ -314,13 +315,12 @@ export default async function ProfiloPage() {
             </div>
           ) : (
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                href="/#research-club"
-                className="btn-primary shadow-glow-green-sm !py-2.5 !px-4 text-sm items-center justify-center gap-2"
-              >
-                <Sparkles className="h-4 w-4 text-[#C9A961]" />
-                ENTRA NEL RESEARCH CLUB
-              </Link>
+              <div className="max-w-sm">
+                <ResearchClubCheckoutButton
+                  label="full"
+                  returnTo="/area-membri/profilo#research-club"
+                />
+              </div>
             </div>
           )}
         </GlassCard>

@@ -190,16 +190,8 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                   )}
                 </div>
 
-                {entitlements === undefined ? (
-                  <button
-                    type="button"
-                    disabled
-                    aria-disabled="true"
-                    className="btn-primary mt-6 items-center justify-center gap-2 opacity-70"
-                  >
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Verifica accesso in corso
-                  </button>
+                {entitlements === undefined || isLocked ? (
+                  <CourseCheckoutButton slug={course.slug} />
                 ) : isPending ? (
                   <div
                     role="status"

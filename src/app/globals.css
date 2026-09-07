@@ -98,6 +98,15 @@
     @apply btn-primary px-6 py-4 text-base sm:px-7 sm:py-4 sm:text-base;
   }
 
+  .btn-rc-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#C9A961]/70 bg-[#0a0906] px-5 py-3 text-sm font-semibold text-white transition-all duration-200 ease-out hover:border-[#D4B46A] hover:shadow-glow-gold-sm focus-visible:outline-[#C9A961] disabled:opacity-50 disabled:hover:bg-[#0a0906] disabled:hover:shadow-none sm:text-base;
+    background-image: linear-gradient(180deg, rgba(201, 169, 97, 0.12), rgba(201, 169, 97, 0.02));
+  }
+
+  .btn-rc-primary-lg {
+    @apply btn-rc-primary px-6 py-4 text-base sm:px-7 sm:py-4 sm:text-base;
+  }
+
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 rounded-xl border border-av-line bg-av-surface/40 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 ease-out hover:border-av-green-deep/70 hover:bg-av-surface hover:text-av-green focus-visible:outline-av-green sm:text-base;
   }
