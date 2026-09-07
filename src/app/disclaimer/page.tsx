@@ -290,15 +290,18 @@ export default function DisclaimerPage() {
 
       <section className="rounded-2xl border border-av-line bg-av-bg-2/40 p-5 sm:p-6">
         <p className="text-sm font-semibold text-white sm:text-base">
-          Accettazione integrale
+          Ambito di applicazione
         </p>
         <p className="mt-2 text-sm text-av-muted sm:text-base">
-          La navigazione sul Sito, la registrazione di un account, l&apos;acquisto
-          dei corsi, la sottoscrizione del Research Club e l&apos;utilizzo di
-          qualsiasi servizio pubblico o riservato implicano l&apos;accettazione
-          integrale e senza riserve del presente disclaimer, nonch&eacute;
-          dei Termini e condizioni d&apos;uso e della Privacy Policy pubblicati
-          nelle rispettive pagine del Sito.
+          Il presente disclaimer trova applicazione in relazione a qualsiasi
+          utilizzo dei contenuti pubblicati sul Sito. In particolare: la
+          registrazione e il primo accesso all&apos;account Google per l&apos;area
+          membri, l&apos;acquisto dei corsi digitali e la sottoscrizione
+          dell&apos;abbonamento al Research Club, cos&igrave; come l&apos;utilizzo
+          dei servizi riservati, comportano la presa visione e l&apos;accettazione
+          integrale del presente disclaimer, nonch&eacute; dei Termini e
+          condizioni d&apos;uso e della Privacy Policy pubblicati nelle
+          rispettive pagine del Sito.
         </p>
       </section>
     </LegalLayout>

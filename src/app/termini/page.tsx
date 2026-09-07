@@ -18,22 +18,53 @@ export default function TerminiPage() {
     >
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          1. Oggetto e accettazione
+          1. Oggetto e ambito di applicazione
         </h2>
         <p>
-          L&apos;accesso e l&apos;utilizzo del sito avinvestresearch.com (il
-          &quot;Sito&quot;) e dei servizi in esso offerti sono subordinati
-          all&apos;accettazione e al rispetto integrale dei presenti Termini e
-          condizioni d&apos;uso (i &quot;Termini&quot;). La semplice navigazione
-          sul Sito, la registrazione di un account e l&apos;acquisto di servizi
-          implicano la conoscenza e l&apos;accettazione senza riserve dei
-          presenti Termini.
+          I presenti Termini e condizioni d&apos;uso (i &quot;Termini&quot;)
+          disciplinano l&apos;accesso e l&apos;utilizzo del sito
+          avinvestresearch.com (il &quot;Sito&quot;) e dei servizi in esso
+          offerti da {siteConfig.legal.companyName} (il &quot;Titolare&quot;).
         </p>
         <p className="mt-2">
-          Il Titolare si riserva il diritto di modificare i Termini in qualsiasi
-          momento. Le modifiche sono efficaci dal momento della pubblicazione
-          sul Sito. L&apos;utilizzo continuato del Sito dopo la pubblicazione
-          delle modifiche implica l&apos;accettazione dei Termini aggiornati.
+          Ai fini dell&apos;applicazione dei presenti Termini, si distinguono
+          le seguenti condotte:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            <strong className="text-white">Navigazione pubblica</strong>:
+            l&apos;accesso alle pagine informative del Sito senza
+            autenticazione, senza registrazione di account e senza acquisto
+            di servizi.
+          </li>
+          <li>
+            <strong className="text-white">Registrazione e accesso account</strong>:
+            l&apos;autenticazione tramite account Google per l&apos;accesso
+            all&apos;area membri. La registrazione e il primo accesso
+            all&apos;area membri comportano l&apos;accettazione integrale dei
+            presenti Termini.
+          </li>
+          <li>
+            <strong className="text-white">Acquisto di corsi digitali</strong>:
+            la conclusione dell&apos;ordine e il pagamento a tantum di AV
+            Foundations o AV Trading Lab, tramite Stripe, comportano
+            l&apos;accettazione integrale dei presenti Termini.
+          </li>
+          <li>
+            <strong className="text-white">Sottoscrizione abbonamento</strong>:
+            l&apos;attivazione dell&apos;abbonamento mensile al Research Club,
+            tramite Stripe, comporta l&apos;accettazione integrale dei
+            presenti Termini.
+          </li>
+        </ul>
+        <p className="mt-2">
+          Il Titolare si riserva il diritto di modificare i Termini in
+          qualsiasi momento. Le modifiche sono efficaci dal momento della
+          pubblicazione sul Sito. La prosecuzione dell&apos;utilizzo
+          dell&apos;account, di un abbonamento attivo o di servizi gi&agrave;
+          acquistati dopo la pubblicazione delle modifiche implica
+          l&apos;accettazione dei Termini aggiornati per la parte ancora da
+          eseguire.
         </p>
       </section>
 
@@ -42,13 +73,13 @@ export default function TerminiPage() {
           2. Servizi e contenuti: natura esclusivamente educativa
         </h2>
         <p>
-          Il Sito fornisce contenuti a finalità esclusivamente formative,
+          Il Sito fornisce contenuti a finalit&agrave; esclusivamente formative,
           informative e educative su temi finanziari, analisi tecnica, gestione
           del rischio, metodo operativo e ricerca di mercato. Nulla di quanto
           pubblicato sul Sito, nei corsi, nelle ricerche PDF, nel Research Club
           o in qualsiasi materiale di qualsiasi tipo costituisce consulenza
-          finanziaria, legale, fiscale o di investimento personalizzata, né
-          sollecitazione al pubblico all&apos;investimento, né raccomandazione
+          finanziaria, legale, fiscale o di investimento personalizzata, n&eacute;
+          sollecitazione al pubblico all&apos;investimento, n&eacute; raccomandazione
           di acquisto o vendita di strumenti finanziari, azioni, ETF, obbligazioni
           o qualsiasi altro bene o servizio finanziario.
         </p>
@@ -60,13 +91,13 @@ export default function TerminiPage() {
             <strong className="text-white">Corsi digitali educativi</strong>
             {' '}
             (AV Foundations e AV Trading Lab): forniti in modalit&agrave;
-            one-time con pagamento a tantum e accesso permanente all&apos;area
+            one-time con pagamento a tantum e accesso all&apos;area
             membri per il contenuto del corso acquistato.
           </li>
           <li>
             <strong className="text-white">AV Research Club</strong>
             : servizio in abbonamento mensile che include l&apos;accesso a
-            ricerche PDF, analisi riservate e archivio storico del materiale
+            ricerche PDF, analisi riservate e archivio del materiale
             pubblicato per gli abbonati.
           </li>
           <li>
@@ -106,7 +137,7 @@ export default function TerminiPage() {
         </h2>
         <p>
           I contenuti del Sito si basano su fonti ritenute affidabili al momento
-          della pubblicazione. Il Titolare adotta ogni ragionevole sforzo per
+          della pubblicazione. Il Titolare adopera ogni ragionevole sforzo per
           garantire la correttezza delle informazioni pubblicate, ma non
           garantisce in alcun modo l&apos;assenza di errori, omissioni,
           approssimazioni, ritardi nell&apos;aggiornamento o modifiche
@@ -130,7 +161,7 @@ export default function TerminiPage() {
           analisi, nomi di prodotti e marchi - sono di propriet&agrave; esclusiva
           del Titolare o dei rispettivi autori e sono tutelati dalle normative
           vigenti in materia di diritto d&apos;autore, propriet&agrave;
-          industriale e normativa sulla concorrenza sleale.
+          industriale e concorrenza sleale.
         </p>
         <p className="mt-2">
           &Egrave; espressamente vietata, senza autorizzazione scritta e
@@ -163,7 +194,7 @@ export default function TerminiPage() {
             anche tra familiari, colleghi o soci.
           </li>
           <li>
-            Copiare, scaricare, estrarre, screditare, registrare o pubblicare su
+            Copiare, scaricare, estrarre, registrare o pubblicare su
             qualsiasi piattaforma pubblica o privata (social network, forum,
             gruppi di messaggistica, siti web, drive condivisi, ecc.) i PDF, le
             ricerche, i video, le slide o qualsiasi altro materiale riservato
@@ -195,7 +226,7 @@ export default function TerminiPage() {
           esclusivamente tramite autenticazione con account Google.
           L&apos;utente &egrave; responsabile della custodia riservata delle
           proprie credenziali Google e di ogni attivit&agrave; svolta tramite
-          il proprio account. Il Titolare non pu&ograve; e non sarà ritenuto
+          il proprio account. Il Titolare non sar&agrave; ritenuto
           responsabile per accessi non autorizzati conseguenti a condotte
           imprudenti o negligenti dell&apos;utente nella gestione delle proprie
           credenziali. Qualsiasi utilizzo dell&apos;account effettuato dopo
@@ -213,8 +244,8 @@ export default function TerminiPage() {
           l&apos;abbonamento al Research Club sono gestiti tramite Stripe,
           fornitore terzo di servizi di pagamento. Il Titolare non memorizza
           direttamente sul proprio database dati di carta di credito o strumenti
-          di pagamento completi: tali dati sono gestiti esclusivamente sui
-          sistemi sicuri di Stripe nel rispetto delle normative PCI DSS.
+          di pagamento completi; il trattamento dei dati di pagamento avviene
+          tramite le piattaforme e secondo le procedure di Stripe.
         </p>
         <p className="mt-2">
           Completando una procedura di acquisto, l&apos;utente dichiara di
@@ -223,7 +254,7 @@ export default function TerminiPage() {
           sul sito ufficiale stripe.com. In caso di contestazioni, frodi o
           mancati pagamenti da parte dell&apos;utente, il Titolare si riserva
           il diritto di sospendere o revocare l&apos;accesso ai servizi fino
-          alla risoluzione della controversia.
+          alla risoluzione della controversia, nei limiti consentiti dalla legge.
         </p>
       </section>
 
@@ -235,7 +266,7 @@ export default function TerminiPage() {
           I corsi AV Foundations e AV Trading Lab sono venduti con formula a
           tantum (pagamento unico una tantum). Dopo l&apos;acquisto completato
           e la conferma del pagamento da parte di Stripe, viene concesso
-          all&apos;utente il diritto di accesso permanente, personale e non
+          all&apos;utente il diritto di accesso personale e non
           trasferibile ai contenuti del corso, alle lezioni, al materiale
           didattico associato e alle relative funzionalit&agrave; di tracciamento
           del progresso nell&apos;area membri. Il prezzo pubblicato nella pagina
@@ -255,9 +286,9 @@ export default function TerminiPage() {
           membri (ricerche PDF, analisi, approfondimenti) secondo quanto
           descritto nella pagina di presentazione del servizio. Il numero di
           pubblicazioni, gli argomenti trattati e la frequenza di aggiornamento
-          dell&apos;archivio possono variare nel tempo senza che ci&ograve;
-          costituisca inadempimento, purch&eacute; il servizio resti coerente
-          con la finalit&agrave; generale di ricerca e approfondimento formativo.
+          dell&apos;archivio possono variare nel tempo, purch&eacute; il
+          servizio resti coerente con la finalit&agrave; generale di ricerca
+          e approfondimento formativo.
         </p>
         <p className="mt-2">
           L&apos;abbonamento si intende attivato alla data di conferma del
@@ -293,16 +324,15 @@ export default function TerminiPage() {
           12. Disdetta e fine accesso
         </h2>
         <p>
-          L&apos;utente pu&ograve; recedere dall&apos;abbonamento al Research
-          Club disattivando il rinnovo automatico in qualsiasi momento tramite
+          L&apos;utente pu&ograve; disattivare il rinnovo automatico
+          dell&apos;abbonamento al Research Club in qualsiasi momento tramite
           il Customer Portal di Stripe. Dopo la disattivazione, l&apos;abbonamento
           non sar&agrave; pi&ugrave; rinnovato alla scadenza del periodo corrente.
         </p>
         <p className="mt-2">
-          In caso di disdetta del rinnovo automatico, l&apos;accesso ai
+          In caso di disattivazione del rinnovo, l&apos;accesso ai
           contenuti del Research Club rimane attivo e pienamente fruibile
-          fino alla fine naturale del periodo gi&agrave; corrisposto, senza
-          possibilit&agrave; di rimborso pro-quota per il periodo residuo.
+          fino alla fine naturale del periodo gi&agrave; corrisposto.
           Alla scadenza del periodo pagato, l&apos;utente non abilitato al
           rinnovo non potr&agrave; pi&ugrave; accedere ai contenuti riservati
           del Research Club.
@@ -317,10 +347,8 @@ export default function TerminiPage() {
           La gestione autonoma dell&apos;abbonamento (aggiornamento dei dati di
           pagamento, disattivazione del rinnovo, visualizzazione dello stato
           sottoscrizione e consultazione fatture) avviene tramite il Customer
-          Portal ufficiale di Stripe, accessibile direttamente dalla pagina
-          di profilo dell&apos;area membri del Sito. Il Customer Portal &egrave;
-          uno strumento fornito e gestito direttamente da Stripe come titolare
-          autonomo del servizio.
+          Portal di Stripe, accessibile direttamente dalla pagina di profilo
+          dell&apos;area membri del Sito.
         </p>
       </section>
 
@@ -331,20 +359,27 @@ export default function TerminiPage() {
         <p>
           In relazione ai servizi digitali forniti dal Sito (corsi digitali e
           abbonamento Research Club), i rimborsi e il diritto di recesso sono
-          regolati esclusivamente nei limiti previsti dalla legge applicabile,
-          con particolare riferimento al Codice del Consumo (D.Lgs. 206/2005)
-          e alle disposizioni inderogabili di diritto comunitario e nazionale.
+          regolati esclusivamente nei limiti e nei modi previsti dalla legge
+          applicabile, con particolare riferimento al Codice del Consumo
+          (D.Lgs. 206/2005) e alle disposizioni inderogabili di diritto
+          comunitario e nazionale.
         </p>
         <p className="mt-2">
           Non sono previsti rimborsi discrezionali al di l&agrave; di quanto
           espressamente previsto da norme imperative di legge. Il Titolare
           non dichiara rinunce unilaterali ai diritti riconosciuti all&apos;utente
-          consumatore da norme inderogabili. Per servizi di contenuto digitale
-          non forniti su supporto materiale, il diritto di recesso si applica
-          o si esaurisce secondo le condizioni e nei limiti stabiliti dalla
-          legge applicabile, incluso l&apos;eventuale consenso espresso
-          all&apos;inizio della prestazione prima della scadenza del termine
-          di recesso, se e nei casi in cui la normativa lo consenta.
+          consumatore da norme inderogabili.
+        </p>
+        <p className="mt-2">
+          Per quanto riguarda i contenuti digitali non forniti su supporto
+          materiale, l&apos;eventuale esclusione o esaurimento del diritto di
+          recesso &egrave; disciplinata dall&apos;articolo 59, comma 1, lett. o)
+          del Codice del Consumo: essa opera soltanto se e nei casi in cui
+          ricorrano tutti i presupposti previsti dalla legge (consenso espresso
+          dell&apos;utente all&apos;inizio della prestazione, riconoscimento
+          della conseguente perdita del diritto di recesso e conferma prevista
+          dalla normativa). In assenza di tali condizioni, il diritto di
+          recesso si applica secondo la regola generale.
         </p>
       </section>
 
@@ -354,10 +389,10 @@ export default function TerminiPage() {
         </h2>
         <p>
           Il Titolare si riserva il diritto, a propria esclusiva discrezione
-          e senza necessit&agrave; di preavviso, di sospendere o revocare
-          in modo definitivo o temporaneo l&apos;accesso all&apos;area membri,
-          ai corsi acquistati, al Research Club o a qualsiasi altro servizio,
-          in caso di:
+          e senza necessit&agrave; di preavviso ove la legge lo consenta, di
+          sospendere o revocare in modo definitivo o temporaneo l&apos;accesso
+          all&apos;area membri, ai corsi acquistati, al Research Club o a
+          qualsiasi altro servizio, in caso di:
         </p>
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
@@ -397,17 +432,15 @@ export default function TerminiPage() {
           ma non pu&ograve; garantire che il funzionamento sia privo di
           interruzioni, errori, rallentamenti o disservizi temporanei dovuti
           a manutenzioni programmate, aggiornamenti infrastrutturali, guasti
-          tecnici, congestioni di rete, eventi meteorologici eccezionali o
-          cause comunque non direttamente imputabili.
+          tecnici, congestioni di rete o cause comunque non direttamente
+          imputabili.
         </p>
         <p className="mt-2">
           Interruzioni temporanee per manutenzione straordinaria o ordinaria
-          possono avvenire senza preavviso, anche se il Titolare si impegna
-          a comunicarle preventivamente quando e nella misura in cui ci&ograve;
-          sia ragionevolmente possibile. Il Titolare non sar&agrave; responsabile
-          per danni derivanti da indisponibilit&agrave; temporanea del servizio
-          ai sensi e nei limiti di quanto stabilito dalle presenti clausole e
-          dalle norme inderogabili di legge.
+          possono avvenire senza preavviso. Il Titolare non sar&agrave;
+          responsabile per danni derivanti da indisponibilit&agrave; temporanea
+          del servizio ai sensi e nei limiti di quanto stabilito dalle
+          presenti clausole e dalle norme inderogabili di legge.
         </p>
       </section>
 
@@ -417,45 +450,45 @@ export default function TerminiPage() {
         </h2>
         <p>
           Il Sito si avvale di fornitori terzi per l&apos;erogazione dei servizi.
-          In particolare:
+          In particolare, i servizi attualmente coinvolti nella catena di
+          erogazione sono:
         </p>
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
-            <strong className="text-white">Stripe</strong>: gestione pagamenti,
-            abbonamenti, fatturazione elettronica e Customer Portal.
+            <strong className="text-white">Stripe</strong>: per la gestione dei
+            pagamenti, degli abbonamenti, delle fatture e del Customer Portal.
           </li>
           <li>
-            <strong className="text-white">Google (Auth)</strong>: servizio
-            di autenticazione per l&apos;accesso all&apos;area membri.
+            <strong className="text-white">Google (Auth)</strong>: per il
+            servizio di autenticazione tramite account Google utilizzato per
+            l&apos;accesso all&apos;area membri.
           </li>
           <li>
-            <strong className="text-white">Calendly</strong>: prenotazione di
-            call informative tramite link esterno.
+            <strong className="text-white">Calendly</strong>: per la
+            prenotazione di call informative tramite link esterno.
           </li>
           <li>
-            <strong className="text-white">Vercel</strong>: hosting,
-            infrastruttura di deployment, CDN, edge network e log tecnici.
+            <strong className="text-white">Vercel</strong>: per l&apos;hosting,
+            il deployment del Sito e l&apos;infrastruttura tecnica di
+            distribuzione dei contenuti.
           </li>
           <li>
-            <strong className="text-white">Neon</strong>: servizio di database
-            PostgreSQL per la memorizzazione di account, acquisti, stato
+            <strong className="text-white">Neon</strong>: per il database
+            utilizzato per la memorizzazione di account, acquisti, stato
             abbonamento e progressi utente.
           </li>
           <li>
-            <strong className="text-white">Vercel Blob</strong>: servizio di
-            storage privato per l&apos;archiviazione e la distribuzione dei
-            PDF e dei documenti del Research Club.
+            <strong className="text-white">Vercel Blob</strong>: per lo
+            storage privato e la distribuzione dei PDF e dei documenti del
+            Research Club.
           </li>
         </ul>
         <p className="mt-2">
-          Ciascun fornitore terzo opera come titolare autonomo o responsabile
-          del trattamento secondo il proprio ruolo e secondo gli accordi
-          intercorsi. L&apos;utilizzo dei servizi di tali fornitori &egrave;
-          soggetto alle rispettive condizioni d&apos;uso e informative
-          sulla privacy, disponibili sui siti ufficiali di ciascuno. Il
-          Titolare non controlla direttamente i servizi di terzi e non
-          &egrave; responsabile per disservizi, modifiche unilaterali o
-          condotte di tali fornitori.
+          L&apos;utilizzo dei servizi di tali fornitori &egrave; soggetto alle
+          rispettive condizioni generali e informative sulla privacy,
+          disponibili sui siti ufficiali di ciascuno. Il Titolare non
+          controlla direttamente i servizi di terzi e non &egrave; responsabile
+          per disservizi, modifiche unilaterali o condotte di tali fornitori.
         </p>
       </section>
 
@@ -483,23 +516,19 @@ export default function TerminiPage() {
           19. Limitazione di responsabilit&agrave;
         </h2>
         <p>
-          Nei limiti massimi consentiti dalla legge applicabile e fatti salvi
-          in ogni caso i diritti inderogabili del consumatore, il Titolare
-          non sar&agrave; responsabile per danni indiretti, incidentali,
-          speciali, consequenziali o punitivi, inclusa la perdita di profitti,
-          ricavi, opportunit&agrave;, dati o avviamento, derivanti o in
-          qualsiasi modo connessi all&apos;utilizzo o all&apos;impossibilit&agrave;
-          di utilizzo del Sito o dei servizi.
+          Nei limiti massimi consentiti dalla normativa applicabile e fatti
+          salvi in ogni caso i diritti inderogabili del consumatore, il
+          Titolare non sar&agrave; responsabile per danni indiretti,
+          incidentali, speciali, consequenziali o punitivi - inclusa, a
+          titolo esemplificativo, la perdita di profitti, ricavi,
+          opportunit&agrave;, dati o avviamento - derivanti o in qualsiasi
+          modo connessi all&apos;utilizzo o all&apos;impossibilit&agrave; di
+          utilizzo del Sito o dei servizi.
         </p>
         <p className="mt-2">
-          Per danni diretti, ove applicabile e nei limiti consentiti dalla
-          legge, la responsabilit&agrave; del Titolare &egrave; in ogni caso
-          limitata all&apos;importo complessivo effettivamente corrisposto
-          dall&apos;utente al Titolare per l&apos;acquisto dei servizi nel
-          periodo di dodici (12) mesi antecedenti l&apos;evento che ha dato
-          origine alla richiesta di risarcimento. Restano impregiudicate le
-          responsabilit&agrave; non eliminabili per dolo o colpa grave e per
-          i casi espressamente previsti da norme imperative di legge.
+          Restano impregiudicate, senza alcuna limitazione, le responsabilit&agrave;
+          non eliminabili per dolo o colpa grave e le responsabilit&agrave;
+          espressamente previste da norme imperative di legge.
         </p>
       </section>
 
@@ -515,8 +544,8 @@ export default function TerminiPage() {
           blackout, disastri naturali, guerre, atti terroristici, crisi
           pandemiche, interruzioni dei servizi di fornitori terzi (Stripe,
           Google, Vercel, Neon, Calendly), provvedimenti amministrativi o
-          normativi sopravvenuti, azioni di hackeraggio o attacchi informatici
-          che non siano riconducibili a dolo o colpa grave del Titolare.
+          normativi sopravvenuti, attacchi informatici, quando non siano
+          riconducibili a dolo o colpa grave del Titolare.
         </p>
       </section>
 
@@ -532,9 +561,9 @@ export default function TerminiPage() {
           modificare i prezzi e le condizioni economiche, con effetto per i
           nuovi acquisti o per i rinnovi futuri degli abbonamenti, dandone
           comunicazione mediante pubblicazione sul Sito o, per quanto possibile,
-          tramite comunicazione diretta agli abbonati attivi prima dell&apos;apposizione
-          della modifica sul rinnovo. Eventuali modifiche non incidono sui
-          servizi gi&agrave; acquistati e pagati.
+          tramite comunicazione diretta agli abbonati attivi prima
+          dell&apos;apposizione della modifica sul rinnovo. Eventuali modifiche
+          non incidono sui servizi gi&agrave; acquistati e pagati.
         </p>
       </section>
 
@@ -543,18 +572,18 @@ export default function TerminiPage() {
           22. Legge applicabile e foro competente
         </h2>
         <p>
-          I presenti Termini sono regolati dalla legge italiana, con esclusione
-          di ogni norma di rinvio a ordinamenti diversi. Per ogni controversia
-          in ordine a interpretazione, validit&agrave;, esecuzione e risoluzione
-          dei presenti Termini, il Foro competente &egrave; quello del luogo
-          di residenza o domicilio dell&apos;utente consumatore, se diverso dal
-          Foro del luogo del Titolare, nel pieno rispetto delle disposizioni
-          inderogabili in materia di tutela dei consumatori e dei diritti
-          riconosciuti dalla normativa UE e nazionale. Qualsiasi disposizione
-          dei presenti Termini che risultasse in contrasto con norme imperative
-          di legge si intende sostituita di diritto dalla disposizione legale
-          applicabile, senza pregiudizio per la validit&agrave; delle restanti
-          clausole.
+          I presenti Termini sono regolati dalla legge italiana. Per ogni
+          controversia in ordine a interpretazione, validit&agrave;, esecuzione
+          e risoluzione dei presenti Termini, ferma restando la possibilit&agrave;
+          di ricorso a procedure di risoluzione alternativa delle controversie
+          ove disponibili, il Foro competente &egrave; quello del luogo di
+          residenza o domicilio dell&apos;utente consumatore, nel pieno
+          rispetto delle disposizioni inderogabili in materia di tutela dei
+          consumatori e dei diritti riconosciuti dalla normativa UE e nazionale.
+          Qualsiasi disposizione dei presenti Termini che risultasse in
+          contrasto con norme imperative di legge si intende sostituita di
+          diritto dalla disposizione legale applicabile, senza pregiudizio per
+          la validit&agrave; delle restanti clausole.
         </p>
       </section>
 

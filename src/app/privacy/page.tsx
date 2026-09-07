@@ -26,8 +26,8 @@ export default function PrivacyPage() {
           Il titolare del trattamento dei dati personali &egrave;{' '}
           <strong className="text-white">{siteConfig.legal.companyName}</strong>.
           Per ogni domanda, reclamo, richiesta di informazioni o esercizio
-          dei diritti di cui al GDPR puoi scrivere esclusivamente al seguente
-          indirizzo email dedicato:
+          dei diritti di cui al GDPR puoi scrivere al seguente indirizzo
+          email dedicato:
         </p>
         <p>
           <a href={`mailto:${privacyContact}`} className="link-underline">
@@ -35,9 +35,7 @@ export default function PrivacyPage() {
           </a>
         </p>
         <p className="mt-2">
-          Tutte le richieste relative alla privacy sono evase direttamente dal
-          Titolare. Non &egrave; stato nominato un Responsabile della Protezione
-          dei Dati (DPO) in quanto non obbligatorio ai sensi dell&apos;art. 37 GDPR.
+          Non &egrave; stato nominato un Responsabile della Protezione dei Dati.
         </p>
       </section>
 
@@ -95,36 +93,37 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-white">Dati account Google</strong>:
             al momento dell&apos;autenticazione per l&apos;accesso all&apos;area
-            membri, il Titolare riceve e memorizza da Google Identity Services
-            le seguenti informazioni minime: nome visualizzato, indirizzo
-            email associato all&apos;account Google, identificativo univoco
-            Google dell&apos;utente (sub) ed eventualmente l&apos;immagine del
-            profilo, se resa disponibile da Google e dall&apos;utente.
+            membri, il Titolare riceve da Google Identity Services le
+            informazioni minime rese disponibili dal flusso OAuth per
+            l&apos;identificazione dell&apos;utente, quali in genere nome
+            visualizzato, indirizzo email associato all&apos;account Google,
+            identificativo univoco dell&apos;utente e, se reso disponibile
+            dall&apos;utente stesso, l&apos;immagine del profilo.
           </li>
           <li>
             <strong className="text-white">Dati di acquisto e transazione</strong>:
             in occasione dell&apos;acquisto di corsi o della sottoscrizione
             del Research Club, il Titolare riceve da Stripe le informazioni
-            necessarie alla gestione dell&apos;ordine: identificativo cliente
-            Stripe, email associata al pagamento, oggetto dell&apos;acquisto,
-            importo pagato, valuta, data e ora della transazione, stato del
-            pagamento e, per gli abbonamenti, identificativo della
-            sottoscrizione e relativo stato (attiva, annullata, scaduta, in
-            ritardo di pagamento).
+            necessarie alla gestione dell&apos;ordine, quali identificativo
+            cliente, email associata al pagamento, oggetto dell&apos;acquisto,
+            importo, valuta, data e ora della transazione, stato del pagamento
+            e, per gli abbonamenti, identificativo e stato della
+            sottoscrizione.
           </li>
           <li>
             <strong className="text-white">Dati Calendly</strong>: quando
             l&apos;utente prenota una call tramite il link esterno a Calendly,
-            nome, cognome, indirizzo email, numero di telefono e ogni altro
-            campo compilato nel form di prenotazione sono trattati da Calendly
-            come titolare autonomo; una copia delle informazioni della
-            prenotazione &egrave; ricevuta dal Titolare via email per la sola
-            gestione dell&apos;appuntamento.
+            le informazioni inserite nel form di prenotazione (nome, email,
+            numero di telefono, note e altri campi eventualmente compilati)
+            sono trattate direttamente da Calendly secondo la propria
+            informativa; una copia dei dati della prenotazione pu&ograve;
+            essere ricevuta dal Titolare via email per la sola gestione
+            dell&apos;appuntamento.
           </li>
           <li>
             <strong className="text-white">Dati di contatto</strong>: nome,
             cognome, indirizzo email e contenuto dei messaggi nel caso di
-            richieste informative o di supporto inviate direttamente dal
+            richieste informative o di supporto inviate direttamente al
             Titolare.
           </li>
         </ul>
@@ -136,25 +135,26 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-white">Dati di navigazione e log tecnici</strong>:
             nell&apos;ambito del normale funzionamento e della sicurezza
-            del Sito, i sistemi di hosting Vercel e l&apos;infrastruttura
-            tecnica possono registrare in forma pseudonimizzata: indirizzo
-            IP (in genere troncato o mascherato dopo breve tempo), tipo di
-            dispositivo, sistema operativo, tipo e versione del browser,
-            pagina di provenienza, orario e data della richiesta, URL delle
-            pagine visitate e durata della sessione.
+            del Sito, i sistemi di hosting e l&apos;infrastruttura tecnica
+            possono registrare informazioni tecniche relative alle richieste
+            inoltrate, quali tipo di dispositivo, sistema operativo, tipo e
+            versione del browser, pagina di provenienza, orario e data della
+            richiesta, URL delle pagine visitate, durata della sessione e
+            indirizzo Internet di provenienza, secondo le impostazioni e le
+            policy di conservazione proprie del fornitore infrastrutturale.
           </li>
           <li>
             <strong className="text-white">Dati di progresso area membri</strong>:
             per migliorare l&apos;esperienza formativa, vengono memorizzati
-            nel database Neon i progressi dell&apos;utente all&apos;interno
-            dei corsi (lezioni completate, timestamp di ultima visualizzazione,
-            segnalibri ed eventuali note o stati di avanzamento personalizzati).
+            nel database i progressi dell&apos;utente all&apos;interno dei
+            corsi (lezioni completate, timestamp di ultima visualizzazione,
+            segnalibri e stati di avanzamento).
           </li>
           <li>
             <strong className="text-white">Preferenze cookie</strong>: lo stato
             del consenso o rifiuto alle singole categorie di cookie, come
             descritto nella Cookie Policy, viene memorizzato localmente sul
-            dispositivo tramite localStorage di primo partito.
+            dispositivo tramite storage di primo partito.
           </li>
         </ul>
 
@@ -163,12 +163,12 @@ export default function PrivacyPage() {
         </h3>
         <p>
           Il Titolare non memorizza direttamente sui propri server numeri
-          completi di carta di credito, IBAN o dettagli degli strumenti di
-          pagamento: tali dati sono trattati esclusivamente da Stripe sui
-          propri sistemi sicuri (cfr. paragrafo 6). Il Titolare non effettua
+          completi di carta di credito o dettagli degli strumenti di
+          pagamento: tali dati sono trattati tramite le piattaforme e secondo
+          le procedure di Stripe. Il Titolare non effettua attivit&agrave; di
           profilazione automatizzata dell&apos;utente ai sensi dell&apos;art. 22
-          GDPR, n&eacute; produce scoring di solvibilit&agrave; o valutazioni
-          personali automatizzate con effetti giuridici o analoghi.
+          GDPR che produca effetti giuridici o analoghi nei confronti
+          dell&apos;interessato.
         </p>
       </section>
 
@@ -185,13 +185,13 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-white">A. Esecuzione di un contratto o misure precontrattuali (art. 6.1.b GDPR)</strong>
             <br />
-            - Registrazione e mantenimento dell&apos;account Google per l&apos;accesso all&apos;area membri.
+            - Registrazione e mantenimento dell&apos;account per l&apos;accesso all&apos;area membri.
             <br />
             - Gestione degli ordini di acquisto dei corsi digitali e consegna del relativo accesso.
             <br />
             - Attivazione, gestione e rinnovo dell&apos;abbonamento mensile al Research Club.
             <br />
-            - Gestione del Customer Portal Stripe e dello stato di abbonamento.
+            - Gestione del Customer Portal e dello stato di abbonamento.
             <br />
             - Tracciamento del progresso personale nei corsi all&apos;interno dell&apos;area membri.
             <br />
@@ -202,11 +202,9 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-white">B. Adempimento di obblighi legali (art. 6.1.c GDPR)</strong>
             <br />
-            - Conservazione di documenti fiscali, contabili e amministrativi relativi a transazioni di vendita o abbonamenti, per i termini di legge applicabili (inclusi, tra gli altri, quelli fiscali e civilistici in materia di conservazione scritture contabili elettroniche e fatturazione).
+            - Conservazione di documenti fiscali, contabili e amministrativi relativi a transazioni di vendita o abbonamenti per i termini di legge applicabili (in particolare i termini di conservazione fiscale e civilistica delle scritture contabili elettroniche e della fatturazione).
             <br />
             - Collaborazione con autorit&agrave; amministrative, giudiziarie o di controllo, per richieste formalmente motivate e nei limiti di legge.
-            <br />
-            - Adempimenti connessi alla normativa antiriciclaggio, ove applicabili.
           </li>
           <li>
             <strong className="text-white">C. Legittimo interesse del Titolare (art. 6.1.f GDPR)</strong>
@@ -215,12 +213,12 @@ export default function PrivacyPage() {
             <br />
             - Miglioramento dell&apos;esperienza utente e analisi aggregate anonime di utilizzo, quando non necessitano di consenso specifico.
             <br />
-            - Invio di comunicazioni di servizio relative a manutenzioni, modifiche sostanziali dei servizi, aggiornamenti dello stato abbonamento o interruzioni programmate, senza finalit&agrave; promozionale.
+            - Invio di comunicazioni di servizio relative a modifiche sostanziali dei servizi, aggiornamenti dello stato abbonamento o interruzioni programmate, senza finalit&agrave; promozionale.
             <br />
             - Tutela dei diritti del Titolare in sede giudiziale o stragiudiziale, per contestazioni, reclami o controversie con l&apos;utente o terzi.
             <br />
             <em className="text-xs text-av-muted">
-              L&apos;utente pu&ograve; opporsi in qualsiasi momento al trattamento basato su legittimo interesse, scrivendo all&apos;indirizzo privacy indicato nel paragrafo 1, salvo cause sopravvenute che rendano obbligatoria la prosecuzione del trattamento.
+              L&apos;utente pu&ograve; opporsi in qualsiasi momento al trattamento basato su legittimo interesse, scrivendo all&apos;indirizzo privacy indicato nel paragrafo 1, salvo cause sopravvenute che rendano obbligatoria la prosecuzione del trattamento secondo norme di legge.
             </em>
           </li>
           <li>
@@ -243,51 +241,51 @@ export default function PrivacyPage() {
         </h2>
         <p>
           I dati sono conservati per il tempo strettamente necessario alle
-          finalit&agrave; per cui sono stati raccolti e in osservanza ai
-          termini di conservazione obbligatori previsti dalla legge. In
-          sintesi:
+          finalit&agrave; per cui sono stati raccolti e, successivamente, per
+          il periodo richiesto da obblighi di legge o per l&apos;accertamento,
+          l&apos;esercizio o la difesa di un diritto del Titolare.
         </p>
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
             <strong className="text-white">Account e dati area membri</strong>:
-            conservati per tutta la durata del rapporto e fino a 36 mesi dopo
-            la disdetta definitiva dell&apos;abbonamento o la cancellazione
-            volontaria dell&apos;account da parte dell&apos;utente, salvo
-            necessit&agrave; di conservazione per obblighi legali o per
-            l&apos;accertamento, esercizio o difesa di un diritto in sede
-            giudiziale.
+            conservati per il tempo necessario alle finalit&agrave; indicate
+            e successivamente per il periodo richiesto da obblighi di legge o
+            tutela dei diritti del Titolare.
           </li>
           <li>
             <strong className="text-white">Dati di acquisto e abbonamento</strong>:
             le informazioni relative a ordini, transazioni e stato
             sottoscrizione sono conservate per il tempo necessario alla
-            gestione amministrativa e, successivamente, per i termini obbligatori
-            di legge (in genere 10 anni per documenti fiscali e scritture
-            contabili, salvo diverse disposizioni specifiche).
+            gestione amministrativa e, successivamente, per i termini
+            obbligatori di legge (in particolare per la conservazione delle
+            scritture contabili e dei documenti fiscali).
           </li>
           <li>
             <strong className="text-white">Progressi e preferenze utente</strong>:
-            conservati per tutta la durata dell&apos;account attivo o fino a
-            richiesta di cancellazione.
+            conservati per il tempo necessario alle finalit&agrave; indicate
+            e successivamente per il periodo richiesto da obblighi di legge o
+            tutela dei diritti del Titolare, o fino a richiesta di
+            cancellazione ove applicabile.
           </li>
           <li>
             <strong className="text-white">Dati di contatto e richieste</strong>:
             conservati per il tempo necessario a evadere la richiesta e,
-            successivamente, per massimo 24 mesi per esigenze di follow-up o
-            archivio amministrativo.
+            successivamente, per il periodo richiesto da obblighi di legge o
+            tutela dei diritti del Titolare.
           </li>
           <li>
             <strong className="text-white">Prenotazioni Calendly</strong>:
-            copie ricevute dal Titolare conservate per la durata necessaria
-            alla gestione dell&apos;appuntamento e per massimo 12 mesi dopo
-            la data della call per esigenze amministrative e di follow-up.
+            copie ricevute dal Titolare conservate per il tempo necessario
+            alla gestione dell&apos;appuntamento e, successivamente, per il
+            periodo richiesto da obblighi di legge o tutela dei diritti del
+            Titolare.
           </li>
           <li>
             <strong className="text-white">Log tecnici e dati di sicurezza</strong>:
             conservati per il tempo minimo necessario a finalit&agrave; di
-            sicurezza, prevenzione frodi e troubleshooting, in genere non
-            superiore a 90 giorni, salvo casi specifici di investigazione
-            o contestazione.
+            sicurezza, prevenzione frodi e troubleshooting secondo le policy
+            del fornitore infrastrutturale, o per periodi pi&ugrave; lunghi
+            se richiesto da obblighi di legge o da cause di contestazione.
           </li>
           <li>
             <strong className="text-white">Consensi cookie</strong>: memorizzati
@@ -295,126 +293,122 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p className="mt-2 text-xs text-av-muted sm:text-sm">
-          Allo scadere dei termini di conservazione, i dati vengono eliminati
-          in modo definitivo, resi anonimi in modo irreversibile o isolati in
-          archivio freddo ai soli fini di conservazione legale, secondo quanto
-          applicabile.
+          Allo scadere dei termini applicabili, i dati vengono eliminati, resi
+          anonimi in modo irreversibile o isolati in archivio ai soli fini di
+          conservazione legale, secondo quanto applicabile.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          6. Fornitori terzi, responsabili del trattamento e trasferimenti
+          6. Fornitori terzi e servizi strumentali
         </h2>
         <p>
-          Il Titolare condivide i dati personali esclusivamente con fornitori
-          e partner strumentali, necessari all&apos;erogazione dei servizi,
-          operanti come responsabili del trattamento ai sensi dell&apos;art.
-          28 GDPR o come titolari autonomi secondo il proprio ruolo. Di seguito
-          l&apos;elenco dei fornitori attualmente utilizzati:
+          Il Titolare si avvale di fornitori e partner strumentali per
+          l&apos;erogazione dei servizi, affidando loro il trattamento dei
+          dati personali solo nella misura necessaria alle rispettive
+          prestazioni e secondo quanto richiesto dalla normativa vigente.
+          L&apos;elenco dei fornitori attualmente coinvolti nella catena di
+          erogazione &egrave; il seguente:
         </p>
         <ul className="mt-3 space-y-3 pl-5 marker:text-av-green [list-style:disc]">
           <li>
-            <strong className="text-white">Stripe Payments Europe, Ltd. / Stripe, Inc.</strong>
+            <strong className="text-white">Stripe</strong>
             <br />
-            Ruolo: titolare autonomo per il servizio di pagamento.
+            Ruolo: servizi di pagamento, gestione degli abbonamenti,
+            fatturazione elettronica e Customer Portal.
             <br />
-            Trattamento: gestione completa dei pagamenti, metodi di pagamento,
-            sottoscrizioni, fatturazione elettronica, Customer Portal, gestione
-            delle frodi e adempimenti fiscali connessi.
-            <br />
-            Sede: Irlanda / Stati Uniti. Trasferimento extra UE: pu&ograve;
-            avvenire verso gli Stati Uniti sotto copertura delle clausole
-            contrattuali standard (SCCs) e delle misure supplementari adottate
-            da Stripe. Informativa:{' '}
+            L&apos;uso del servizio &egrave; soggetto all&apos;informativa
+            privacy ufficiale disponibile su{' '}
             <a href="https://stripe.com/it/privacy" target="_blank" rel="noopener noreferrer" className="link-underline">
               stripe.com/it/privacy
             </a>.
+            <br />
+            Trasferimenti internazionali, se applicabili, sono disciplinati
+            secondo le garanzie previste dalla normativa e adottate dal
+            fornitore.
           </li>
           <li>
-            <strong className="text-white">Google Ireland Limited / Google LLC (Google Identity / Google OAuth)</strong>
+            <strong className="text-white">Google (servizi di identit&agrave;)</strong>
             <br />
-            Ruolo: titolare autonomo per il servizio di autenticazione.
+            Ruolo: verifica dell&apos;identit&agrave; utente tramite account
+            Google e rilascio delle informazioni minime di profilo al momento
+            del login.
             <br />
-            Trattamento: verifica dell&apos;identit&agrave; utente tramite
-            account Google e comunicazione dei dati minimi di profilo al
-            momento del login.
-            <br />
-            Sede: Irlanda / Stati Uniti. Trasferimento extra UE: disciplinato
-            dalle decisioni di adeguatezza e dalle clausole contrattuali
-            standard di Google. Informativa:{' '}
+            L&apos;uso del servizio &egrave; soggetto all&apos;informativa
+            ufficiale disponibile su{' '}
             <a href="https://policies.google.com/privacy?hl=it" target="_blank" rel="noopener noreferrer" className="link-underline">
               policies.google.com/privacy
             </a>.
+            <br />
+            Trasferimenti internazionali, se applicabili, sono disciplinati
+            secondo le garanzie previste dalla normativa e adottate dal
+            fornitore.
           </li>
           <li>
-            <strong className="text-white">Calendly, LLC</strong>
+            <strong className="text-white">Calendly</strong>
             <br />
-            Ruolo: titolare autonomo per il servizio di prenotazione call.
-            <br />
-            Trattamento: dati del form di prenotazione (nome, email, telefono,
-            note, data/ora appuntamento) sono gestiti direttamente sui server
-            di Calendly.
-            <br />
-            Sede: Stati Uniti. L&apos;utente viene instradato al sito Calendly
-            tramite link esterno; qualsiasi dato inserito sul sito Calendly
-            ricade sotto la sua esclusiva informativa. Informativa:{' '}
+            Ruolo: servizio di prenotazione di call informative, raggiungibile
+            dal Sito tramite link esterno. L&apos;utente, cliccando il link,
+            viene instradato al sito Calendly; i dati inseriti sul form di
+            prenotazione sono trattati direttamente da Calendly secondo la
+            propria informativa privacy ufficiale:{' '}
             <a href="https://calendly.com/it/privacy" target="_blank" rel="noopener noreferrer" className="link-underline">
               calendly.com/it/privacy
             </a>.
+            <br />
+            Trasferimenti internazionali, se applicabili, sono disciplinati
+            secondo le garanzie previste dalla normativa e adottate dal
+            fornitore.
           </li>
           <li>
-            <strong className="text-white">Vercel, Inc.</strong>
+            <strong className="text-white">Vercel</strong>
             <br />
-            Ruolo: responsabile del trattamento (con DPA in essere) per
-            l&apos;infrastruttura di hosting.
+            Ruolo: servizi di hosting, deployment, CDN, edge functions e
+            log di sistema per il funzionamento tecnico del Sito.
             <br />
-            Trattamento: deployment e hosting del Sito, CDN, edge functions,
-            log di sistema, metriche tecniche e report di errore.
-            <br />
-            Sede: Stati Uniti. I dati possono transitare o essere replicati in
-            data center UE o extra UE; i trasferimenti sono coperti da
-            adeguate garanzie (clausole contrattuali standard e misure
-            supplementari secondo le informative ufficiali di Vercel).
-            Informativa:{' '}
+            L&apos;uso del servizio &egrave; soggetto all&apos;informativa
+            ufficiale disponibile su{' '}
             <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="link-underline">
               vercel.com/legal/privacy-policy
             </a>.
+            <br />
+            Trasferimenti internazionali, se applicabili, sono disciplinati
+            secondo le garanzie previste dalla normativa e adottate dal
+            fornitore.
           </li>
           <li>
-            <strong className="text-white">Neon Serverless Inc. / Neon Technologies, s.r.o.</strong>
+            <strong className="text-white">Neon</strong>
             <br />
-            Ruolo: responsabile del trattamento (con DPA) per il database
-            PostgreSQL.
+            Ruolo: servizio di database utilizzato per la memorizzazione di
+            account, acquisti, stato abbonamento e progressi area membri.
             <br />
-            Trattamento: memorizzazione persistente di account, acquisti,
-            stato abbonamento, progressi area membri e dati amministrativi
-            minimi.
-            <br />
-            Sede: Repubblica Ceca / Stati Uniti. Dati replicati in area
-            europea con backup in regioni sicure. Informativa:{' '}
+            L&apos;uso del servizio &egrave; soggetto all&apos;informativa
+            ufficiale disponibile su{' '}
             <a href="https://neon.tech/privacy" target="_blank" rel="noopener noreferrer" className="link-underline">
               neon.tech/privacy
             </a>.
+            <br />
+            Trasferimenti internazionali, se applicabili, sono disciplinati
+            secondo le garanzie previste dalla normativa e adottate dal
+            fornitore.
           </li>
           <li>
-            <strong className="text-white">Vercel Blob (storage documentale)</strong>
+            <strong className="text-white">Vercel Blob</strong>
             <br />
-            Ruolo: responsabile del trattamento per lo storage privato.
+            Ruolo: servizio di storage privato per l&apos;archiviazione e la
+            distribuzione sicura dei PDF e dei documenti del Research Club.
             <br />
-            Trattamento: archiviazione e distribuzione sicura dei PDF e dei
-            documenti riservati del Research Club. I PDF sono distribuiti
-            tramite URL firmati con scadenza, senza accesso diretto pubblico.
-            <br />
-            Sede e trasferimenti: come Vercel Inc., supra.
+            L&apos;uso del servizio &egrave; soggetto alle informative di
+            Vercel gi&agrave; richiamate in questo paragrafo.
           </li>
         </ul>
         <p className="mt-3">
-          Il Titolare non trasferisce dati personali verso paesi terzi al di
-          fuori dei casi descritti nel presente paragrafo e, in ogni caso,
-          solo sotto copertura di una decisione di adeguatezza, di clausole
-          contrattuali standard approvate dalla Commissione UE o di altre
-          garanzie adeguate riconosciute dal GDPR.
+          Trasferimenti di dati personali verso paesi extra UE, se e quando
+          avvengono tramite i fornitori di cui sopra, sono effettuati sotto
+          la copertura di garanzie adeguate previste e adottate da ciascun
+          fornitore secondo la normativa vigente (decisioni di adeguatezza,
+          clausole contrattuali standard e ulteriori misure ove applicabili).
         </p>
       </section>
 
@@ -470,17 +464,15 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-white">Diritto alla cancellazione (art. 17 GDPR)</strong>:
             ottenere la rimozione dei dati quando sussiste una delle cause
-            previste (trattamento non pi&ugrave; necessario, revoca del consenso,
-            opposizione valida, trattamento illecito, obbligo legale di
-            cancellazione), fatti salvi i trattamenti che il Titolare deve
+            previste, fatti salvi i trattamenti che il Titolare deve
             mantenere per obbligo di legge o per difesa di un proprio diritto.
           </li>
           <li>
             <strong className="text-white">Diritto alla limitazione del trattamento (art. 18 GDPR)</strong>:
-            richiedere la limitazione in caso di contestazione sull&apos;esattezza
-            dei dati, sulla liceit&agrave; del trattamento, sulla necessit&agrave;
-            dei dati per le finalit&agrave; dichiarate o in attesa di esito
-            di una opposizione al trattamento.
+            richiedere la limitazione in caso di contestazione
+            sull&apos;esattezza dei dati, sulla liceit&agrave; del
+            trattamento, sulla necessit&agrave; dei dati per le finalit&agrave;
+            dichiarate o in attesa di esito di una opposizione al trattamento.
           </li>
           <li>
             <strong className="text-white">Diritto alla portabilit&agrave; (art. 20 GDPR)</strong>:
@@ -515,12 +507,11 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p className="mt-3">
-          Le richieste sono evase, salvo casi complessi, entro 30 giorni dal
-          ricevimento; il periodo pu&ograve; essere prorogato di altri 60
-          giorni in caso di necessit&agrave;, dandone comunicazione motivata
-          all&apos;utente. Il Titolare si riserva di richiedere un documento
-          di identit&agrave; per verificare la legittimazione del richiedente,
-          in caso di dubbi.
+          Le richieste sono evase, salvo casi complessi, entro i tempi previsti
+          dal GDPR; il periodo pu&ograve; essere prorogato in caso di
+          necessit&agrave;, dandone comunicazione motivata all&apos;utente.
+          Il Titolare si riserva di richiedere un documento di identit&agrave;
+          per verificare la legittimazione del richiedente, in caso di dubbi.
         </p>
       </section>
 
@@ -544,15 +535,12 @@ export default function PrivacyPage() {
           10. Misure di sicurezza
         </h2>
         <p>
-          Il Titolare adotta misure tecniche e organizzative adeguate,
-          aggiornate secondo lo stato dell&apos;arte, per proteggere i dati
-          personali da rischi di distruzione, perdita, alterazione, accesso
-          non autorizzato o diffusione illecita. Tra le misure adottate:
-          connessioni TLS/HTTPS, storage sicuro di password e token lato
-          provider, accesso amministrativo limitato, autenticazione multi-fattore
-          ove disponibile, politiche di sicurezza interne e aggiornamenti
-          periodici di infrastruttura. Nonostante ogni ragionevole sforzo,
-          nessun sistema pu&ograve; essere garantito come infallibile al 100%.
+          Il Titolare adopera misure tecniche e organizzative adeguate,
+          aggiornate secondo lo stato dell&apos;arte e in proporzione al rischio,
+          per proteggere i dati personali da rischi di distruzione, perdita,
+          alterazione, accesso non autorizzato o diffusione illecita. Nonostante
+          ogni ragionevole sforzo, nessun sistema pu&ograve; essere garantito
+          come infallibile al 100%.
         </p>
       </section>
 

@@ -6,7 +6,7 @@ import { cookieCategories, cookieTable } from '@/config/cookieConfig';
 export const metadata: Metadata = {
   title: 'Cookie Policy',
   description:
-    'Informativa sui cookie e sulle tecnologie simili utilizzati su avinvestresearch.com, con tabella dei cookie realmente impiegati.',
+    'Informativa sui cookie e sulle tecnologie simili utilizzati su avinvestresearch.com, con tabella dei cookie e strumenti effettivamente impiegati.',
   alternates: { canonical: 'https://avinvestresearch.com/cookie' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
 };
@@ -43,10 +43,10 @@ export default function CookiePage() {
         </h2>
         <p>
           L&apos;installazione dei cookie sul dispositivo dell&apos;utente si
-          basa su due distinte basi giuridiche, secondo quanto previsto dal
-          Provvedimento del Garante per la Protezione dei Dati Personali
+          basa su due distinte basi giuridiche, nel rispetto delle
           &quot;Linee guida cookie e altri strumenti di tracciamento&quot;
-          (10 giugno 2021, aggiornato al provvedimento 15/05/2024) e dal GDPR:
+          del Garante per la Protezione dei Dati Personali del 10 giugno 2021
+          e del GDPR:
         </p>
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
@@ -54,23 +54,25 @@ export default function CookiePage() {
             il loro trattamento &egrave; basato sul legittimo interesse del
             Titolare a garantire il corretto funzionamento, la sicurezza e
             l&apos;usabilit&agrave; del Sito (art. 6.1.f GDPR). Non
-            richiedono consenso preventivo e non possono essere disattivati
-            tramite le impostazioni del cookie manager.
+            richiedono consenso preventivo ai sensi della normativa vigente
+            e non possono essere disattivati tramite le impostazioni del
+            cookie manager (fatto salvo quanto previsto dal singolo browser,
+            di cui al paragrafo 7).
           </li>
           <li>
             <strong className="text-white">Cookie di preferenze, analitici e marketing</strong>:
             sono installati sul dispositivo dell&apos;utente solo dopo
             l&apos;espressione di un consenso libero, specifico, informato e
             revocabile, tramite le opzioni del banner di primo accesso o
-            del pannello di gestione (art. 6.1.a GDPR e art. 122 D.Lgs.
-            196/2003).
+            del pannello di gestione (art. 6.1.a GDPR e normativa vigente in
+            materia di cookie).
           </li>
         </ul>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          3. Categorie di cookie utilizzate
+          3. Categorie di cookie previste
         </h2>
         <p>
           Il Sito distingue le seguenti categorie di cookie o strumenti
@@ -88,10 +90,8 @@ export default function CookiePage() {
                 </span>
               ) : (
                 <span className="ml-2 text-xs text-av-muted">
-                  Installati solo previo consenso esplicito. Al momento non
-                  vengono installati cookie di questa categoria finch&eacute;
-                  l&apos;utente non esprime un consenso specifico per tale
-                  funzione.
+                  Installati solo previo consenso esplicito e specifico
+                  dell&apos;utente tramite il gestore dei preferenze.
                 </span>
               )}
             </li>
@@ -101,14 +101,13 @@ export default function CookiePage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          4. Cookie e tecnologie realmente utilizzati sul Sito
+          4. Cookie e tecnologie effettivamente presenti sul Sito
         </h2>
         <p>
-          La tabella seguente riporta esclusivamente le voci attualmente
-          implementate sul Sito al momento dell&apos;ultimo aggiornamento di
-          questa pagina. Eventuali nuove voci sono aggiunte in occasione
-          della loro reale attivazione sul Sito e, ove previsto, dopo
-          l&apos;adeguamento del meccanismo di raccolta del consenso.
+          In occasione dell&apos;ultimo aggiornamento della presente Cookie
+          Policy, le voci effettivamente configurate nell&apos;implementazione
+          tecnica del Sito sono quelle riportate nella tabella seguente,
+          ricavata direttamente dalle impostazioni del gestore dei consensi:
         </p>
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
@@ -135,12 +134,10 @@ export default function CookiePage() {
           </table>
         </div>
         <p className="mt-3 text-xs text-av-muted sm:text-sm">
-          Allo stato attuale il Sito non installa cookie di terze parti di
-          preferenze, analitici o marketing sul dispositivo dell&apos;utente
-          durante la navigazione. Tale tipo di cookie potr&agrave; essere
-          attivato solo dopo implementazione di specifici strumenti (es.
-          analytics anonimi) e solo dopo espressione del consenso
-          dell&apos;utente tramite il banner dedicato.
+          Eventuali nuove categorie o nuovi strumenti saranno aggiunti alla
+          tabella solo a partire dalla data della loro effettiva attivazione
+          sul Sito e, ove necessitino di consenso, dopo l&apos;adeguamento
+          del meccanismo di raccolta consenso secondo la normativa vigente.
         </p>
       </section>
 
@@ -180,7 +177,7 @@ export default function CookiePage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          6. Link esterni, social e servizi di terze parti
+          6. Link esterni e servizi di terze parti
         </h2>
         <p>
           Il Sito pu&ograve; contenere link esterni verso siti o strumenti di
@@ -189,8 +186,7 @@ export default function CookiePage() {
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
             <strong className="text-white">Calendly</strong>: per la prenotazione
-            di call informative. L&apos;utente viene instradato al sito
-            calendly.com tramite link testuale.
+            di call informative, tramite link testuale verso calendly.com.
           </li>
           <li>
             <strong className="text-white">Stripe</strong>: per pagamenti,
