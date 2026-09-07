@@ -328,7 +328,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     },
     success_url: successUrl.toString(),
     cancel_url: cancelUrl.toString(),
-    allow_promotion_codes: false,
+    allow_promotion_codes: true,
   };
 
   const checkoutSession = isSubscription
