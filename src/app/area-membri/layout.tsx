@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { auth, signOut } from '@/auth';
+import { isAdminSession } from '@/lib/auth/admin';
+import SwitchAccountButton from '@/components/auth/SwitchAccountButton';
 import {
   ArrowUpRight,
   Home,
@@ -13,6 +15,8 @@ import {
   LogOut,
   UserRound,
   ShieldCheck,
+  Kanban,
+  Info,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -63,6 +67,17 @@ export default async function MemberAreaLayout({
   const name = session?.user?.name || 'Membro AV-INVEST';
   const email = session?.user?.email || '';
   const image = session?.user?.image;
+  const isAdmin = isAdminSession(session);
+
+  const adminNavExtra: NavItem[] = isAdmin
+    ? [
+        {
+          href: '/admin',
+          label: 'Gestione contenuti',
+          Icon: Kanban,
+        },
+      ]
+    : [];
 
   return (
     <div className="relative min-h-screen pt-24 pb-16">
@@ -137,33 +152,55 @@ export default async function MemberAreaLayout({
                   <p className="truncate text-xs text-av-muted">{email}</p>
                 </div>
               </div>
-              <form action={logoutAction} className="sm:flex-none">
-                <button
-                  type="submit"
-                  className="btn-ghost w-full !py-2.5 !px-4 text-sm items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  <LogOut className="h-4 w-4 text-av-green" />
-                  LOGOUT
-                </button>
-              </form>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+                <SwitchAccountButton returnTo="/area-membri" className="sm:flex-none" />
+                <form action={logoutAction} className="sm:flex-none">
+                  <button
+                    type="submit"
+                    className="btn-ghost w-full !py-2.5 !px-4 text-sm items-center justify-center gap-2 whitespace-nowrap"
+                  >
+                    <LogOut className="h-4 w-4 text-av-green" />
+                    LOGOUT
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
 
-          <nav
-            aria-label="Area membri - Navigazione"
-            className="mt-4 flex flex-wrap gap-1.5 border-t border-av-line pt-4 sm:gap-2"
-          >
-            {NAV.map(({ href, label, Icon }) => (
-              <Link
-                key={href}
-                href={href}
-                className="inline-flex items-center gap-2 rounded-xl border border-av-line bg-av-bg-2/50 px-3 py-2 text-sm font-medium text-av-muted transition-colors hover:border-av-green-deep/50 hover:text-white"
-              >
-                <Icon className="h-4 w-4 flex-none text-av-green" />
-                <span className="whitespace-nowrap">{label}</span>
-              </Link>
-            ))}
-          </nav>
+          <div className="mt-4 border-t border-av-line pt-4">
+            <nav
+              aria-label="Area membri - Navigazione"
+              className="flex flex-wrap gap-1.5 sm:gap-2"
+            >
+              {NAV.map(({ href, label, Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="inline-flex items-center gap-2 rounded-xl border border-av-line bg-av-bg-2/50 px-3 py-2 text-sm font-medium text-av-muted transition-colors hover:border-av-green-deep/50 hover:text-white"
+                >
+                  <Icon className="h-4 w-4 flex-none text-av-green" />
+                  <span className="whitespace-nowrap">{label}</span>
+                </Link>
+              ))}
+              {adminNavExtra.map(({ href, label, Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="inline-flex items-center gap-2 rounded-xl border border-av-green-deep/60 bg-av-green/10 px-3 py-2 text-sm font-semibold text-av-green transition-colors hover:bg-av-green/15 hover:text-white"
+                >
+                  <Icon className="h-4 w-4 flex-none" />
+                  <span className="whitespace-nowrap">{label}</span>
+                </Link>
+              ))}
+            </nav>
+            <p className="mt-3 flex items-start gap-2 text-[11px] leading-relaxed text-av-muted/90">
+              <Info className="mt-0.5 h-3.5 w-3.5 flex-none text-av-green" />
+              I corsi acquistati sono associati all&apos;account utilizzato per
+              l&apos;acquisto. Se passi a un account diverso, non vedrai i
+              percorsi, i progressi o i permessi di gestione dell&apos;altro
+              account.
+            </p>
+          </div>
         </header>
 
         <div>{children}</div>
