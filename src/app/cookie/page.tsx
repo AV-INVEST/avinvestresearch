@@ -51,21 +51,22 @@ export default function CookiePage() {
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
             <strong className="text-white">Cookie tecnici necessari</strong>:
-            il loro trattamento &egrave; basato sul legittimo interesse del
-            Titolare a garantire il corretto funzionamento, la sicurezza e
-            l&apos;usabilit&agrave; del Sito (art. 6.1.f GDPR). Non
-            richiedono consenso preventivo ai sensi della normativa vigente
-            e non possono essere disattivati tramite le impostazioni del
-            cookie manager (fatto salvo quanto previsto dal singolo browser,
-            di cui al paragrafo 7).
+            I cookie e gli strumenti tecnici strettamente necessari non
+            richiedono il consenso preventivo dell&apos;utente nei casi
+            previsti dalla normativa applicabile, in quanto necessari al
+            funzionamento, alla sicurezza e alle funzionalit&agrave;
+            richieste del Sito. Non possono essere disattivati tramite le
+            impostazioni del cookie manager, fatta salva la facolt&agrave;
+            dell&apos;utente di bloccarli o rimuoverli tramite le impostazioni
+            del proprio browser come indicato al paragrafo 7.
           </li>
           <li>
             <strong className="text-white">Cookie di preferenze, analitici e marketing</strong>:
-            sono installati sul dispositivo dell&apos;utente solo dopo
-            l&apos;espressione di un consenso libero, specifico, informato e
-            revocabile, tramite le opzioni del banner di primo accesso o
-            del pannello di gestione (art. 6.1.a GDPR e normativa vigente in
-            materia di cookie).
+            Sono installati o attivati sul dispositivo dell&apos;utente solo
+            dopo l&apos;espressione di un consenso libero, specifico,
+            informato e revocabile, tramite le opzioni del banner di primo
+            accesso o del pannello di gestione dedicato (art. 6.1.a GDPR e
+            normativa vigente in materia di cookie).
           </li>
         </ul>
       </section>
@@ -85,11 +86,11 @@ export default function CookiePage() {
             <li key={c.id}>
               <strong className="text-white">{c.label}:</strong> {c.description}
               {c.alwaysActive ? (
-                <span className="ml-2 text-xs text-av-green">
+                <span className="mt-2 block text-xs text-av-green sm:ml-2 sm:mt-0 sm:inline">
                   Sempre attivi - non richiedono consenso.
                 </span>
               ) : (
-                <span className="ml-2 text-xs text-av-muted">
+                <span className="mt-2 block text-xs text-av-muted sm:ml-2 sm:mt-0 sm:inline">
                   Installati solo previo consenso esplicito e specifico
                   dell&apos;utente tramite il gestore dei preferenze.
                 </span>
@@ -202,14 +203,17 @@ export default function CookiePage() {
           </li>
         </ul>
         <p className="mt-2">
-          Fino a quando non avviene un vero e proprio embed diretto sul Sito,
-          il semplice click su un link esterno non installa automaticamente
-          cookie di terze parti tramite questo Sito; una volta raggiunto il
-          sito di destinazione, invece, la gestione dei cookie e delle
-          tecnologie di tracciamento ricade sotto la responsabilit&agrave; e
-          l&apos;informativa del rispettivo titolare autonomo. Si rimanda
-          quindi alle informative cookie e privacy dei singoli siti terzi per
-          ogni dettaglio.
+          Il semplice click su un link esterno non installa automaticamente
+          cookie di terze parti tramite questo Sito. Quando tuttavia, tramite
+          link, redirect o autenticazione esterna, l&apos;utente raggiunge un
+          sito o un servizio di terze parti (Calendly, Stripe, pagine di
+          Google, profili social e ogni altro dominio terzo), ogni ulteriore
+          cookie, identificativo di sessione o strumento di tracciamento
+          impostato dal sito di destinazione &egrave; disciplinato
+          esclusivamente dalla cookie policy e dalla privacy policy del
+          fornitore terzo titolare di quel dominio. Si rimanda pertanto alle
+          informative cookie e privacy dei singoli servizi di destinazione
+          per ogni dettaglio sulle rispettive tecnologie di tracciamento.
         </p>
       </section>
 

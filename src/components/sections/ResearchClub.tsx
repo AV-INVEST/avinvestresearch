@@ -162,7 +162,7 @@ export default async function ResearchClub() {
                   PDF
                 </span>
                 <span className="chip">Analisi</span>
-                <span className="chip">Archivio 12</span>
+                <span className="chip">Archivio</span>
                 <span className="chip">Aggiornamenti</span>
               </div>
             </GlassCard>

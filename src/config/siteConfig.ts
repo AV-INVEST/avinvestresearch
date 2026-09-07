@@ -103,7 +103,7 @@ export const siteConfig = {
       'Weekly Market Radar',
       'Small & Mid Cap Focus',
       'Scenari, catalizzatori e rischi',
-      'Archivio ultimi 3 mesi (12 ricerche)',
+      'Archivio ricerche recenti',
     ],
     notes: [
       'Disdici quando vuoi. In caso di disdetta, l\'accesso resta attivo fino alla fine del periodo già pagato.',

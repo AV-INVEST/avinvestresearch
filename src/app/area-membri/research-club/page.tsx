@@ -123,9 +123,9 @@ export default async function ResearchClubPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className={`h-4 w-4 flex-none mt-0.5 ${GOLD.text}`} />
                   <span>
-                    <strong className="text-white">Archivio ultimi 3 mesi</strong>
+                    <strong className="text-white">Archivio aggiornato</strong>
                     <span className="text-av-muted">
-                      {' '}— le ultime 12 ricerche pubblicate, sempre disponibili.
+                      {' '}— con le pubblicazioni recenti del Research Club, sempre disponibili per gli abbonati attivi.
                     </span>
                   </span>
                 </li>
@@ -221,8 +221,9 @@ export default async function ResearchClubPage() {
             Ricerche recenti
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-av-muted sm:text-base max-w-2xl">
-            Le ultime pubblicazioni dell&apos;AV Research Club. Vengono mantenute
-            in modo permanente le ultime 12 ricerche (circa 3 mesi).
+            Le ultime pubblicazioni dell&apos;AV Research Club. L&apos;archivio
+            viene aggiornato regolarmente e mantiene le ricerche recenti
+            pubblicate per i membri attivi.
           </p>
         </div>
 
