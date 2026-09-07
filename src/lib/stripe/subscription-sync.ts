@@ -133,6 +133,68 @@ function extractSubscriptionPriceId(sub: Stripe.Subscription): string | null {
   return priceId ?? null;
 }
 
+export function extractCurrentPeriodEnd(sub: Stripe.Subscription): Date | null {
+  const subAny = sub as any;
+  const candidates: number[] = [];
+  if (Array.isArray(sub.items?.data)) {
+    for (const item of sub.items.data) {
+      const itemAny = item as any;
+      const ts = itemAny.current_period_end ?? itemAny.current_periodEnd;
+      if (typeof ts === 'number' && ts > 0) {
+        candidates.push(ts);
+      }
+    }
+  }
+  const legacyTop = subAny.current_period_end ?? subAny.current_periodEnd;
+  if (typeof legacyTop === 'number' && legacyTop > 0) {
+    candidates.push(legacyTop);
+  }
+  if (candidates.length === 0) return null;
+  const maxTs = Math.max(...candidates);
+  return new Date(maxTs * 1000);
+}
+
+export function extractCurrentPeriodStart(sub: Stripe.Subscription): Date | null {
+  const subAny = sub as any;
+  const candidates: number[] = [];
+  if (Array.isArray(sub.items?.data)) {
+    for (const item of sub.items.data) {
+      const itemAny = item as any;
+      const ts = itemAny.current_period_start ?? itemAny.current_periodStart;
+      if (typeof ts === 'number' && ts > 0) {
+        candidates.push(ts);
+      }
+    }
+  }
+  const legacyTop = subAny.current_period_start ?? subAny.current_periodStart;
+  if (typeof legacyTop === 'number' && legacyTop > 0) {
+    candidates.push(legacyTop);
+  }
+  if (candidates.length === 0) return null;
+  const minTs = Math.min(...candidates);
+  return new Date(minTs * 1000);
+}
+
+export function extractCancelAtPeriodEnd(sub: Stripe.Subscription): boolean {
+  const subAny = sub as any;
+  const itemFlags: boolean[] = [];
+  if (Array.isArray(sub.items?.data)) {
+    for (const item of sub.items.data) {
+      const itemAny = item as any;
+      const flag = itemAny.cancel_at_period_end;
+      if (typeof flag === 'boolean') {
+        itemFlags.push(flag);
+      }
+    }
+  }
+  const legacyTop = subAny.cancel_at_period_end;
+  if (typeof legacyTop === 'boolean') {
+    itemFlags.push(legacyTop);
+  }
+  if (itemFlags.length === 0) return false;
+  return itemFlags.some((f) => f === true);
+}
+
 function extractEmailFromCustomer(
   customerObj: string | Stripe.Customer | Stripe.DeletedCustomer | null | undefined,
 ): string | null {
@@ -226,8 +288,8 @@ export async function handleSubscriptionUpsertFromStripe(
   const priceId = extractSubscriptionPriceId(sub);
   const stripeStatus = mapStripeSubscriptionStatus(sub.status);
   const subAny = sub as any;
-  const cancelAtPeriodEnd = !!subAny.cancel_at_period_end;
-  const currentPeriodEnd = subAny.current_period_end ? new Date(subAny.current_period_end * 1000) : null;
+  const cancelAtPeriodEnd = extractCancelAtPeriodEnd(sub);
+  const currentPeriodEnd = extractCurrentPeriodEnd(sub);
   const hasPaymentProblem = opts?.forcePaymentProblem === true;
   const clearPaymentProblem = opts?.clearPaymentProblem === true;
   const paymentProblemAt = hasPaymentProblem
@@ -259,7 +321,7 @@ export async function handleSubscriptionDeletedFromStripe(sub: Stripe.Subscripti
   if (!existing) return;
   const subAny = sub as any;
   const endedAt = subAny.ended_at ? new Date(subAny.ended_at * 1000) : new Date();
-  const currentPeriodEnd = subAny.current_period_end ? new Date(subAny.current_period_end * 1000) : endedAt;
+  const currentPeriodEnd = extractCurrentPeriodEnd(sub) ?? endedAt;
   await prisma.subscription.update({
     where: { stripeSubscriptionId: sub.id },
     data: {

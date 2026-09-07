@@ -170,15 +170,20 @@ export function researchClubEntitlementFromSubscription(
   if (!sub) return RESEARCH_CLUB_DEFAULT;
   const now = new Date();
   const periodEnd = sub.currentPeriodEnd ?? null;
-  const withinPeriod = periodEnd ? periodEnd.getTime() > now.getTime() : false;
+  const withinPeriod = periodEnd
+    ? periodEnd.getTime() > now.getTime()
+    : true;
   const paymentProblem = sub.paymentProblem === true;
   const status = sub.status;
 
   if (status === 'ENDED') {
+    const access = periodEnd ? periodEnd.getTime() > now.getTime() : false;
     return {
       status: 'ended',
-      accessGranted: false,
-      message: 'Abbonamento terminato. Rinnova per continuare ad accedere alle ricerche.',
+      accessGranted: access,
+      message: access
+        ? 'Abbonamento in scadenza. L\u2019accesso resta attivo fino alla fine del periodo pagato.'
+        : 'Abbonamento terminato. Rinnova per continuare ad accedere alle ricerche.',
       nextDate: periodEnd,
       stripeCustomerId: sub.stripeCustomerId ?? null,
       stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
@@ -280,8 +285,8 @@ export async function getResearchClubEntitlement(
   if (sub?.stripeSubscriptionId) {
     const lastUpdated = (sub as any).updatedAt instanceof Date ? (sub as any).updatedAt.getTime() : 0;
     const now = Date.now();
-    const FIFTEEN_MIN = 15 * 60 * 1000;
-    if (now - lastUpdated > FIFTEEN_MIN) {
+    const ONE_HOUR = 60 * 60 * 1000;
+    if (now - lastUpdated > ONE_HOUR) {
       try {
         await repairSubscriptionStateFromStripe(sub.stripeSubscriptionId);
         const refreshed = await loadResearchClubSubscription(userEmail);
@@ -403,8 +408,9 @@ export async function getEntitlements(
     };
   }
 
-  const researchClubSub = userEmail ? await loadResearchClubSubscription(userEmail) : null;
-  const researchClub = researchClubEntitlementFromSubscription(researchClubSub);
+  const researchClub = userEmail
+    ? await getResearchClubEntitlement(undefined, userEmail)
+    : RESEARCH_CLUB_DEFAULT;
 
   return { courses, anyAvailable, anyPending, researchClub };
 }
