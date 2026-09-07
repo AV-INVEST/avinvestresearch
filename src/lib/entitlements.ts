@@ -2,6 +2,7 @@ import type { Subscription } from '@prisma/client';
 import { siteConfig } from '@/config/siteConfig';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { normalizeEmail } from '@/lib/stripe/normalize';
+import { repairSubscriptionStateFromStripe } from '@/lib/stripe/subscription-sync';
 import {
   buildLessonHref,
   fetchProgressSummary,
@@ -275,7 +276,20 @@ export async function getResearchClubEntitlement(
   if (!isDatabaseConfigured()) return RESEARCH_CLUB_DEFAULT;
   const userEmail = await resolveUserEmail(userId, email);
   if (!userEmail) return RESEARCH_CLUB_DEFAULT;
-  const sub = await loadResearchClubSubscription(userEmail);
+  let sub = await loadResearchClubSubscription(userEmail);
+  if (sub?.stripeSubscriptionId) {
+    const lastUpdated = (sub as any).updatedAt instanceof Date ? (sub as any).updatedAt.getTime() : 0;
+    const now = Date.now();
+    const FIFTEEN_MIN = 15 * 60 * 1000;
+    if (now - lastUpdated > FIFTEEN_MIN) {
+      try {
+        await repairSubscriptionStateFromStripe(sub.stripeSubscriptionId);
+        const refreshed = await loadResearchClubSubscription(userEmail);
+        if (refreshed) sub = refreshed;
+      } catch {
+      }
+    }
+  }
   return researchClubEntitlementFromSubscription(sub);
 }
 

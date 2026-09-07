@@ -4,6 +4,7 @@ import type { SubscriptionStatus, SubscriptionProduct } from '@prisma/client';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { isKnownProductSlug } from '@/lib/stripe/pricing';
 import { ensureUser } from '@/lib/stripe/purchase-sync';
+import { getStripeClient, isStripeConfigured } from '@/lib/stripe/client';
 
 function requireDb(): void {
   if (!isDatabaseConfigured()) {
@@ -311,4 +312,27 @@ export async function handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promi
       paymentProblemAt: new Date(),
     },
   });
+}
+
+export async function repairSubscriptionStateFromStripe(
+  stripeSubscriptionId: string | null | undefined,
+): Promise<void> {
+  if (!stripeSubscriptionId || !isDatabaseConfigured() || !isStripeConfigured()) return;
+  let stripe: Stripe | null = null;
+  try {
+    stripe = getStripeClient();
+  } catch {
+    return;
+  }
+  try {
+    const liveSub = await stripe.subscriptions.retrieve(stripeSubscriptionId, {
+      expand: ['customer'],
+    });
+    await handleSubscriptionUpsertFromStripe(liveSub);
+  } catch (err) {
+    console.warn('[stripe:repair] subscriptions.retrieve failed during read-repair', {
+      stripeSubscriptionId,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
