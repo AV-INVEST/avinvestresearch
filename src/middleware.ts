@@ -3,5 +3,5 @@ export { auth as default } from '@/auth';
 
 export const config = {
   runtime: 'nodejs',
-  matcher: ['/area-membri', '/area-membri/:path*'],
+  matcher: ['/area-membri', '/area-membri/:path*', '/admin', '/admin/:path*'],
 };

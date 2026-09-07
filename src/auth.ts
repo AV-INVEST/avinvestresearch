@@ -1,4 +1,4 @@
-import NextAuth, { type DefaultSession } from 'next-auth';
+import NextAuth, { type DefaultSession, type JWT, type Session, type User } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 
@@ -44,7 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: User | undefined }) {
       if (user?.id) token.id = user.id;
       if (user?.email) {
         const normalized = normalizeEmail(user.email);
@@ -55,7 +55,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token.id && session.user) {
         session.user.id = String(token.id);
       }
@@ -67,7 +67,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       if (new URL(url).origin === baseUrl) return url;
       return `${baseUrl}/area-membri`;

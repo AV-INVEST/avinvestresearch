@@ -1,15 +1,19 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Play, ShieldAlert, Cookie } from 'lucide-react';
+import { Play, ShieldAlert, Cookie, Clock } from 'lucide-react';
 import { useCookieConsent } from '@/components/cookie/CookieConsentContext';
 
 interface Props {
   youtubeId?: string;
   lessonTitle: string;
+  startSec?: number;
+  onTimeUpdate?: (sec: number, progressPct: number | null) => void;
+  onPause?: (sec: number, progressPct: number | null) => void;
+  durationSec?: number;
 }
 
-export default function YouTubeEmbed({ youtubeId, lessonTitle }: Props) {
+export default function YouTubeEmbed({ youtubeId, lessonTitle, startSec, onTimeUpdate, onPause, durationSec }: Props) {
   const { state, setOpen } = useCookieConsent();
   const [showIframe, setShowIframe] = useState(false);
   const consentGiven =
@@ -85,12 +89,18 @@ export default function YouTubeEmbed({ youtubeId, lessonTitle }: Props) {
     );
   }
 
+  const safeStart = Math.max(0, Math.floor(startSec ?? 0));
+  const iframeSrcParams = new URLSearchParams({ rel: '0' });
+  if (safeStart > 0) iframeSrcParams.set('start', String(safeStart));
+  if (onTimeUpdate || onPause) iframeSrcParams.set('enablejsapi', '1');
+  const iframeSrc = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId!)}?${iframeSrcParams.toString()}`;
+
   return (
     <div className="aspect-video w-full overflow-hidden rounded-2xl border border-av-line bg-black">
       {showIframe ? (
         <iframe
           className="h-full w-full"
-          src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?rel=0`}
+          src={iframeSrc}
           title={iframeTitle}
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -108,6 +118,14 @@ export default function YouTubeEmbed({ youtubeId, lessonTitle }: Props) {
           <span className="relative z-10 grid h-16 w-16 place-items-center rounded-full border border-av-green-deep/60 bg-av-green/10 text-av-green shadow-glow-green transition-transform duration-200 group-hover:scale-105 sm:h-20 sm:w-20">
             <Play className="h-7 w-7 translate-x-[2px] sm:h-9 sm:w-9" />
           </span>
+          {safeStart > 0 ? (
+            <div className="pointer-events-none absolute inset-x-0 top-0 p-4 sm:p-5">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/40 bg-av-bg-2/80 px-2.5 py-1 text-[11px] font-semibold text-av-green backdrop-blur">
+                <Clock className="h-3 w-3" />
+                Riprendi da {Math.floor(safeStart / 60)}:{(safeStart % 60).toString().padStart(2, '0')}
+              </span>
+            </div>
+          ) : null}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-5">
             <p className="max-w-3xl truncate text-xs text-white/80 sm:text-sm">
               {lessonTitle || 'Lezione'}

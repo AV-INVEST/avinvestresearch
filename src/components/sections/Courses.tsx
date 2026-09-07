@@ -1,8 +1,11 @@
-import { Check, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { Check, Sparkles, Loader2, Clock, ArrowRight } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
+import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import type { ComponentType } from 'react';
+import type { CourseEntitlement, EntitlementsState, CourseStatus } from '@/lib/entitlements';
 
 interface CourseMeta {
   badge: string;
@@ -30,7 +33,20 @@ function formatPrice(value: number, currency: string) {
   }).format(value);
 }
 
-export default function Courses() {
+function getOwnedCtaLabel(status: CourseStatus): string {
+  switch (status) {
+    case 'owned_not_started':
+      return 'Inizia il percorso';
+    case 'owned_in_progress':
+      return 'Riprendi la lezione';
+    case 'owned_completed':
+      return 'Rivedi il percorso';
+    default:
+      return 'Apri il percorso';
+  }
+}
+
+export default function Courses({ entitlements }: { entitlements?: EntitlementsState }) {
   const entries = (
     [
       ['foundations', siteConfig.courses.foundations],
@@ -62,6 +78,22 @@ export default function Courses() {
         <div className="mt-14 grid gap-6 lg:grid-cols-2">
           {entries.map(({ key, course, m }) => {
             const BadgeIcon = m.badgeIcon;
+            const ent: CourseEntitlement | undefined = entitlements?.courses[course.slug];
+            const status = ent?.status;
+            const isOwned =
+              status === 'owned_not_started' ||
+              status === 'owned_in_progress' ||
+              status === 'owned_completed';
+            const isPending = status === 'payment_pending';
+            const isLocked = !entitlements ? false : status === 'locked' || status === undefined;
+            const ownedHref =
+              isOwned && ent?.latestLessonHref
+                ? ent.latestLessonHref
+                : isOwned
+                  ? '/area-membri/percorsi'
+                  : null;
+            const progressPct = ent?.progressPct ?? 0;
+
             return (
               <GlassCard
                 key={key}
@@ -73,67 +105,133 @@ export default function Courses() {
               }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-av-line bg-av-bg-2/70 px-3 py-1 text-xs font-medium text-av-muted">
-                  {BadgeIcon ? <BadgeIcon className="h-3.5 w-3.5 text-av-green" /> : null}
-                  {m.badge}
-                </span>
-                {m.highlight ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/60 bg-av-green/10 px-3 py-1 text-xs font-semibold text-av-green">
-                    <Sparkles className="h-3 w-3" />
-                    Consigliato
-                  </span>
-                ) : null}
-              </div>
-
-              <div className="mt-6">
-                <h3 className="font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
-                  {course.title}
-                </h3>
-                <p className="mt-2 font-medium text-av-green">{course.subtitle}</p>
-              </div>
-
-              <p className="mt-5 text-sm leading-relaxed text-av-muted sm:text-base">
-                {course.description}
-              </p>
-
-              <div className="mt-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-av-muted">
-                  Cosa imparerai
-                </p>
-                <ul className="mt-4 grid gap-2.5">
-                  {course.topics.map((t) => (
-                    <li key={t} className="flex items-start gap-3 text-sm text-white sm:text-base">
-                      <span className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full bg-av-green/10 text-av-green">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-av-line bg-av-bg-2/70 px-3 py-1 text-xs font-medium text-av-muted">
+                      {BadgeIcon ? <BadgeIcon className="h-3.5 w-3.5 text-av-green" /> : null}
+                      {m.badge}
+                    </span>
+                    {isOwned ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green/60 bg-av-green/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-av-green shadow-glow-green-sm">
                         <Check className="h-3 w-3" />
+                        Il corso è tuo
                       </span>
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-8 flex flex-col gap-3 border-t border-av-line pt-6">
-                <div className="flex items-end justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-medium text-av-muted">Prezzo</p>
-                    <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
-                      {formatPrice(course.price, course.currency)}
-                    </p>
+                    ) : null}
                   </div>
-                  <span className="inline-flex items-center gap-1.5 text-xs text-av-muted">
-                    <Check className="h-3.5 w-3.5 text-av-green" />
-                    Accesso illimitato
-                  </span>
+                  {m.highlight ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/60 bg-av-green/10 px-3 py-1 text-xs font-semibold text-av-green">
+                      <Sparkles className="h-3 w-3" />
+                      Consigliato
+                    </span>
+                  ) : null}
                 </div>
-                <p className="text-xs font-medium text-av-green">
-                  Pagamento unico - IVA inclusa
-                </p>
-              </div>
 
-              <CourseCheckoutButton slug={course.slug} />
-            </GlassCard>
-          );
-        })}
+                <div className="mt-6">
+                  <h3 className="font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+                    {course.title}
+                  </h3>
+                  <p className="mt-2 font-medium text-av-green">{course.subtitle}</p>
+                </div>
+
+                <p className="mt-5 text-sm leading-relaxed text-av-muted sm:text-base">
+                  {course.description}
+                </p>
+
+                <div className="mt-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-av-muted">
+                    Cosa imparerai
+                  </p>
+                  <ul className="mt-4 grid gap-2.5">
+                    {course.topics.map((t) => (
+                      <li key={t} className="flex items-start gap-3 text-sm text-white sm:text-base">
+                        <span className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full bg-av-green/10 text-av-green">
+                          <Check className="h-3 w-3" />
+                        </span>
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-8 flex flex-col gap-3 border-t border-av-line pt-6">
+                  {!isOwned ? (
+                    <>
+                      <div className="flex items-end justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-medium text-av-muted">Prezzo</p>
+                          <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
+                            {formatPrice(course.price, course.currency)}
+                          </p>
+                        </div>
+                        <span className="inline-flex items-center gap-1.5 text-xs text-av-muted">
+                          <Check className="h-3.5 w-3.5 text-av-green" />
+                          Accesso illimitato
+                        </span>
+                      </div>
+                      <p className="text-xs font-medium text-av-green">
+                        Pagamento unico - IVA inclusa
+                      </p>
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs text-av-muted">
+                        <span className="inline-flex items-center gap-1.5">
+                          <Check className="h-3.5 w-3.5 text-av-green" />
+                          Avanzamento
+                        </span>
+                        <span className="font-mono text-white/80">{progressPct}%</span>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full border border-av-line bg-av-bg-2/80">
+                        <div
+                          className="h-full rounded-full bg-av-green transition-[width] duration-500"
+                          style={{ width: `${progressPct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {entitlements === undefined ? (
+                  <button
+                    type="button"
+                    disabled
+                    aria-disabled="true"
+                    className="btn-primary mt-6 items-center justify-center gap-2 opacity-70"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Verifica accesso in corso
+                  </button>
+                ) : isPending ? (
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className="mt-6 rounded-xl border border-av-yellow-deep/40 bg-av-yellow/5 px-4 py-3 text-sm text-av-yellow"
+                  >
+                    <div className="flex items-start gap-3">
+                      <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold">Stiamo confermando il pagamento</p>
+                        <p className="mt-0.5 text-xs text-av-yellow/80">
+                          La conferma richiede di solito meno di 30 secondi.
+                        </p>
+                        <PendingPaymentRefresher initialAnyPending compact />
+                      </div>
+                    </div>
+                  </div>
+                ) : isOwned && ownedHref ? (
+                  <Link
+                    href={ownedHref}
+                    prefetch={false}
+                    className="btn-primary mt-6 items-center justify-center gap-2"
+                  >
+                    {getOwnedCtaLabel(status as CourseStatus)}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <CourseCheckoutButton slug={course.slug} />
+                )}
+              </GlassCard>
+            );
+          })}
         </div>
       </div>
       <script

@@ -15,15 +15,34 @@ enum PurchaseStatus {
   refunded
 }
 
+enum VideoSourceType {
+  YOUTUBE
+  BUNNY_STREAM
+  NONE
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum StorageProvider {
+  BUNNY_STORAGE
+  S3
+  VERCEL_BLOB
+  NONE
+}
+
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique @db.VarChar(255)
-  googleId  String?    @unique @db.VarChar(255)
-  name      String?    @db.VarChar(255)
-  image     String?    @db.Text
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  purchases Purchase[]
+  id             String           @id @default(cuid())
+  email          String           @unique @db.VarChar(255)
+  googleId       String?          @unique @db.VarChar(255)
+  name           String?          @db.VarChar(255)
+  image          String?          @db.Text
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  purchases      Purchase[]
+  lessonProgress LessonProgress[]
 }
 
 model StripeEvent {
@@ -59,4 +78,94 @@ model Purchase {
   @@index([userEmail, status])
   @@index([paymentIntentId])
   @@index([productSlug])
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  slug        String   @unique @db.VarChar(64)
+  title       String   @db.VarChar(255)
+  subtitle    String?  @db.VarChar(255)
+  description String?  @db.Text
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  modules     Module[]
+
+  @@index([order])
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  courseId    String
+  slug        String   @db.VarChar(64)
+  title       String   @db.VarChar(255)
+  description String?  @db.Text
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+
+  @@unique([courseId, slug])
+  @@index([courseId, order])
+}
+
+model Lesson {
+  id              String           @id @default(cuid())
+  moduleId        String
+  slug            String           @db.VarChar(128)
+  title           String           @db.VarChar(255)
+  description     String?          @db.Text
+  durationMin     Int?
+  videoSourceType VideoSourceType  @default(NONE)
+  youtubeVideoId  String?          @db.VarChar(128)
+  bunnyVideoId    String?          @db.VarChar(128)
+  bunnyLibraryId  String?          @db.VarChar(128)
+  status          ContentStatus    @default(DRAFT)
+  order           Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  module          Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress        LessonProgress[]
+
+  @@unique([moduleId, slug])
+  @@index([moduleId, order])
+  @@index([status])
+}
+
+model LessonProgress {
+  id              String   @id @default(cuid())
+  userEmail       String   @db.VarChar(255)
+  lessonId        String
+  progressPct     Int      @default(0)
+  lastPositionSec Int      @default(0)
+  completed       Boolean  @default(false)
+  completedAt     DateTime?
+  lastWatchedAt   DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userEmail, lessonId])
+  @@index([userEmail])
+  @@index([lessonId, completed])
+}
+
+model ResearchDoc {
+  id              String          @id @default(cuid())
+  slug            String          @unique @db.VarChar(128)
+  title           String          @db.VarChar(255)
+  description     String?         @db.Text
+  publicationDate DateTime?
+  storageProvider StorageProvider @default(NONE)
+  storageObjectKey String?        @db.VarChar(512)
+  storageBucket   String?         @db.VarChar(255)
+  pdfFileName     String?         @db.VarChar(255)
+  pdfFileSizeBytes Int?
+  status          ContentStatus   @default(DRAFT)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([status, publicationDate(sort: Desc)])
 }

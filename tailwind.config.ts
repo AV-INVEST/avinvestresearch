@@ -15,6 +15,8 @@ const config: Config = {
         'av-green': '#00ff6a',
         'av-green-dim': '#00cc55',
         'av-green-deep': '#007a33',
+        'av-yellow': '#ffb74d',
+        'av-yellow-deep': '#b87519',
         'av-muted': '#8b928d',
         'av-line': '#1a241c',
       },

@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { siteConfig } from '@/config/siteConfig';
-import { getEntitlements } from '@/lib/entitlements';
+import { getEntitlements, type CourseStatus } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
+import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,6 +14,7 @@ import {
   CheckCircle2,
   CalendarDays,
   Sparkles,
+  Clock,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -53,8 +55,24 @@ export default async function PercorsiPage() {
   ];
 
   const anyAvailable = Object.values(entitlements.courses).some(
-    (c) => c.status !== 'locked',
+    (c) =>
+      c.status === 'owned_not_started' ||
+      c.status === 'owned_in_progress' ||
+      c.status === 'owned_completed',
   );
+
+  function getOwnedCtaLabel(status: CourseStatus): string {
+    switch (status) {
+      case 'owned_not_started':
+        return 'Inizia il percorso';
+      case 'owned_in_progress':
+        return 'Riprendi la lezione';
+      case 'owned_completed':
+        return 'Rivedi il percorso';
+      default:
+        return 'Apri il percorso';
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -112,24 +130,44 @@ export default async function PercorsiPage() {
           const progress = ent?.progressPct ?? 0;
           const purchasedAt = ent?.purchasedAt ?? null;
           const isLocked = status === 'locked';
-          const isCompleted = status === 'completed';
-          const statusLabel = isLocked
-            ? 'Bloccato'
-            : isCompleted
-              ? 'Completato'
-              : 'Disponibile';
-          const statusClass = isLocked
-            ? 'border-av-line text-av-muted bg-av-bg-2/60'
-            : isCompleted
-              ? 'border-av-green-deep/50 text-av-green bg-av-green/10'
-              : 'border-av-green-deep/30 text-av-green bg-av-green/5';
-          const statusIcon = isLocked ? (
-            <Lock className="h-3.5 w-3.5" />
-          ) : isCompleted ? (
-            <CheckCircle2 className="h-3.5 w-3.5" />
-          ) : (
-            <BookOpenCheck className="h-3.5 w-3.5" />
-          );
+          const isPending = status === 'payment_pending';
+          const isOwned =
+            status === 'owned_not_started' ||
+            status === 'owned_in_progress' ||
+            status === 'owned_completed';
+          const isCompleted = status === 'owned_completed';
+          const inProgress = status === 'owned_in_progress';
+          const notStarted = status === 'owned_not_started';
+
+          let statusLabel = 'Bloccato';
+          let statusClass = 'border-av-line text-av-muted bg-av-bg-2/60';
+          let statusIcon: React.ReactNode = <Lock className="h-3.5 w-3.5" />;
+
+          if (isPending) {
+            statusLabel = 'Pagamento in corso';
+            statusClass = 'border-av-yellow-deep/40 text-av-yellow bg-av-yellow/10';
+            statusIcon = <Clock className="h-3.5 w-3.5" />;
+          } else if (isCompleted) {
+            statusLabel = 'Completato';
+            statusClass = 'border-av-green-deep/50 text-av-green bg-av-green/10';
+            statusIcon = <CheckCircle2 className="h-3.5 w-3.5" />;
+          } else if (inProgress) {
+            statusLabel = 'In corso';
+            statusClass = 'border-av-green-deep/30 text-av-green bg-av-green/5';
+            statusIcon = <BookOpenCheck className="h-3.5 w-3.5" />;
+          } else if (notStarted) {
+            statusLabel = 'Disponibile';
+            statusClass = 'border-av-green-deep/30 text-av-green bg-av-green/5';
+            statusIcon = <BookOpenCheck className="h-3.5 w-3.5" />;
+          }
+
+          const ownedHref =
+            isOwned && ent?.latestLessonHref
+              ? ent.latestLessonHref
+              : isOwned
+                ? '/area-membri/percorsi'
+                : null;
+
           return (
             <GlassCard key={c.slug} className="overflow-hidden p-5 sm:p-6">
               <div className="flex items-start justify-between gap-3">
@@ -148,6 +186,12 @@ export default async function PercorsiPage() {
                         {statusIcon}
                         {statusLabel}
                       </span>
+                      {isOwned ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green/60 bg-av-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-av-green">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Il corso è tuo
+                        </span>
+                      ) : null}
                     </div>
                     {c.subtitle ? (
                       <p className="mt-1 text-sm text-av-muted">{c.subtitle}</p>
@@ -160,21 +204,42 @@ export default async function PercorsiPage() {
                 {c.description}
               </p>
 
-              <div className="mt-5 space-y-2">
-                <div className="flex items-center justify-between text-xs text-av-muted">
-                  <span className="inline-flex items-center gap-1.5">
-                    <BookOpenCheck className="h-3.5 w-3.5" />
-                    Avanzamento
-                  </span>
-                  <span className="font-mono">{progress}%</span>
+              {!isLocked && !isPending ? (
+                <div className="mt-5 space-y-2">
+                  <div className="flex items-center justify-between text-xs text-av-muted">
+                    <span className="inline-flex items-center gap-1.5">
+                      <BookOpenCheck className="h-3.5 w-3.5" />
+                      Avanzamento
+                    </span>
+                    <span className="font-mono">{progress}%</span>
+                  </div>
+                  <div className="h-2 w-full overflow-hidden rounded-full border border-av-line bg-av-bg-2/80">
+                    <div
+                      className="h-full rounded-full bg-av-green transition-[width] duration-500"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full border border-av-line bg-av-bg-2/80">
-                  <div
-                    className="h-full rounded-full bg-av-green transition-[width] duration-500"
-                    style={{ width: `${progress}%` }}
-                  />
+              ) : null}
+
+              {isPending ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="mt-5 rounded-xl border border-av-yellow-deep/40 bg-av-yellow/5 px-4 py-3 text-sm text-av-yellow"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold">Stiamo confermando il pagamento</p>
+                      <p className="mt-0.5 text-xs text-av-yellow/80">
+                        La conferma richiede di solito meno di 30 secondi.
+                      </p>
+                      <PendingPaymentRefresher initialAnyPending />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               {purchasedAt ? (
                 <div className="mt-4 flex items-center gap-2 text-xs text-av-muted">
@@ -195,17 +260,26 @@ export default async function PercorsiPage() {
                     <Lock className="h-4 w-4 text-av-muted" />
                     Scopri i percorsi
                   </Link>
-                ) : (
+                ) : isPending ? (
                   <button
                     type="button"
+                    onClick={() => window.location.reload()}
+                    className="btn-ghost !py-2.5 !px-4 text-sm items-center justify-center gap-2 border-av-yellow-deep/40 text-av-yellow hover:bg-av-yellow/10"
+                  >
+                    <Clock className="h-4 w-4" />
+                    Ricarica per aggiornare
+                  </button>
+                ) : isOwned && ownedHref ? (
+                  <Link
+                    href={ownedHref}
+                    prefetch={false}
                     className="btn-primary !py-2.5 !px-4 text-sm items-center justify-center gap-2"
-                    disabled
                   >
                     <BookOpenCheck className="h-4 w-4" />
-                    {isCompleted ? 'Rivedi percorso' : 'Continua il percorso'}
+                    {getOwnedCtaLabel(status)}
                     <ArrowRight className="h-4 w-4" />
-                  </button>
-                )}
+                  </Link>
+                ) : null}
               </div>
             </GlassCard>
           );

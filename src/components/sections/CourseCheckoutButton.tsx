@@ -45,10 +45,15 @@ export default function CourseCheckoutButton({ slug }: Props) {
         url?: string;
         error?: string;
         loginUrl?: string;
+        redirectTo?: string;
       };
       if (!resp.ok) {
         if (resp.status === 401 && payload.loginUrl) {
           window.location.assign(payload.loginUrl);
+          return;
+        }
+        if (resp.status === 409 && payload.redirectTo) {
+          window.location.assign(payload.redirectTo);
           return;
         }
         throw new Error(payload.error || 'Errore durante lavvio del pagamento.');

@@ -9,6 +9,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
+    "seed:courses": "node scripts/seed-courses.mjs",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
