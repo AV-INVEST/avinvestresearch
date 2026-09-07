@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
+import { isAdminSession } from '@/lib/auth/admin';
 import { getEntitlements } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
 import {
@@ -14,6 +15,9 @@ import {
   CalendarDays,
   ArrowRight,
   ShieldCheck,
+  Kanban,
+  BookText,
+  Crown,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -31,6 +35,7 @@ export default async function PanoramicaPage() {
   }
   const name = session.user.name || 'Membro AV-INVEST';
   const entitlements = await getEntitlements(session.user.id, session.user.email);
+  const isAdmin = isAdminSession(session);
 
   const courses = Object.values(entitlements.courses);
   const availableCourses = courses.filter((c) => c.status !== 'locked');
@@ -215,6 +220,53 @@ export default async function PanoramicaPage() {
           </div>
         </GlassCard>
       )}
+
+      {isAdmin ? (
+        <GlassCard className="overflow-hidden border-av-green-deep/50 bg-av-green/[0.04] p-5 sm:p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/60 bg-av-green/15 text-av-green">
+                  <Crown className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-semibold text-white">
+                    Gestione contenuti
+                  </h2>
+                  <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base">
+                    Pannello proprietario — crea, modifica e pubblica lezioni e
+                    documenti Research Club. I visitatori non amministratori non
+                    vedono questi strumenti.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/admin/corsi"
+                className="btn-ghost border-av-green-deep/50 !py-2.5 !px-4 text-sm items-center justify-center gap-2 hover:bg-av-green/10"
+              >
+                <Kanban className="h-4 w-4 text-av-green" />
+                Gestisci corsi
+              </Link>
+              <Link
+                href="/admin/research"
+                className="btn-ghost border-av-green-deep/50 !py-2.5 !px-4 text-sm items-center justify-center gap-2 hover:bg-av-green/10"
+              >
+                <BookText className="h-4 w-4 text-av-green" />
+                Gestisci Research Club
+              </Link>
+              <Link
+                href="/admin"
+                className="btn-primary shadow-glow-green-sm whitespace-nowrap"
+              >
+                Apri dashboard admin
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </GlassCard>
+      ) : null}
     </div>
   );
 }
