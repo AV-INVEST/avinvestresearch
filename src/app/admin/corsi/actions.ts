@@ -11,7 +11,7 @@ import {
   type AdminLessonFormValues,
 } from '@/lib/admin/course-admin';
 
-export async function actionCreateLesson(formData: FormData) {
+export async function actionCreateLesson(_prev: unknown, formData: FormData) {
   const moduleId = String(formData.get('moduleId') || '');
   const title = String(formData.get('title') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
@@ -20,7 +20,7 @@ export async function actionCreateLesson(formData: FormData) {
   return result;
 }
 
-export async function actionPublishLesson(formData: FormData) {
+export async function actionPublishLesson(_prev: unknown, formData: FormData) {
   const lessonId = String(formData.get('lessonId') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
   const result = await setLessonStatus(lessonId, 'PUBLISHED');
@@ -28,7 +28,7 @@ export async function actionPublishLesson(formData: FormData) {
   return result;
 }
 
-export async function actionUnpublishLesson(formData: FormData) {
+export async function actionUnpublishLesson(_prev: unknown, formData: FormData) {
   const lessonId = String(formData.get('lessonId') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
   const result = await setLessonStatus(lessonId, 'DRAFT');
@@ -36,7 +36,7 @@ export async function actionUnpublishLesson(formData: FormData) {
   return result;
 }
 
-export async function actionReorderLesson(formData: FormData) {
+export async function actionReorderLesson(_prev: unknown, formData: FormData) {
   const lessonId = String(formData.get('lessonId') || '');
   const direction = String(formData.get('direction') || 'up') as 'up' | 'down';
   const courseSlug = String(formData.get('courseSlug') || '');
@@ -45,7 +45,7 @@ export async function actionReorderLesson(formData: FormData) {
   return result;
 }
 
-export async function actionSaveLesson(formData: FormData) {
+export async function actionSaveLesson(_prev: unknown, formData: FormData) {
   const lessonId = String(formData.get('lessonId') || '');
   const courseSlug = String(formData.get('courseSlug') || '');
   const moduleSlug = String(formData.get('moduleSlug') || '');

@@ -12,6 +12,9 @@ import { siteConfig } from '@/config/siteConfig';
 const YOUTUBE_ID_REGEX =
   /^(?:https?:\/\/)?(?:(?:www|m|music)\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/;
 
+const BUNNY_EMBED_REGEX =
+  /^(?:https?:\/\/)?(?:iframe\.mediadelivery\.net\/embed\/(?:[^/]+)\/|assets\.mp4upload\.com\/|video\.b-cdn\.net\/)?([A-Za-z0-9_-]{8,})/;
+
 export interface AdminLessonFormValues {
   title: string;
   description: string;
@@ -33,6 +36,12 @@ export interface ExtractYouTubeResult {
   ok: boolean;
   videoId?: string | null;
   warning?: string | null;
+  error?: string;
+}
+
+export interface ExtractBunnyResult {
+  ok: boolean;
+  videoId?: string | null;
   error?: string;
 }
 
@@ -93,6 +102,31 @@ function extractYouTubeVideoId(raw: unknown): ExtractYouTubeResult {
   };
 }
 
+function extractBunnyVideoId(raw: unknown): ExtractBunnyResult {
+  if (raw === undefined || raw === null || raw === '') {
+    return { ok: true, videoId: null };
+  }
+  if (typeof raw !== 'string') {
+    return { ok: false, error: 'Riferimento Bunny Stream non valido.' };
+  }
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) {
+    return { ok: true, videoId: null };
+  }
+  const match = trimmed.match(BUNNY_EMBED_REGEX);
+  if (match && match[1]) {
+    return { ok: true, videoId: match[1] };
+  }
+  if (/^[A-Za-z0-9_-]{8,}$/.test(trimmed)) {
+    return { ok: true, videoId: trimmed };
+  }
+  return {
+    ok: false,
+    error:
+      'Riferimento Bunny Stream non riconosciuto. Usa un ID puro oppure un URL embed tipo https://iframe.mediadelivery.net/embed/LIBRERIA/VIDEO/player.',
+  };
+}
+
 export async function ensureAdminCoursesBootstrap(): Promise<AdminActionResult> {
   const guard = await requireAdmin();
   if (!guard.ok) return { ok: false, error: guard.error };
@@ -135,12 +169,12 @@ export async function ensureAdminCoursesBootstrap(): Promise<AdminActionResult> 
         where: {
           courseId_slug: {
             courseId: foundationsCourse.id,
-            slug: 'fondamenti-di-analisi-tecnica',
+            slug: 'fondamenti-analisi-tecnica',
           },
         },
         create: {
           courseId: foundationsCourse.id,
-          slug: 'fondamenti-di-analisi-tecnica',
+          slug: 'fondamenti-analisi-tecnica',
           title: 'Fondamenti di analisi tecnica',
           description:
             'Il percorso base AV Foundations: 10 lezioni per costruire le basi operative.',
@@ -253,13 +287,28 @@ export async function saveLessonAdmin(
       return { ok: false, error: youtube.error || 'URL YouTube non valida.' };
     }
 
+    const bunny =
+      values.videoSourceType === 'BUNNY_STREAM'
+        ? extractBunnyVideoId(values.bunnyVideoId)
+        : { ok: true, videoId: null as string | null };
+
+    if (!bunny.ok) {
+      return { ok: false, error: bunny.error || 'Riferimento Bunny Stream non valido.' };
+    }
+
     const videoSourceType: VideoSourceType = values.videoSourceType || 'NONE';
     const youtubeVideoId =
       videoSourceType === 'YOUTUBE' ? youtube.videoId || null : null;
     const bunnyVideoId =
-      videoSourceType === 'BUNNY_STREAM'
-        ? (values.bunnyVideoId || '').trim() || null
-        : null;
+      videoSourceType === 'BUNNY_STREAM' ? bunny.videoId || null : null;
+
+    if (videoSourceType === 'BUNNY_STREAM' && !bunnyVideoId) {
+      return {
+        ok: false,
+        error:
+          'Bunny Stream: inserisci un ID video valido o un URL embed completo supportato.',
+      };
+    }
 
     const slug = slugify(title);
     if (!slug) return { ok: false, error: 'Impossibile generare slug dal titolo.' };

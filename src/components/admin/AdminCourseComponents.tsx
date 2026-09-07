@@ -416,7 +416,7 @@ export function LessonEditor(props: LessonEditorProps) {
                 <div className="space-y-3 rounded-xl border border-av-green-deep/20 bg-av-green/[0.03] p-4">
                   <div>
                     <label htmlFor="bb-id" className="text-xs font-semibold uppercase tracking-[0.16em] text-av-green">
-                      Bunny Stream: ID libreria o video
+                      Bunny Stream: ID video o URL embed
                     </label>
                     <input
                       ref={bunnyRef}
@@ -424,9 +424,16 @@ export function LessonEditor(props: LessonEditorProps) {
                       type="text"
                       name="bunnyVideoId"
                       defaultValue={initial.bunnyVideoId ?? ''}
-                      placeholder="Identificativo video o GUID libreria"
+                      placeholder="ID puro (a1b2c3d4-e5f6) oppure URL embed tipo https://iframe.mediadelivery.net/embed/LIB/VIDEO/player"
                       className="mt-2 w-full rounded-xl border border-av-line bg-av-surface/60 px-4 py-3 text-sm text-white outline-none transition-all focus:border-av-green-deep/60 placeholder:text-av-muted/60"
                     />
+                    <p className="mt-2 text-[11px] leading-relaxed text-av-green/85">
+                      <span className="font-semibold">Formati accettati:</span>{' '}
+                      ID video puro (almeno 8 caratteri alfanumerici, trattini
+                      o underscore) oppure URL completo di embed Bunny. Il
+                      sistema normalizza automaticamente il riferimento al solo
+                      ID interno prima del salvataggio.
+                    </p>
                     <div className="mt-2 flex items-start gap-2 text-[11px] leading-relaxed">
                       <FileWarning className="mt-0.5 h-3.5 w-3.5 flex-none text-av-green" />
                       <p className="text-av-green/85">
