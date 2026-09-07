@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { TrendingUp, Users, Wallet, LineChart, AlertTriangle } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import { siteConfig } from '@/config/siteConfig';
+import LastUpdatedLabel from '@/components/ui/LastUpdatedLabel';
 
 type Entry = (typeof siteConfig.performance.entries)[number];
 
@@ -210,7 +211,7 @@ export default function PerformanceSection() {
                     {siteConfig.performance.disclaimer}
                   </p>
                   <p className="mt-2 text-xs text-av-muted sm:text-sm">
-                    {siteConfig.performance.sourceNote}
+                    <LastUpdatedLabel prefix="Dati del portafoglio pubblico AV-INVEST, rilevati il " suffix="." />
                   </p>
                 </div>
               </div>

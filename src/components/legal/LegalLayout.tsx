@@ -1,7 +1,8 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { siteConfig } from '@/config/siteConfig';
+import LastUpdatedLabel from '@/components/ui/LastUpdatedLabel';
 
 interface LegalLayoutProps {
   title: string;
@@ -36,7 +37,7 @@ export default function LegalLayout({ title, subtitle, children }: LegalLayoutPr
               </p>
             ) : null}
             <p className="mt-5 text-xs font-medium text-av-muted sm:text-sm">
-              Ultimo aggiornamento: {siteConfig.legal.lastUpdated}
+              <LastUpdatedLabel prefix="Ultimo aggiornamento: " />
             </p>
             <div className="mt-5 h-px w-full bg-gradient-to-r from-av-green/50 via-av-line to-transparent" />
           </header>

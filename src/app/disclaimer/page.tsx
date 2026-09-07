@@ -1,6 +1,7 @@
 import LegalLayout from '@/components/legal/LegalLayout';
 import type { Metadata } from 'next';
 import { siteConfig } from '@/config/siteConfig';
+import LastUpdatedLabel from '@/components/ui/LastUpdatedLabel';
 
 export const metadata: Metadata = {
   title: 'Disclaimer finanziario',
@@ -81,12 +82,12 @@ export default function DisclaimerPage() {
           {siteConfig.performance.disclaimer} Le performance riportate nella sezione
           &quot;Un metodo costruito sui risultati&quot; e in altri punti del sito si
           riferiscono a un portafoglio pubblico rilevato il{' '}
-          {siteConfig.performance.measuredAtLabel} e riportate unicamente a scopo
+          <LastUpdatedLabel /> e riportate unicamente a scopo
           illustrativo del metodo. Non sono proiezioni, non garantiscono risultati
           analoghi in futuro e non costituiscono elemento di previsione.
         </p>
         <p className="mt-2 text-xs font-medium text-av-muted sm:text-sm">
-          {siteConfig.performance.sourceNote}
+          <LastUpdatedLabel prefix="Dati del portafoglio pubblico AV-INVEST, rilevati il " suffix="." />
         </p>
       </section>
 

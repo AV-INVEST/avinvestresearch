@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Mail, Linkedin, Instagram, Cookie } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
+import LastUpdatedLabel from '@/components/ui/LastUpdatedLabel';
 
 interface FooterProps {}
 
@@ -166,7 +167,7 @@ export default function Footer() {
               riservati.
             </p>
             <p className="max-w-md text-left sm:text-right">
-              Ultimo aggiornamento: {siteConfig.legal.lastUpdated}.
+              <LastUpdatedLabel prefix="Ultimo aggiornamento: " suffix="." />
             </p>
           </div>
         </div>
