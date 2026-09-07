@@ -1,9 +1,10 @@
 export interface ResolvedProduct {
-  slug: 'foundations' | 'trading-lab';
+  slug: 'foundations' | 'trading-lab' | 'research-club';
   priceId: string;
   title: string;
   amountInCents: number;
   currency: 'EUR';
+  billingMode: 'one_time' | 'subscription';
 }
 
 interface AllowlistEntry {
@@ -12,6 +13,7 @@ interface AllowlistEntry {
   title: string;
   amountInCents: number;
   currency: 'EUR';
+  billingMode: 'one_time' | 'subscription';
 }
 
 const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
@@ -21,6 +23,7 @@ const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
     title: 'AV Foundations',
     amountInCents: 29700,
     currency: 'EUR',
+    billingMode: 'one_time',
   },
   'trading-lab': {
     envKey: 'STRIPE_PRICE_AV_TRADING_LAB',
@@ -28,6 +31,15 @@ const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
     title: 'AV Trading Lab',
     amountInCents: 49700,
     currency: 'EUR',
+    billingMode: 'one_time',
+  },
+  'research-club': {
+    envKey: 'STRIPE_PRICE_AV_RESEARCH_CLUB',
+    slug: 'research-club',
+    title: 'AV Research Club',
+    amountInCents: 1990,
+    currency: 'EUR',
+    billingMode: 'subscription',
   },
 };
 
@@ -48,6 +60,7 @@ export function resolveProduct(inputSlug: unknown): ResolvedProduct | null {
     title: entry.title,
     amountInCents: entry.amountInCents,
     currency: entry.currency,
+    billingMode: entry.billingMode,
   };
 }
 

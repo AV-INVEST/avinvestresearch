@@ -11,12 +11,19 @@ import {
   FileText,
   Loader2,
   Unlink,
+  Trash2,
+  XCircle,
 } from 'lucide-react';
 
-type PublishAction = (id: string) => Promise<{ ok: boolean; error?: string }>;
+type PublishAction = (id: string) => Promise<{ ok: boolean; error?: string; cleanupWarnings?: string[] }>;
 type SaveMetaAction = (id: string, formData: FormData) => Promise<{ ok: boolean; error?: string }>;
 type PrepareUploadFn = (formData: FormData) => Promise<any>;
 type ConfirmUploadFn = (formData: FormData) => Promise<any>;
+type DeleteAction = (_prevState: unknown, fd: FormData) => Promise<{ ok: boolean; error?: string; info?: string }>;
+type UploadPdfAction = (
+  id: string,
+  fd: FormData,
+) => Promise<{ ok: boolean; error?: string; pdfFileName?: string; pdfFileSizeBytes?: number; info?: string }>;
 
 function FieldMessage({ ok, error, success }: { ok?: boolean; error?: string | null; success?: string }) {
   if (error) {
@@ -49,49 +56,67 @@ export function PublishButtons({
 }) {
   const [isPendingPub, startPub] = useTransition();
   const [isPendingUnpub, startUnpub] = useTransition();
-  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string; warnings?: string[] } | null>(null);
 
   const published = status === 'PUBLISHED';
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      {published ? (
-        <button
-          type="button"
-          disabled={isPendingPub || isPendingUnpub}
-          onClick={() =>
-            startUnpub(async () => {
-              setMsg(null);
-              const r = await unpublishAction(docId);
-              setMsg({ ok: r.ok, text: r.ok ? 'Stato aggiornato: bozza.' : r.error || 'Errore.' });
-            })
-          }
-          className="btn-ghost !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 border-av-yellow-deep/30 text-av-yellow hover:bg-av-yellow/10"
-        >
-          {isPendingUnpub ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CircleDot className="h-3.5 w-3.5" />}
-          Porta in bozza
-        </button>
-      ) : (
-        <button
-          type="button"
-          disabled={isPendingPub || isPendingUnpub}
-          onClick={() =>
-            startPub(async () => {
-              setMsg(null);
-              const r = await publishAction(docId);
-              setMsg({ ok: r.ok, text: r.ok ? 'Stato aggiornato: pubblicata.' : r.error || 'Errore.' });
-            })
-          }
-          className="btn-primary !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 shadow-glow-green-sm"
-        >
-          {isPendingPub ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
-          Pubblica
-        </button>
-      )}
-      {msg ? (
-        <span className={`text-[11px] font-semibold ${msg.ok ? 'text-av-green' : 'text-red-400'}`}>
-          {msg.text}
-        </span>
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        {published ? (
+          <button
+            type="button"
+            disabled={isPendingPub || isPendingUnpub}
+            onClick={() =>
+              startUnpub(async () => {
+                setMsg(null);
+                const r = await unpublishAction(docId);
+                setMsg({ ok: r.ok, text: r.ok ? 'Stato aggiornato: bozza.' : r.error || 'Errore.' });
+              })
+            }
+            className="btn-ghost !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 border-av-yellow-deep/30 text-av-yellow hover:bg-av-yellow/10"
+          >
+            {isPendingUnpub ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CircleDot className="h-3.5 w-3.5" />}
+            Porta in bozza
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={isPendingPub || isPendingUnpub}
+            onClick={() =>
+              startPub(async () => {
+                setMsg(null);
+                const r = await publishAction(docId);
+                setMsg({
+                  ok: r.ok,
+                  text: r.ok ? 'Stato aggiornato: pubblicata.' : r.error || 'Errore.',
+                  warnings: r.cleanupWarnings && r.cleanupWarnings.length > 0 ? r.cleanupWarnings : undefined,
+                });
+                if (r.ok) setTimeout(() => location.reload(), 1400);
+              })
+            }
+            className="btn-primary !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 shadow-glow-green-sm"
+          >
+            {isPendingPub ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+            Pubblica
+          </button>
+        )}
+        {msg ? (
+          <span className={`text-[11px] font-semibold ${msg.ok ? 'text-av-green' : 'text-red-400'}`}>
+            {msg.text}
+          </span>
+        ) : null}
+      </div>
+      {msg?.warnings && msg.warnings.length > 0 ? (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.05] p-3 space-y-1">
+          <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-300">
+            <AlertCircle className="h-3.5 w-3.5" />
+            Pulizia archivio (max 12 pubblicate): sono emersi avvisi non bloccanti
+          </p>
+          <ul className="list-disc list-inside space-y-0.5 text-[11px] leading-relaxed text-amber-200/95">
+            {msg.warnings.map((w, i) => <li key={i}>{w}</li>)}
+          </ul>
+        </div>
       ) : null}
     </div>
   );
@@ -191,87 +216,36 @@ export function PdfUploadForm({
   pdfFileName,
   pdfFileSizeBytes,
   storageConfigured,
-  prepareUploadFn,
-  confirmUploadFn,
+  uploadAction,
 }: {
   docId: string;
   storageObjectKey: string | null;
   pdfFileName: string | null;
   pdfFileSizeBytes?: number | null;
   storageConfigured: boolean;
-  prepareUploadFn: PrepareUploadFn;
-  confirmUploadFn: ConfirmUploadFn;
+  uploadAction: UploadPdfAction;
+  prepareUploadFn?: PrepareUploadFn;
+  confirmUploadFn?: ConfirmUploadFn;
 }) {
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [status, setStatus] = useState<
-    | { kind: 'idle' }
-    | { kind: 'pending' }
-    | { kind: 'error'; msg: string }
-    | { kind: 'success'; msg: string }
-    | { kind: 'noop'; msg: string }
-  >({ kind: 'idle' });
-
+  const [state, formAction, isPending] = useActionState(
+    async (_prev: unknown, fd: FormData) => {
+      if (!storageConfigured) {
+        return { ok: false, info: 'Storage non configurato. Nessun upload verrà completato.' };
+      }
+      const file = fd.get('file');
+      if (!file || !(file instanceof File) || file.size === 0) {
+        return { ok: false, error: 'Seleziona un file PDF valido (non vuoto, max 25 MB).' };
+      }
+      return await uploadAction(docId, fd);
+    },
+    null,
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const f = selectedFile || (fileRef.current?.files?.[0] ?? null);
-    if (!f) {
-      setStatus({ kind: 'error', msg: 'Seleziona un file PDF da caricare.' });
-      return;
-    }
-    if (f.type && f.type !== 'application/pdf') {
-      setStatus({ kind: 'error', msg: 'Solo file application/pdf sono accettati.' });
-      return;
-    }
-    if (f.size > 25 * 1024 * 1024) {
-      setStatus({ kind: 'error', msg: 'File troppo grande (max 25 MB).' });
-      return;
-    }
-    if (!storageConfigured) {
-      setStatus({
-        kind: 'noop',
-        msg:
-          'Storage non configurato. I metadati sono validi ma l\'upload fisico non è stato eseguito. Nessun file è stato scritto su storage permanente.',
-      });
-      return;
-    }
-
-    setStatus({ kind: 'pending' });
-    try {
-      const prepFd = new FormData();
-      prepFd.set('fileName', f.name);
-      prepFd.set('contentLength', String(f.size));
-      const prep = await prepareUploadFn(prepFd);
-      if (!prep?.ok) {
-        setStatus({ kind: 'error', msg: prep?.message || 'Impossibile preparare upload.' });
-        return;
-      }
-      if (prep.uploadMethod === 'DIRECT_PUT') {
-        const confirmFd = new FormData();
-        confirmFd.set('storageObjectKey', prep.storageKey || '');
-        confirmFd.set('pdfFileName', f.name);
-        confirmFd.set('contentLength', String(f.size));
-        const conf = await confirmUploadFn(confirmFd);
-        if (conf?.ok) {
-          setStatus({
-            kind: 'success',
-            msg:
-              'Riferimento salvato. Integrazione upload fisico con signed URL provider attuale non attiva in questa build (placeholder DIRECT_PUT).',
-          });
-          if (fileRef.current) fileRef.current.value = '';
-          setSelectedFile(null);
-          setTimeout(() => location.reload(), 1400);
-        } else {
-          setStatus({ kind: 'error', msg: conf?.error || 'Errore conferma upload.' });
-        }
-        return;
-      }
-      setStatus({ kind: 'noop', msg: `Metodo upload ${prep.uploadMethod} non implementato. Nessun file caricato.` });
-    } catch (err: any) {
-      setStatus({ kind: 'error', msg: err?.message || 'Errore upload.' });
-    }
+  const sizeLabel = (n?: number | null) => {
+    if (!n || n <= 0) return null;
+    if (n >= 1024 * 1024) return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+    return `${(n / 1024).toFixed(1)} KB`;
   };
 
   return (
@@ -283,27 +257,17 @@ export function PdfUploadForm({
               <FileText className="h-4 w-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-white truncate">
                 {pdfFileName || 'File associato'}
               </p>
               <p className="mt-0.5 text-[11px] font-mono text-av-muted break-all">
                 {storageObjectKey}
                 {pdfFileSizeBytes && pdfFileSizeBytes > 0 ? (
                   <span className="ml-3 text-[10px] uppercase tracking-[0.14em] text-av-muted/80">
-                    {(pdfFileSizeBytes / 1024).toFixed(1)} KB
+                    {sizeLabel(pdfFileSizeBytes)}
                   </span>
                 ) : null}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  disabled
-                  className="btn-ghost !py-1.5 !px-3 text-[11px] items-center justify-center gap-1.5 opacity-60 cursor-not-allowed"
-                >
-                  <Unlink className="h-3.5 w-3.5" />
-                  Sostituisci / rimuovi (solo storage configurato)
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -320,14 +284,14 @@ export function PdfUploadForm({
               <p className="mt-0.5 text-[11px] text-av-muted/90">
                 {storageConfigured
                   ? 'Seleziona un file dal tuo dispositivo per associare il documento PDF (max 25 MB, application/pdf).'
-                  : 'Storage non configurato. Puoi selezionare un file per testare la validazione, ma nessun upload verrà completato.'}
+                  : 'Storage non configurato. Puoi creare la bozza ma nessun upload verrà completato. Configura BLOB_READ_WRITE_TOKEN su Vercel o locale .env.'}
               </p>
             </div>
           </div>
         </div>
       )}
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form action={formAction as any} className="space-y-4">
         <div>
           <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-av-muted mb-1.5">
             File PDF
@@ -337,9 +301,11 @@ export function PdfUploadForm({
               ref={fileRef}
               name="file"
               type="file"
+              required
               accept=".pdf,application/pdf"
+              disabled={!storageConfigured || isPending}
               onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-white file:mr-3 file:rounded-lg file:border-0 file:bg-av-green/10 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-av-green hover:file:bg-av-green/15"
+              className="block w-full text-sm text-white file:mr-3 file:rounded-lg file:border-0 file:bg-av-green/10 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-av-green hover:file:bg-av-green/15 disabled:opacity-60"
             />
           </div>
           {selectedFile ? (
@@ -353,34 +319,129 @@ export function PdfUploadForm({
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="submit"
-            disabled={status.kind === 'pending'}
+            disabled={!storageConfigured || isPending}
             className="btn-primary !py-2.5 !px-4 text-sm items-center justify-center gap-2 shadow-glow-green-sm disabled:opacity-60"
           >
-            {status.kind === 'pending' ? (
+            {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Upload className="h-4 w-4" />
             )}
-            Carica / sostituisci PDF
+            {storageObjectKey ? 'Sostituisci PDF' : 'Carica PDF'}
           </button>
 
-          {status.kind === 'error' ? (
-            <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-red-400">
-              <AlertCircle className="h-3.5 w-3.5" /> {status.msg}
+          <FieldMessage
+            ok={state?.ok}
+            error={state?.error ?? null}
+            success={state?.ok ? [state?.info ? state.info : 'PDF caricato correttamente. Ricaricamento...'].filter(Boolean).join(' ').trim() : undefined}
+          />
+        </div>
+      </form>
+
+      {state?.ok && typeof window !== 'undefined' ? (
+        <span className="hidden" ref={() => {
+          if (state?.ok && typeof window !== 'undefined') {
+            setTimeout(() => { if (typeof location !== 'undefined') location.reload(); }, 1200);
+          }
+        }} />
+      ) : null}
+    </div>
+  );
+}
+
+export function ResearchDocDeleteClientButton({
+  docId,
+  docTitle,
+  deleteAction,
+}: {
+  docId: string;
+  docTitle?: string | null;
+  deleteAction: DeleteAction;
+}) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [state, formAction, isPending] = useActionState(deleteAction, null);
+  const redirectDone = useRef(false);
+
+  if (state?.ok && !redirectDone.current && typeof window !== 'undefined') {
+    redirectDone.current = true;
+    setTimeout(() => {
+      if (typeof location !== 'undefined') {
+        const url = new URL(location.href);
+        if (url.pathname.startsWith('/admin/research/') && url.pathname.split('/').filter(Boolean).length > 2) {
+          location.href = '/admin/research';
+        } else {
+          location.reload();
+        }
+      }
+    }, 900);
+  }
+
+  return (
+    <div className="inline-block">
+      {!confirmOpen ? (
+        <button
+          type="button"
+          onClick={() => setConfirmOpen(true)}
+          title="Elimina definitivamente ricerca e PDF"
+          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-500/30 bg-red-500/[0.05] px-3 py-2 text-[11px] font-semibold text-red-300 transition-colors hover:bg-red-500/10"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          Elimina
+        </button>
+      ) : (
+        <div className="rounded-2xl border border-red-500/40 bg-red-500/[0.05] p-4 space-y-3 max-w-md">
+          <div className="flex items-start gap-3">
+            <span className="grid h-9 w-9 flex-none place-items-center rounded-xl border border-red-500/40 bg-red-500/10 text-red-300">
+              <XCircle className="h-4.5 w-4.5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-sm font-semibold text-white">
+                Eliminare definitivamente questa ricerca e il relativo PDF?
+              </p>
+              {docTitle ? (
+                <p className="mt-1 text-[11px] text-av-muted truncate max-w-xs">
+                  {docTitle}
+                </p>
+              ) : null}
+              <p className="mt-2 text-[11px] leading-relaxed text-red-200/90">
+                L&apos;operazione non è reversibile. Il file su Vercel Blob e il
+                record sul database verranno rimossi in modo permanente.
+              </p>
+            </div>
+          </div>
+          <form action={formAction as any} className="flex flex-wrap items-center gap-2">
+            <input type="hidden" name="id" value={docId} />
+            <button
+              type="submit"
+              disabled={isPending}
+              className="!py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 btn-primary bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-100 disabled:opacity-60 shadow-none"
+            >
+              {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+              Conferma eliminazione
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmOpen(false)}
+              disabled={isPending}
+              className="!py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 btn-ghost disabled:opacity-60"
+            >
+              Annulla
+            </button>
+          </form>
+          {state?.ok ? (
+            <p className="text-[11px] font-semibold text-av-green inline-flex items-center gap-1.5">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              {state.info || 'Eliminazione completata. Reindirizzamento...'}
             </p>
-          ) : null}
-          {status.kind === 'success' ? (
-            <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-av-green">
-              <CheckCircle2 className="h-3.5 w-3.5" /> {status.msg}
-            </p>
-          ) : null}
-          {status.kind === 'noop' ? (
-            <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-av-yellow">
-              <AlertCircle className="h-3.5 w-3.5" /> {status.msg}
+          ) : state?.error ? (
+            <p className="text-[11px] font-semibold text-red-300 inline-flex items-center gap-1.5">
+              <AlertCircle className="h-3.5 w-3.5" />
+              {state.error}
+              {state?.info ? <span className="block text-red-200/80">{state.info}</span> : null}
             </p>
           ) : null}
         </div>
-      </form>
+      )}
     </div>
   );
 }

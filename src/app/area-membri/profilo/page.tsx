@@ -8,6 +8,7 @@ import GlassCard from '@/components/ui/GlassCard';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { productTitleBySlug } from '@/lib/stripe/pricing';
+import { getResearchClubEntitlement } from '@/lib/entitlements';
 import type { PurchaseStatus } from '@prisma/client';
 import {
   ArrowLeft,
@@ -23,6 +24,10 @@ import {
   CalendarDays,
   Receipt,
   CheckCircle2,
+  AlertTriangle,
+  Sparkles,
+  CreditCard,
+  XCircle,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -92,6 +97,10 @@ export default async function ProfiloPage() {
       purchases = [];
     }
   }
+
+  const rcEntitlement = normalizedEmail
+    ? await getResearchClubEntitlement(undefined, normalizedEmail)
+    : null;
 
   return (
     <div className="space-y-6">
@@ -214,6 +223,108 @@ export default async function ProfiloPage() {
           </GlassCard>
         </div>
       </div>
+
+      <section aria-labelledby="research-club-title">
+        <GlassCard className="overflow-hidden border-[#C9A961]/20 bg-gradient-to-br from-[#C9A961]/[0.04] via-transparent to-transparent p-5 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <span className="grid h-11 w-11 flex-none place-items-center rounded-xl border border-[#C9A961]/40 bg-[#C9A961]/10 text-[#D4B46A]">
+                <Sparkles className="h-5 w-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2
+                    id="research-club-title"
+                    className="font-display text-lg font-semibold text-white"
+                  >
+                    AV Research Club
+                  </h2>
+                  {rcEntitlement?.status === 'active' ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/50 bg-av-green/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-av-green">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Attivo
+                    </span>
+                  ) : rcEntitlement?.status === 'cancel_at_period_end' ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-300">
+                      Rinnovo disattivato
+                    </span>
+                  ) : rcEntitlement?.status === 'payment_problem' ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-300">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      Problema pagamento
+                    </span>
+                  ) : rcEntitlement?.status === 'ended' ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-av-muted">
+                      <XCircle className="h-3.5 w-3.5" />
+                      Scaduto
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-av-muted">
+                      Nessun abbonamento
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-sm leading-relaxed text-av-muted">
+                  {rcEntitlement?.status === 'none' || !rcEntitlement
+                    ? 'Analisi e ricerche di mercato riservate ai membri. Abbonamento ricorrente 19,90 €/mese.'
+                    : rcEntitlement.message}
+                </p>
+                {rcEntitlement?.nextDate && rcEntitlement.status !== 'none' ? (
+                  <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-3 py-1 text-xs text-av-muted">
+                    <CalendarDays className="h-3.5 w-3.5 text-[#C9A961]" />
+                    {rcEntitlement.status === 'cancel_at_period_end' || rcEntitlement.status === 'ended'
+                      ? 'Accesso disponibile fino al '
+                      : 'Prossimo rinnovo: '}
+                    <time className="font-medium text-white" dateTime={rcEntitlement.nextDate.toISOString()}>
+                      {rcEntitlement.nextDate.toLocaleDateString('it-IT', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      })}
+                    </time>
+                  </p>
+                ) : null}
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
+              <span className="font-display text-2xl font-semibold text-white">
+                19,90 <span className="text-base text-av-muted">€/mese</span>
+              </span>
+            </div>
+          </div>
+
+          {rcEntitlement?.status === 'active' || rcEntitlement?.status === 'cancel_at_period_end' || rcEntitlement?.status === 'payment_problem' ? (
+            <div className="mt-5 flex flex-wrap gap-3">
+              <form action="/api/stripe/customer-portal" method="POST">
+                <button
+                  type="submit"
+                  className="btn-primary shadow-glow-green-sm !py-2.5 !px-4 text-sm items-center justify-center gap-2"
+                >
+                  <CreditCard className="h-4 w-4" />
+                  GESTISCI ABBONAMENTO
+                </button>
+              </form>
+              <Link
+                href="/area-membri/research-club"
+                className="btn-ghost !py-2.5 !px-4 text-sm items-center justify-center gap-2"
+              >
+                Vai alle ricerche
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="/#research-club"
+                className="btn-primary shadow-glow-green-sm !py-2.5 !px-4 text-sm items-center justify-center gap-2"
+              >
+                <Sparkles className="h-4 w-4 text-[#C9A961]" />
+                ENTRA NEL RESEARCH CLUB
+              </Link>
+            </div>
+          )}
+        </GlassCard>
+      </section>
 
       <section aria-labelledby="danger-zone-title">
         <GlassCard className="overflow-hidden border-red-500/20 bg-red-500/[0.02] p-5 sm:p-6">

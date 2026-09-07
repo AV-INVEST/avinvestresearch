@@ -86,6 +86,16 @@ function ownedRedirectResponse() {
   );
 }
 
+function ownedRedirectSubscription() {
+  return NextResponse.json(
+    {
+      error: 'Hai gia un abbonamento attivo a AV Research Club.',
+      redirectTo: '/area-membri/research-club',
+    },
+    { status: 409 },
+  );
+}
+
 async function checkAlreadySucceeded(userEmail: string, productSlug: string): Promise<boolean> {
   if (!isDatabaseConfigured()) return false;
   try {
@@ -94,6 +104,40 @@ async function checkAlreadySucceeded(userEmail: string, productSlug: string): Pr
       select: { id: true },
     });
     return Boolean(row);
+  } catch {
+    return false;
+  }
+}
+
+async function checkActiveResearchClubSubscription(
+  userEmail: string,
+): Promise<boolean> {
+  if (!isDatabaseConfigured()) return false;
+  try {
+    const now = new Date();
+    const sub = await prisma.subscription.findFirst({
+      where: {
+        userEmail,
+        product: 'AV_RESEARCH_CLUB',
+        status: { in: ['INCOMPLETE', 'TRIALING', 'ACTIVE', 'PAST_DUE', 'CANCELED'] },
+      },
+      select: {
+        status: true,
+        currentPeriodEnd: true,
+        cancelAtPeriodEnd: true,
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+    if (!sub) return false;
+    if (sub.status === 'ACTIVE' || sub.status === 'TRIALING' || sub.status === 'INCOMPLETE' || sub.status === 'PAST_DUE') {
+      if (!sub.currentPeriodEnd) return true;
+      return sub.currentPeriodEnd.getTime() > now.getTime();
+    }
+    if (sub.status === 'CANCELED') {
+      if (!sub.currentPeriodEnd) return false;
+      return sub.currentPeriodEnd.getTime() > now.getTime();
+    }
+    return false;
   } catch {
     return false;
   }
@@ -203,8 +247,16 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     return NextResponse.json({ error: 'Invalid product' }, { status: 400 });
   }
 
-  if (await checkAlreadySucceeded(userEmail, resolved.slug)) {
-    return ownedRedirectResponse();
+  if (resolved.billingMode === 'subscription') {
+    if (resolved.slug === 'research-club') {
+      if (await checkActiveResearchClubSubscription(userEmail)) {
+        return ownedRedirectSubscription();
+      }
+    }
+  } else {
+    if (await checkAlreadySucceeded(userEmail, resolved.slug)) {
+      return ownedRedirectResponse();
+    }
   }
 
   let stripe;
@@ -235,21 +287,24 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
   }
 
   const baseUrl = resolveBaseUrl(req);
-  const successUrl = new URL('/area-membri', baseUrl);
+
+  const isSubscription = resolved.billingMode === 'subscription';
+
+  const successUrl = new URL(
+    isSubscription ? '/area-membri/research-club' : '/area-membri',
+    baseUrl,
+  );
   successUrl.searchParams.set('checkout', 'success');
   successUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
 
-  const cancelUrl = new URL('/#percorsi', baseUrl);
+  const cancelUrl = new URL(
+    isSubscription ? '/#research-club' : '/#percorsi',
+    baseUrl,
+  );
   cancelUrl.searchParams.set('checkout', 'cancelled');
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    mode: 'payment',
+  const commonParams: Stripe.Checkout.SessionCreateParams = {
     customer_email: userEmail,
-    submit_type: 'pay',
-    billing_address_collection: 'auto',
-    invoice_creation: {
-      enabled: true,
-    },
     line_items: [
       {
         price: resolved.priceId,
@@ -259,12 +314,36 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     metadata: {
       product_slug: resolved.slug,
       user_email: userEmail,
+      billing_mode: isSubscription ? 'subscription' : 'one_time',
     },
     success_url: successUrl.toString(),
     cancel_url: cancelUrl.toString(),
-    automatic_tax: { enabled: true },
     allow_promotion_codes: false,
-  });
+  };
+
+  const checkoutSession = isSubscription
+    ? await stripe.checkout.sessions.create({
+        ...commonParams,
+        mode: 'subscription',
+        billing_address_collection: 'auto',
+        automatic_tax: { enabled: true },
+        subscription_data: {
+          metadata: {
+            product_slug: resolved.slug,
+            user_email: userEmail,
+          },
+        },
+      })
+    : await stripe.checkout.sessions.create({
+        ...commonParams,
+        mode: 'payment',
+        submit_type: 'pay',
+        billing_address_collection: 'auto',
+        invoice_creation: {
+          enabled: true,
+        },
+        automatic_tax: { enabled: true },
+      });
 
   if (!checkoutSession.url) {
     console.error('[stripe:checkout] Session created without URL', {
@@ -276,17 +355,25 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     );
   }
 
-  try {
-    await createPendingPurchase(
+  if (!isSubscription) {
+    try {
+      await createPendingPurchase(
+        userEmail,
+        resolved.slug,
+        checkoutSession.id,
+        typeof checkoutSession.amount_total === 'number' ? checkoutSession.amount_total : 0,
+        checkoutSession.currency || 'EUR',
+      );
+    } catch (err) {
+      const safe = buildSafeStripeError(err);
+      console.error('[stripe:checkout] Failed to persist pending purchase', safe);
+    }
+  } else {
+    console.info('[stripe:checkout] subscription checkout session created', {
+      sessionId: checkoutSession.id,
       userEmail,
-      resolved.slug,
-      checkoutSession.id,
-      typeof checkoutSession.amount_total === 'number' ? checkoutSession.amount_total : 0,
-      checkoutSession.currency || 'EUR',
-    );
-  } catch (err) {
-    const safe = buildSafeStripeError(err);
-    console.error('[stripe:checkout] Failed to persist pending purchase', safe);
+      productSlug: resolved.slug,
+    });
   }
 
   return NextResponse.json({

@@ -91,14 +91,20 @@ export const siteConfig = {
 
   researchClub: {
     title: 'AV Research Club',
-    badge: 'PROSSIMAMENTE',
+    badge: 'AV RESEARCH CLUB',
+    tagline: 'Analisi e ricerche di mercato riservate ai membri, con focus su aziende, scenari, catalizzatori e rischi.',
     description:
-      'Un ambiente riservato dedicato a ricerca, scenari di mercato e approfondimenti documentati su aziende e settori.',
+      'Un ambiente riservato dedicato a ricerca, scenari di mercato e approfondimenti documentati su aziende Small & Mid Cap. Nessun segnale di trading, nessuna promessa.',
+    priceMonthly: 19.9,
+    currency: 'EUR',
     features: [
       'Weekly Market Radar',
       'Small & Mid Cap Focus',
       'Scenari, catalizzatori e rischi',
-      'Archivio delle ricerche',
+      'Archivio ultimi 3 mesi (12 ricerche)',
+    ],
+    notes: [
+      'Disdici quando vuoi. In caso di disdetta, l\'accesso resta attivo fino alla fine del periodo già pagato.',
     ],
   },
 

@@ -8,6 +8,8 @@ import {
   authorizePdfRead,
   preparePdfUpload,
   getStorageStatus,
+  deletePdfFile,
+  performPdfServerUpload,
   type PrepareUploadResult,
   type AuthorizedReadResult,
 } from '@/lib/storage';
@@ -15,6 +17,14 @@ import type { Prisma } from '@prisma/client';
 
 const SORT_ASC: Prisma.SortOrder = 'asc';
 const SORT_DESC: Prisma.SortOrder = 'desc';
+const MAX_PUBLISHED_DOCS = 12;
+
+export interface ActionResult {
+  ok: boolean;
+  error?: string;
+  info?: string;
+  cleanupWarnings?: string[];
+}
 
 export type ResearchDocAdminRow = Pick<
   ResearchDoc,
@@ -24,6 +34,7 @@ export type ResearchDocAdminRow = Pick<
   | 'status'
   | 'description'
   | 'publicationDate'
+  | 'publishedAt'
   | 'storageProvider'
   | 'storageObjectKey'
   | 'storageBucket'
@@ -48,6 +59,7 @@ export async function listResearchDocsAdmin(): Promise<ResearchDocAdminRow[]> {
   if (!isDatabaseConfigured()) return [];
   const rows = await prisma.researchDoc.findMany({
     orderBy: [
+      { publishedAt: SORT_DESC },
       { publicationDate: SORT_DESC },
       { createdAt: SORT_DESC },
     ],
@@ -59,6 +71,7 @@ export async function listResearchDocsAdmin(): Promise<ResearchDocAdminRow[]> {
     status: r.status,
     description: r.description,
     publicationDate: r.publicationDate,
+    publishedAt: r.publishedAt,
     storageProvider: r.storageProvider,
     storageObjectKey: r.storageObjectKey,
     storageBucket: r.storageBucket,
@@ -96,6 +109,7 @@ export async function getResearchDocEditor(
       status: doc.status,
       description: doc.description,
       publicationDate: doc.publicationDate,
+      publishedAt: doc.publishedAt,
       storageProvider: doc.storageProvider,
       storageObjectKey: doc.storageObjectKey,
       storageBucket: doc.storageBucket,
@@ -182,23 +196,210 @@ export async function saveResearchDocMetaAdmin(
 export async function setResearchDocStatusAdmin(
   id: string,
   status: ContentStatus,
-): Promise<{ ok: boolean; error?: string }> {
+): Promise<{ ok: boolean; error?: string; cleanupWarnings?: string[] }> {
   await requireAdmin();
   if (!isDatabaseConfigured()) return { ok: false, error: 'Database non disponibile.' };
+  try {
+    const existing = await prisma.researchDoc.findUnique({
+      where: { id },
+      select: { id: true, status: true, publishedAt: true, storageObjectKey: true },
+    });
+    if (!existing) return { ok: false, error: 'Documento non trovato.' };
+    const data: Prisma.ResearchDocUpdateInput = { status };
+    if (status === 'PUBLISHED' && existing.status !== 'PUBLISHED') {
+      if (!existing.publishedAt) data.publishedAt = new Date();
+      if (!existing.storageObjectKey) {
+        return { ok: false, error: 'Impossibile pubblicare senza un PDF associato. Carica prima il file.' };
+      }
+    }
+    await prisma.researchDoc.update({ where: { id }, data });
+    revalidatePath('/admin');
+    revalidatePath('/admin/research');
+    revalidatePath(`/admin/research/${id}`);
+    let cleanupWarnings: string[] | undefined;
+    if (status === 'PUBLISHED') {
+      try {
+        cleanupWarnings = await enforceMaxPublishedDocs();
+      } catch (cleanupErr) {
+        const msg = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
+        cleanupWarnings = [`Pulizia archivio non riuscita dopo publish: ${msg}`];
+      }
+    }
+    return { ok: true, cleanupWarnings };
+  } catch {
+    return { ok: false, error: 'Errore durante l\'aggiornamento stato.' };
+  }
+}
+
+async function enforceMaxPublishedDocs(): Promise<string[]> {
+  const warnings: string[] = [];
+  if (!isDatabaseConfigured()) return warnings;
+  try {
+    const count = await prisma.researchDoc.count({ where: { status: 'PUBLISHED' } });
+    if (count <= MAX_PUBLISHED_DOCS) return warnings;
+    const excess = count - MAX_PUBLISHED_DOCS;
+    const oldest = await prisma.researchDoc.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: [
+        { publishedAt: SORT_ASC },
+        { publicationDate: SORT_ASC },
+        { createdAt: SORT_ASC },
+      ],
+      take: excess,
+      select: { id: true, storageObjectKey: true, title: true },
+    });
+    for (const doc of oldest) {
+      try {
+        if (doc.storageObjectKey) {
+          const delResult = await deletePdfFile(doc.storageObjectKey);
+          if (!delResult.ok) {
+            warnings.push(
+              `Impossibile rimuovere il file del documento "${doc.title ?? doc.id}" dallo storage: ${delResult.message ?? 'errore sconosciuto'}. Usa l'azione di eliminazione manuale per riprovare.`,
+            );
+            continue;
+          }
+        }
+        await prisma.researchDoc.delete({ where: { id: doc.id } });
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        warnings.push(`Errore durante la pulizia del documento "${doc.title ?? doc.id}": ${msg}`);
+      }
+    }
+    if (warnings.length > 0) {
+      console.warn('[research-admin] enforceMaxPublishedDocs ha riscontrato anomalie:', warnings);
+    }
+    revalidatePath('/admin/research');
+    revalidatePath('/area-membri/research-club');
+    return warnings;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    warnings.push(`Fallimento generale nella pulizia archivio: ${msg}`);
+    return warnings;
+  }
+}
+
+export async function deleteResearchDocAdmin(
+  _prevState: unknown,
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string; info?: string }> {
+  await requireAdmin();
+  if (!isDatabaseConfigured()) return { ok: false, error: 'Database non disponibile.' };
+  const id = (formData.get('id') as string || '').trim();
+  if (!id) return { ok: false, error: 'ID documento mancante.' };
+  const existing = await prisma.researchDoc.findUnique({
+    where: { id },
+    select: { id: true, storageObjectKey: true, title: true, pdfFileName: true },
+  });
+  if (!existing) return { ok: false, error: 'Documento non trovato.' };
+  if (existing.storageObjectKey) {
+    const delResult = await deletePdfFile(existing.storageObjectKey);
+    if (!delResult.ok) {
+      return {
+        ok: false,
+        error: delResult.message
+          ?? 'Non \u00E8 stato possibile eliminare il file PDF dallo storage. Il record database non \u00E8 stato rimosso per evitare file orfani. Riprova pi\u00F9 tardi o controlla le credenziali Vercel Blob.',
+        info: `DB record mantenuto: "${existing.title ?? existing.id}" (${existing.pdfFileName ?? 'no filename'}).`,
+      };
+    }
+  }
+  try {
+    await prisma.researchDoc.delete({ where: { id } });
+    revalidatePath('/admin');
+    revalidatePath('/admin/research');
+    revalidatePath(`/admin/research/${id}`);
+    revalidatePath('/area-membri/research-club');
+    return { ok: true, info: 'Documento e PDF eliminati definitivamente.' };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return {
+      ok: false,
+      error: `PDF rimosso ma cancellazione DB fallita: ${msg}. Potrebbe esistere un record orfano. Riprovare o verificare manualmente.`,
+    };
+  }
+}
+
+export async function uploadResearchPdfAdmin(
+  id: string,
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string; pdfFileName?: string; pdfFileSizeBytes?: number; info?: string }> {
+  await requireAdmin();
+  if (!isDatabaseConfigured()) return { ok: false, error: 'Database non disponibile.' };
+  const file = formData.get('file');
+  if (!file || !(file instanceof File)) {
+    return { ok: false, error: 'Nessun file ricevuto. Assicurati di caricare un file PDF valido (<= 25 MB).' };
+  }
+  if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) {
+    return { ok: false, error: 'Tipo file non valido. Sono accettati solo PDF (MIME: application/pdf).' };
+  }
+  const maxSize = 25 * 1024 * 1024;
+  if (file.size <= 0) return { ok: false, error: 'File vuoto.' };
+  if (file.size > maxSize) {
+    return { ok: false, error: `File troppo grande (${(file.size / (1024 * 1024)).toFixed(2)} MB). Massimo 25 MB.` };
+  }
+  const existing = await prisma.researchDoc.findUnique({
+    where: { id },
+    select: { id: true, storageObjectKey: true },
+  });
+  if (!existing) return { ok: false, error: 'Documento non trovato.' };
+
+  const prepare = await preparePdfUpload(file.name, file.size);
+  if (!prepare.ok || !prepare.storageKey) {
+    return { ok: false, error: prepare.message ?? 'Preparazione upload fallita.' };
+  }
+  const oldKey = existing.storageObjectKey;
+  const upload = await performPdfServerUpload(prepare.storageKey, file.stream() as ReadableStream, {
+    contentType: 'application/pdf',
+    fileName: file.name,
+  });
+  if (!upload.ok || !upload.pathname) {
+    return {
+      ok: false,
+      error: upload.message ?? 'Errore durante il salvataggio del PDF sullo storage privato.',
+    };
+  }
+  const status = getStorageStatus();
+  const providerEnum: StorageProvider =
+    status.provider === 'VERCEL_BLOB' ? 'VERCEL_BLOB'
+    : status.provider === 'BUNNY_STORAGE' ? 'BUNNY_STORAGE'
+    : status.provider === 'S3' ? 'S3' : 'NONE';
   try {
     await prisma.researchDoc.update({
       where: { id },
       data: {
-        status,
+        storageObjectKey: upload.pathname,
+        storageProvider: providerEnum,
+        pdfFileName: file.name.length > 0 ? file.name.slice(0, 200) : null,
+        pdfFileSizeBytes: file.size,
       },
     });
-    revalidatePath('/admin');
-    revalidatePath('/admin/research');
-    revalidatePath(`/admin/research/${id}`);
-    return { ok: true };
-  } catch {
-    return { ok: false, error: 'Errore durante l\'aggiornamento stato.' };
+  } catch (dbErr) {
+    const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+    try {
+      await deletePdfFile(upload.pathname);
+    } catch {
+      // ignore; warning logged
+    }
+    return { ok: false, error: `Salvataggio riferimento fallito (${msg}). Nuovo file caricato è stato rimosso per evitare orfani.` };
   }
+  let info: string | undefined;
+  if (oldKey && oldKey !== upload.pathname) {
+    try {
+      const r = await deletePdfFile(oldKey);
+      if (r.ok) info = 'Precedente PDF sostituito e rimosso dallo storage.';
+      else info = `Nuovo PDF caricato. Il vecchio file non è stato rimosso: ${r.message ?? 'errore sconosciuto'}.`;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      info = `Nuovo PDF caricato. Errore rimozione vecchio file: ${msg}.`;
+    }
+  }
+  revalidatePath('/admin/research');
+  revalidatePath(`/admin/research/${id}`);
+  return {
+    ok: true,
+    pdfFileName: file.name,
+    pdfFileSizeBytes: file.size,
+    info,
+  };
 }
 
 export async function prepareResearchPdfUploadAdmin(

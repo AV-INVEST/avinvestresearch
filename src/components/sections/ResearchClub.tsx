@@ -1,10 +1,35 @@
-﻿import { Lock, Radar, Building2, AlertTriangle, Archive } from 'lucide-react';
+import Link from 'next/link';
+import { Radar, Building2, AlertTriangle, Archive, Crown, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { auth } from '@/auth';
+import { getResearchClubEntitlement } from '@/lib/entitlements';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 
 const icons = [Radar, Building2, AlertTriangle, Archive];
 
-export default function ResearchClub() {
+const GOLD = {
+  text: 'text-[#C9A961]',
+  heading: 'text-[#D4B46A]',
+  border: 'border-[#C9A961]/40',
+  borderStrong: 'border-[#C9A961]/65',
+  bg: 'bg-[#C9A961]/10',
+  bgSoft: 'bg-[#C9A961]/[0.06]',
+} as const;
+
+export default async function ResearchClub() {
+  const session = await auth().catch(() => null);
+  let rcEntitlement = null as Awaited<ReturnType<typeof getResearchClubEntitlement>> | null;
+  if (session?.user?.email) {
+    try {
+      rcEntitlement = await getResearchClubEntitlement(session.user.id, session.user.email);
+    } catch {
+      rcEntitlement = null;
+    }
+  }
+
+  const rc = siteConfig.researchClub;
+  const subscribed = rcEntitlement?.accessGranted === true;
+
   return (
     <section
       id="research-club"
@@ -13,60 +38,140 @@ export default function ResearchClub() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(0,255,106,0.07),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(201,169,97,0.08),transparent_58%),radial-gradient(ellipse_at_bottom_right,rgba(0,255,106,0.05),transparent_55%)]"
       />
       <div className="container-page">
         <div className="grid items-center gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-av-line bg-av-bg-2/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-av-muted">
-              <Lock className="h-3.5 w-3.5" />
-              {siteConfig.researchClub.badge}
+            <span
+              className={`inline-flex items-center gap-2 rounded-full border ${GOLD.border} ${GOLD.bgSoft} px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${GOLD.text}`}
+            >
+              <Crown className={`h-3.5 w-3.5 ${GOLD.text}`} />
+              {rc.badge}
             </span>
             <h2 id="rc-heading" className="mt-5 heading-lg">
-              {siteConfig.researchClub.title}
+              {rc.title}
             </h2>
-            <p className="mt-6 body-lg">{siteConfig.researchClub.description}</p>
-            <p className="mt-5 text-sm text-av-muted sm:text-base">
-              Contenuti ad approfondimento, materiale documentato e analisi strutturate.
-              Nessun segnale di trading, nessuna promessa.
+            <p className="mt-5 body-lg">
+              {rc.tagline}
             </p>
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              className="mt-8 inline-flex items-center gap-2 rounded-xl border border-av-line bg-av-bg-2/70 px-5 py-3.5 text-sm font-semibold text-av-muted sm:text-base"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-av-green opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-av-green" />
-              </span>
-              IN ARRIVO - TI TERREMO AGGIORNATO
-            </button>
+            <p className="mt-5 text-sm text-av-muted sm:text-base">
+              {rc.description}
+            </p>
+
+            <div className="mt-8 space-y-4">
+              <div className="flex flex-wrap items-baseline gap-3">
+                <span className={`font-display text-5xl font-semibold ${GOLD.heading}`}>
+                  19,90
+                </span>
+                <span className="text-base text-av-muted">€ / mese</span>
+              </div>
+              <p className="text-xs leading-relaxed text-av-muted/90 max-w-md">
+                {rc.notes?.[0]}
+              </p>
+
+              {subscribed ? (
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/40 bg-av-green/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-green">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    Sei dentro
+                  </span>
+                  <Link
+                    href="/area-membri/research-club"
+                    className="btn-primary items-center gap-2 !py-3 !px-5 text-sm shadow-glow-green-sm"
+                  >
+                    Vai all&apos;archivio ricerche
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              ) : session?.user ? (
+                <form
+                  action="/api/stripe/checkout"
+                  method="POST"
+                  className="flex flex-wrap items-center gap-3 pt-1"
+                >
+                  <input type="hidden" name="slug" value="research-club" />
+                  <button
+                    type="submit"
+                    className={`btn-primary items-center gap-2 !py-3 !px-6 text-sm sm:text-base shadow-glow-green-sm border ${GOLD.borderStrong}`}
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(180deg, rgba(201,169,97,0.14), rgba(201,169,97,0.04))',
+                    }}
+                  >
+                    <Crown className={`h-4 w-4 ${GOLD.text}`} />
+                    <span className={GOLD.text}>ENTRA NEL RESEARCH CLUB</span>
+                  </button>
+                </form>
+              ) : (
+                <Link
+                  href={
+                    '/login?callbackUrl=' +
+                    encodeURIComponent('/#research-club')
+                  }
+                  className={`btn-primary items-center gap-2 !py-3 !px-6 text-sm sm:text-base shadow-glow-green-sm inline-flex border ${GOLD.borderStrong}`}
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(180deg, rgba(201,169,97,0.14), rgba(201,169,97,0.04))',
+                  }}
+                >
+                  <Crown className={`h-4 w-4 ${GOLD.text}`} />
+                  <span className={GOLD.text}>ENTRA NEL RESEARCH CLUB</span>
+                </Link>
+              )}
+            </div>
           </div>
 
           <div className="lg:col-span-7">
-            <GlassCard className="relative overflow-hidden p-5 sm:p-8">
+            <GlassCard
+              className="relative overflow-hidden p-5 sm:p-8 border border-white/5"
+              style={{
+                backgroundImage:
+                  'radial-gradient(1200px 500px at 100% 0%, rgba(201,169,97,0.06), transparent 60%)',
+              }}
+            >
               <div
                 aria-hidden="true"
-                className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-av-green/10 blur-3xl"
+                className={`absolute -right-24 -top-24 h-64 w-64 rounded-full ${GOLD.bgSoft} blur-3xl`}
               />
               <div className="relative grid gap-4 sm:grid-cols-2">
-                {siteConfig.researchClub.features.map((feature, i) => {
+                {rc.features.map((feature, i) => {
                   const Icon = icons[i] ?? Radar;
+                  const isGold = i === 0 || i === 3;
                   return (
                     <div
                       key={feature}
-                      className="group rounded-2xl border border-av-line bg-av-bg-2/50 p-5 transition-all duration-300 hover:border-av-green-deep/60 hover:bg-av-surface"
+                      className={`group rounded-2xl border ${
+                        isGold
+                          ? `${GOLD.border} ${GOLD.bgSoft}`
+                          : 'border-av-line bg-av-bg-2/50'
+                      } p-5 transition-all duration-300 hover:border-white/20 hover:bg-av-surface`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="grid h-10 w-10 place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green transition-all group-hover:shadow-glow-green-sm">
+                        <div
+                          className={`grid h-10 w-10 place-items-center rounded-xl border transition-all ${
+                            isGold
+                              ? `${GOLD.border} ${GOLD.bg} ${GOLD.text} group-hover:shadow-[0_0_24px_-6px_rgba(201,169,97,0.5)]`
+                              : 'border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
+                          }`}
+                        >
                           <Icon className="h-5 w-5" />
                         </div>
-                        <h3 className="font-display text-lg font-semibold text-white">
+                        <h3
+                          className={`font-display text-lg font-semibold ${
+                            isGold ? GOLD.heading : 'text-white'
+                          }`}
+                        >
                           {feature}
                         </h3>
                       </div>
-                      <div className="mt-4 h-px w-full bg-gradient-to-r from-av-green-deep/40 via-av-line to-transparent" />
+                      <div
+                        className={`mt-4 h-px w-full bg-gradient-to-r ${
+                          isGold
+                            ? 'from-[#C9A961]/40 via-av-line to-transparent'
+                            : 'from-av-green-deep/40 via-av-line to-transparent'
+                        }`}
+                      />
                     </div>
                   );
                 })}
@@ -75,9 +180,11 @@ export default function ResearchClub() {
                 <span className="text-xs font-medium text-av-muted sm:text-sm">
                   Materiali riservati ai membri:
                 </span>
-                <span className="chip">PDF</span>
+                <span className={`chip border ${GOLD.border} ${GOLD.bgSoft} ${GOLD.text}`}>
+                  PDF
+                </span>
                 <span className="chip">Analisi</span>
-                <span className="chip">Archivio</span>
+                <span className="chip">Archivio 12</span>
                 <span className="chip">Aggiornamenti</span>
               </div>
             </GlassCard>

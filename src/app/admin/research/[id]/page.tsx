@@ -21,16 +21,16 @@ import {
 } from 'lucide-react';
 import {
   getResearchDocEditor,
-  prepareResearchPdfUploadAdmin,
+  uploadResearchPdfAdmin,
+  deleteResearchDocAdmin,
 } from '@/lib/admin/research-admin';
 import {
   saveResearchDocMetaAction,
   publishResearchDocAction,
   unpublishResearchDocAction,
-  confirmResearchPdfUploadAction,
 } from '@/app/admin/research/actions';
 import { getStorageStatus } from '@/lib/storage';
-import { SaveMetaForm, PublishButtons, PdfUploadForm } from './editor-components';
+import { SaveMetaForm, PublishButtons, PdfUploadForm, ResearchDocDeleteClientButton } from './editor-components';
 
 export const dynamic = 'force-dynamic';
 
@@ -138,8 +138,7 @@ export default async function ResearchEditorPage({
                 pdfFileName={doc.pdfFileName}
                 pdfFileSizeBytes={doc.pdfFileSizeBytes}
                 storageConfigured={storageStatus.configured}
-                prepareUploadFn={async (fd) => prepareResearchPdfUploadAdmin(doc.id, fd)}
-                confirmUploadFn={async (fd) => confirmResearchPdfUploadAction(doc.id, fd)}
+                uploadAction={uploadResearchPdfAdmin}
               />
             </div>
           </GlassCard>
@@ -224,6 +223,34 @@ export default async function ResearchEditorPage({
           </GlassCard>
         </aside>
       </div>
+
+      <GlassCard className="border-red-500/25 bg-red-500/[0.03] p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="grid h-9 w-9 flex-none place-items-center rounded-xl border border-red-500/40 bg-red-500/10 text-red-300">
+                <Trash2 className="h-4.5 w-4.5" />
+              </span>
+              <div>
+                <h3 className="font-display text-sm font-semibold text-white">
+                  Elimina definitivamente
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-av-muted/95">
+                  Rimuovi ricerca e PDF associato da database e storage privato.
+                  L&apos;operazione non è reversibile.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex-none">
+            <ResearchDocDeleteClientButton
+              docId={doc.id}
+              docTitle={doc.title}
+              deleteAction={deleteResearchDocAdmin}
+            />
+          </div>
+        </div>
+      </GlassCard>
     </div>
   );
 }

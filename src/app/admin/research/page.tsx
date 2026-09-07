@@ -18,12 +18,9 @@ import {
 } from 'lucide-react';
 import {
   listResearchDocsAdmin,
-  getResearchDocEditor,
-  prepareResearchPdfUploadAdmin,
-  authorizeResearchPdfDownloadAdmin,
-  type ResearchDocAdminRow,
 } from '@/lib/admin/research-admin';
 import { CreateDocForm as CreateDocFormClient } from './create-doc-form';
+import { AdminResearchDeleteButton } from './delete-button';
 import {
   getStorageStatus,
   describeStorageSetupSteps,
@@ -216,7 +213,11 @@ export default async function ResearchAdminPage() {
                       <span className="text-av-muted/70">slug: {d.slug}</span>
                     </div>
                   </div>
-                  <div className="flex flex-none flex-col items-stretch justify-center gap-2">
+                  <div className="flex flex-none flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center">
+                    <AdminResearchDeleteButton
+                      docId={d.id}
+                      docTitle={d.title}
+                    />
                     <Link
                       href={`/admin/research/${d.id}`}
                       className="btn-primary !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 shadow-glow-green-sm whitespace-nowrap"

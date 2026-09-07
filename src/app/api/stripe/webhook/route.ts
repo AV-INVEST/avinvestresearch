@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { getStripeClient, getStripeWebhookSecret } from '@/lib/stripe/client';
 import { markEventProcessed, metadataFromSession, syncPurchase, applyChargeRefund } from '@/lib/stripe/purchase-sync';
+import {
+  handleCheckoutSessionCompletedSubscription,
+  handleSubscriptionUpsertFromStripe,
+  handleSubscriptionDeletedFromStripe,
+  handleInvoicePaid,
+  handleInvoicePaymentFailed,
+} from '@/lib/stripe/subscription-sync';
 import type { PurchaseStatus } from '@prisma/client';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { isDatabaseConfigured } from '@/lib/db/prisma';
@@ -34,6 +41,12 @@ async function fetchInvoiceUrls(
 
 async function handleCheckoutSessionCompleted(stripe: Stripe, session: Stripe.Checkout.Session): Promise<void> {
   const meta = metadataFromSession(session);
+  const billingModeRaw = session.metadata?.billing_mode;
+  const isSubscription = session.mode === 'subscription' || billingModeRaw === 'subscription';
+  if (isSubscription) {
+    const result = await handleCheckoutSessionCompletedSubscription(stripe, session);
+    if (result.handled) return;
+  }
   const userEmail = meta.user_email ?? normalizeEmail(session.customer_email);
   const productSlug = meta.product_slug;
   const paymentStatus = session.payment_status;
@@ -169,6 +182,27 @@ export async function POST(req: Request): Promise<Response> {
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
         await applyChargeRefund(charge);
+        break;
+      }
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated': {
+        const sub = event.data.object as Stripe.Subscription;
+        await handleSubscriptionUpsertFromStripe(sub);
+        break;
+      }
+      case 'customer.subscription.deleted': {
+        const sub = event.data.object as Stripe.Subscription;
+        await handleSubscriptionDeletedFromStripe(sub);
+        break;
+      }
+      case 'invoice.paid': {
+        const invoice = event.data.object as Stripe.Invoice;
+        await handleInvoicePaid(invoice);
+        break;
+      }
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object as Stripe.Invoice;
+        await handleInvoicePaymentFailed(invoice);
         break;
       }
       default:

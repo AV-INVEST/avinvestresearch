@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { isAdminSession } from '@/lib/auth/admin';
-import { getEntitlements } from '@/lib/entitlements';
+import { getEntitlements, getResearchClubEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
 import {
   BookOpenCheck,
@@ -18,6 +18,8 @@ import {
   Kanban,
   BookText,
   Crown,
+  ShieldAlert,
+  XCircle,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -36,6 +38,7 @@ export default async function PanoramicaPage() {
   const name = session.user.name || 'Membro AV-INVEST';
   const entitlements = await getEntitlements(session.user.id, session.user.email);
   const isAdmin = isAdminSession(session);
+  const rcEntitlement = await getResearchClubEntitlement(session.user.id, session.user.email);
 
   const courses = Object.values(entitlements.courses);
   const availableCourses = courses.filter((c) => c.status !== 'locked');
@@ -267,6 +270,133 @@ export default async function PanoramicaPage() {
           </div>
         </GlassCard>
       ) : null}
+
+      <GlassCard
+        className="overflow-hidden p-5 sm:p-6 border border-white/5"
+        style={{
+          backgroundImage:
+            'radial-gradient(900px 300px at 0% -10%, rgba(201,169,97,0.06), transparent 60%)',
+        }}
+      >
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-[#C9A961]/45 bg-[#C9A961]/10 text-[#C9A961]">
+                <Crown className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C9A961]">
+                  Premium
+                </p>
+                <h2 className="font-display text-xl font-semibold text-white">
+                  AV Research Club
+                </h2>
+              </div>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-av-muted sm:text-base max-w-2xl">
+              Analisi e ricerche di mercato riservate, con focus su aziende Small
+              &amp; Mid Cap, scenari, catalizzatori e rischi. Archivio rolling
+              degli ultimi 3 mesi.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-stretch gap-3 lg:w-[320px] flex-none">
+            {rcEntitlement.accessGranted ? (
+              <div className="rounded-2xl border border-av-green-deep/40 bg-av-green/[0.04] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C9A961]">
+                      19,90 € / mese
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-white">
+                      {rcEntitlement.status === 'cancel_at_period_end'
+                        ? 'Accesso disponibile fino'
+                        : 'Prossimo rinnovo'}
+                      :{' '}
+                      <span className="text-av-muted text-xs font-normal">
+                        {rcEntitlement.nextDate
+                          ? new Date(rcEntitlement.nextDate).toLocaleDateString('it-IT')
+                          : '—'}
+                      </span>
+                    </p>
+                  </div>
+                  {rcEntitlement.status === 'active' ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-av-green-deep/40 bg-av-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-av-green">
+                      <CheckCircle2 className="h-3 w-3" /> Attivo
+                    </span>
+                  ) : rcEntitlement.status === 'cancel_at_period_end' ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-av-yellow-deep/40 bg-av-yellow/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-av-yellow">
+                      <XCircle className="h-3 w-3" /> Rinnovo disattivato
+                    </span>
+                  ) : rcEntitlement.status === 'payment_problem' ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-red-300">
+                      <ShieldAlert className="h-3 w-3" /> Pag. problema
+                    </span>
+                  ) : null}
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <Link
+                    href="/area-membri/research-club"
+                    className="btn-primary !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 flex-1 shadow-glow-green-sm"
+                  >
+                    Archivio ricerche
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                  <form
+                    action="/api/stripe/customer-portal"
+                    method="POST"
+                    className="flex-1"
+                  >
+                    <button
+                      type="submit"
+                      className="btn-ghost w-full !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5"
+                    >
+                      Gestisci abbonamento
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-av-line bg-av-bg-2/80 p-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-display text-3xl font-semibold text-[#D4B46A]">
+                    19,90
+                  </span>
+                  <span className="text-sm text-av-muted">€ / mese</span>
+                </div>
+                <p className="mt-1 text-[11px] text-av-muted/85">
+                  Disdici quando vuoi. Accesso garantito fino a fine periodo.
+                </p>
+                <form
+                  action="/api/stripe/checkout"
+                  method="POST"
+                  className="mt-3"
+                >
+                  <input type="hidden" name="slug" value="research-club" />
+                  <button
+                    type="submit"
+                    className="btn-primary w-full !py-2.5 !px-4 text-sm items-center justify-center gap-2 shadow-glow-green-sm border border-[#C9A961]/65"
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(180deg, rgba(201,169,97,0.14), rgba(201,169,97,0.04))',
+                    }}
+                  >
+                    <Crown className="h-4 w-4 text-[#C9A961]" />
+                    <span className="text-[#C9A961]">ENTRA NEL RC</span>
+                  </button>
+                </form>
+                <Link
+                  href="/#research-club"
+                  className="mt-2 btn-ghost w-full items-center justify-center gap-1.5 !py-2 text-[12px]"
+                >
+                  Dettagli prodotto
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </GlassCard>
     </div>
   );
 }

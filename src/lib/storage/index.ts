@@ -28,6 +28,24 @@ export interface AuthorizedReadResult {
   status?: StorageConfigStatus;
 }
 
+export interface DownloadStreamResult {
+  ok: boolean;
+  stream?: ReadableStream<Uint8Array>;
+  contentType?: string;
+  contentLength?: number;
+  error?: 'UNCONFIGURED' | 'NOT_FOUND' | 'FORBIDDEN' | 'INTERNAL';
+  message?: string;
+  fileName?: string | null;
+}
+
+export interface ServerUploadResult {
+  ok: boolean;
+  pathname?: string;
+  url?: string;
+  error?: 'UNCONFIGURED' | 'INVALID_FILE' | 'INTERNAL';
+  message?: string;
+}
+
 const ALLOWED_PDF_TYPES = ['application/pdf'];
 const MAX_PDF_BYTES = 25 * 1024 * 1024;
 
@@ -151,10 +169,109 @@ export async function authorizePdfRead(
   if (!storageKey) {
     return { ok: false, error: 'NOT_FOUND', message: 'Nessun documento collegato a questa pubblicazione.' };
   }
-  return {
-    ok: false,
-    error: 'INTERNAL',
-    message: `Provider ${status.provider} rilevato ma integrazione signed URL non attivata in questa build. Il file non viene esposto tramite fallback pubblico.`,
-    status,
-  };
+  return { ok: true, status };
+}
+
+export async function getPdfStream(storageObjectKey: string | undefined | null): Promise<DownloadStreamResult> {
+  const status = getStorageStatus();
+  if (!status.configured) {
+    return {
+      ok: false,
+      error: 'UNCONFIGURED',
+      message: 'Storage privato non configurato. Download non disponibile.',
+    };
+  }
+  if (!storageObjectKey) {
+    return { ok: false, error: 'NOT_FOUND', message: 'Nessun documento collegato a questa pubblicazione.' };
+  }
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { get } = await import('@vercel/blob');
+      const res = await get(storageObjectKey, { access: 'private' });
+      if (!res) {
+        return { ok: false, error: 'NOT_FOUND', message: 'Documento non trovato sullo storage.' };
+      }
+      if (res.statusCode === 304) {
+        return { ok: false, error: 'INTERNAL', message: 'Documento non modificato (304 non supportato in streaming diretto).' };
+      }
+      const body = res.stream;
+      if (!body) return { ok: false, error: 'INTERNAL', message: 'Risposta storage vuota.' };
+      return {
+        ok: true,
+        stream: body as ReadableStream<Uint8Array>,
+        contentType: res.blob.contentType || 'application/pdf',
+        contentLength: typeof res.blob.size === 'number' ? res.blob.size : undefined,
+        fileName: extractFileName(res.blob.contentDisposition),
+      };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('not found') || msg.includes('NoSuchKey') || /404/i.test(msg)) {
+        return { ok: false, error: 'NOT_FOUND', message: 'Documento non trovato sullo storage.' };
+      }
+      return { ok: false, error: 'INTERNAL', message: `Errore download storage: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per lo streaming server.` };
+}
+
+export async function performPdfServerUpload(
+  storageKey: string,
+  data: ReadableStream | Uint8Array | Blob | Buffer,
+  opts: { contentType: string; fileName?: string },
+): Promise<ServerUploadResult> {
+  const status = getStorageStatus();
+  if (!status.configured) {
+    return {
+      ok: false,
+      error: 'UNCONFIGURED',
+      message: 'Storage privato non configurato. Nessun upload verrà eseguito.',
+    };
+  }
+  if (!ALLOWED_PDF_TYPES.includes(opts.contentType)) {
+    return { ok: false, error: 'INVALID_FILE', message: 'MIME type non valido. Solo application/pdf accettato.' };
+  }
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { put } = await import('@vercel/blob');
+      const putBody = data as Parameters<typeof put>[1];
+      const result = await put(storageKey, putBody, {
+        access: 'private',
+        contentType: opts.contentType,
+        addRandomSuffix: false,
+      });
+      return { ok: true, pathname: result.pathname, url: result.url };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return { ok: false, error: 'INTERNAL', message: `Errore upload Vercel Blob: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per upload.` };
+}
+
+export async function deletePdfFile(storageObjectKey: string | undefined | null): Promise<{ ok: boolean; error?: string; message?: string }> {
+  if (!storageObjectKey) return { ok: true };
+  const status = getStorageStatus();
+  if (!status.configured) return { ok: false, error: 'UNCONFIGURED', message: 'Storage non configurato.' };
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { del } = await import('@vercel/blob');
+      await del(storageObjectKey);
+      return { ok: true };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return { ok: false, error: 'INTERNAL', message: `Errore cancellazione Vercel Blob: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per delete.` };
+}
+
+function extractFileName(contentDisposition: string | undefined | null): string | null {
+  if (!contentDisposition) return null;
+  const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(contentDisposition);
+  if (!match || !match[1]) return null;
+  try {
+    return decodeURIComponent(match[1].replace(/\+/g, ' '));
+  } catch {
+    return match[1];
+  }
 }

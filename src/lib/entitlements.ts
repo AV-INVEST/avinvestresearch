@@ -1,3 +1,4 @@
+import type { Subscription } from '@prisma/client';
 import { siteConfig } from '@/config/siteConfig';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { normalizeEmail } from '@/lib/stripe/normalize';
@@ -6,6 +7,33 @@ import {
   fetchProgressSummary,
   fetchPublishedCoursesStructureForSlugs,
 } from '@/lib/db/course-queries';
+
+export type ResearchClubStatus =
+  | 'none'
+  | 'active'
+  | 'cancel_at_period_end'
+  | 'payment_problem'
+  | 'ended';
+
+export interface ResearchClubEntitlement {
+  status: ResearchClubStatus;
+  accessGranted: boolean;
+  message: string;
+  nextDate: Date | null;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  subscription: Subscription | null;
+}
+
+const RESEARCH_CLUB_DEFAULT: ResearchClubEntitlement = {
+  status: 'none',
+  accessGranted: false,
+  message: 'Nessun abbonamento AV Research Club attivo.',
+  nextDate: null,
+  stripeCustomerId: null,
+  stripeSubscriptionId: null,
+  subscription: null,
+};
 
 export type CourseStatus =
   | 'locked'
@@ -31,12 +59,14 @@ export interface EntitlementsState {
   courses: Record<string, CourseEntitlement>;
   anyAvailable: boolean;
   anyPending: boolean;
+  researchClub: ResearchClubEntitlement;
 }
 
 export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
   courses: {},
   anyAvailable: false,
   anyPending: false,
+  researchClub: RESEARCH_CLUB_DEFAULT,
 };
 
 function lockedEntitlement(slug: string, title: string): CourseEntitlement {
@@ -62,7 +92,7 @@ export function buildLockedEntitlements(): EntitlementsState {
     const cfg = siteConfig.courses[key];
     courses[cfg.slug] = lockedEntitlement(cfg.slug, cfg.title);
   }
-  return { courses, anyAvailable: false, anyPending: false };
+  return { courses, anyAvailable: false, anyPending: false, researchClub: RESEARCH_CLUB_DEFAULT };
 }
 
 interface PurchaseRow {
@@ -116,6 +146,137 @@ async function loadPurchases(userEmail: string): Promise<PurchaseRow[]> {
   } catch {
     return [];
   }
+}
+
+async function loadResearchClubSubscription(userEmail: string): Promise<Subscription | null> {
+  try {
+    const row = await prisma.subscription.findFirst({
+      where: {
+        userEmail,
+        product: 'AV_RESEARCH_CLUB',
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+    return row;
+  } catch {
+    return null;
+  }
+}
+
+export function researchClubEntitlementFromSubscription(
+  sub: Subscription | null,
+): ResearchClubEntitlement {
+  if (!sub) return RESEARCH_CLUB_DEFAULT;
+  const now = new Date();
+  const periodEnd = sub.currentPeriodEnd ?? null;
+  const withinPeriod = periodEnd ? periodEnd.getTime() > now.getTime() : false;
+  const paymentProblem = sub.paymentProblem === true;
+  const status = sub.status;
+
+  if (status === 'ENDED') {
+    return {
+      status: 'ended',
+      accessGranted: false,
+      message: 'Abbonamento terminato. Rinnova per continuare ad accedere alle ricerche.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  if (sub.cancelAtPeriodEnd) {
+    return {
+      status: 'cancel_at_period_end',
+      accessGranted: withinPeriod,
+      message: withinPeriod
+        ? 'Rinnovo automatico disattivato. L\u2019accesso resta attivo fino alla fine del periodo pagato.'
+        : 'Periodo pagato concluso.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  if (paymentProblem) {
+    return {
+      status: 'payment_problem',
+      accessGranted: withinPeriod,
+      message: withinPeriod
+        ? 'Problema con l\u2019ultimo pagamento. Aggiorna il metodo di pagamento per mantenere l\u2019accesso.'
+        : 'Accesso sospeso per problemi di pagamento.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  if (status === 'ACTIVE' || status === 'TRIALING') {
+    return {
+      status: 'active',
+      accessGranted: true,
+      message: 'Abbonamento attivo.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  if (status === 'PAST_DUE') {
+    return {
+      status: 'payment_problem',
+      accessGranted: withinPeriod,
+      message: withinPeriod
+        ? 'Pagamento in ritardo. Mantieni il metodo di pagamento aggiornato per non perdere l\u2019accesso.'
+        : 'Accesso sospeso per pagamento in ritardo.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  if (status === 'CANCELED') {
+    return {
+      status: withinPeriod ? 'cancel_at_period_end' : 'ended',
+      accessGranted: withinPeriod,
+      message: withinPeriod
+        ? 'Rinnovo automatico disattivato. L\u2019accesso resta attivo fino alla fine del periodo pagato.'
+        : 'Abbonamento terminato.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  if (status === 'INCOMPLETE') {
+    return {
+      status: 'payment_problem',
+      accessGranted: false,
+      message: 'Pagamento non completato. Completa l\u2019acquisto per attivare l\u2019abbonamento.',
+      nextDate: periodEnd,
+      stripeCustomerId: sub.stripeCustomerId ?? null,
+      stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+      subscription: sub,
+    };
+  }
+
+  return RESEARCH_CLUB_DEFAULT;
+}
+
+export async function getResearchClubEntitlement(
+  userId?: string,
+  email?: string | null,
+): Promise<ResearchClubEntitlement> {
+  if (!isDatabaseConfigured()) return RESEARCH_CLUB_DEFAULT;
+  const userEmail = await resolveUserEmail(userId, email);
+  if (!userEmail) return RESEARCH_CLUB_DEFAULT;
+  const sub = await loadResearchClubSubscription(userEmail);
+  return researchClubEntitlementFromSubscription(sub);
 }
 
 export async function getEntitlements(
@@ -228,7 +389,10 @@ export async function getEntitlements(
     };
   }
 
-  return { courses, anyAvailable, anyPending };
+  const researchClubSub = userEmail ? await loadResearchClubSubscription(userEmail) : null;
+  const researchClub = researchClubEntitlementFromSubscription(researchClubSub);
+
+  return { courses, anyAvailable, anyPending, researchClub };
 }
 
 export function getCourseEntitlement(
