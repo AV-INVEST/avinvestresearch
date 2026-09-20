@@ -307,7 +307,10 @@ export async function getMarketLensStream(
   if (status.provider === 'VERCEL_BLOB') {
     try {
       const { get } = await import('@vercel/blob');
-      const res = await get(storageKey, { access: 'private' });
+      const res = await get(storageKey, {
+        access: 'private',
+        useCache: false,
+      });
       if (!res) {
         return { ok: false, error: 'NOT_FOUND', message: 'File Market Lens non trovato sullo storage.' };
       }
