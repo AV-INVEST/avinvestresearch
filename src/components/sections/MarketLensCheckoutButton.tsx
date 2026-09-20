@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   AlertCircle,
   ArrowRight,
@@ -33,6 +34,11 @@ export default function MarketLensCheckoutButton({
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptDigital, setAcceptDigital] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const ctaLabel = label === 'resume' ? 'RIPRENDI PAGAMENTO' : 'Acquista a 39,90 €';
   const loadingLabel = label === 'resume' ? 'Verifica accesso...' : 'Verifica accesso...';
@@ -176,172 +182,175 @@ export default function MarketLensCheckoutButton({
         </div>
       ) : null}
 
-      {modalOpen ? (
-        <div
-          className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center p-0 sm:p-4"
-          role="presentation"
-        >
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={closeModal}
-            aria-hidden="true"
-          />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="market-lens-consent-title"
-            aria-describedby="market-lens-consent-desc"
-            className="relative z-10 w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl border border-av-line bg-av-surface p-5 sm:p-6 shadow-2xl animate-fade-in-up focus:outline-none"
-            tabIndex={-1}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <span className="eyebrow">Passaggio obbligatorio</span>
-                <h3
-                  id="market-lens-consent-title"
-                  className="mt-2 font-display text-xl sm:text-2xl font-semibold text-white"
-                >
-                  Conferma per AV Market Lens
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={closeModal}
-                disabled={submitting}
-                aria-label="Chiudi"
-                className="grid h-9 w-9 flex-none place-items-center rounded-full border border-av-line text-av-muted transition hover:border-white/20 hover:text-white disabled:opacity-50"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <p
-              id="market-lens-consent-desc"
-              className="mt-3 text-sm leading-relaxed text-av-muted"
-            >
-              Prima di procedere al pagamento, conferma le due opzioni seguenti.
-              Sono obbligatorie per completare l&apos;acquisto.
-            </p>
-
-            <div className="mt-5 space-y-3">
-              <label
-                htmlFor="market-lens-consent-terms"
-                className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
-                  acceptTerms
-                    ? 'border-av-green-deep/60 bg-av-green/10'
-                    : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
-                }`}
-              >
-                <input
-                  id="market-lens-consent-terms"
-                  type="checkbox"
-                  checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
-                  aria-required="true"
-                  className="mt-0.5 h-4 w-4 flex-none accent-av-green"
-                />
-                <span className="text-sm leading-relaxed text-white/90">
-                  Ho letto e accetto i{' '}
-                  <a
-                    href="/termini"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline decoration-av-green-deep underline-offset-2 hover:text-av-green"
-                  >
-                    Termini e condizioni generali
-                  </a>{' '}
-                  e il{' '}
-                  <a
-                    href="/disclaimer"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline decoration-av-green-deep underline-offset-2 hover:text-av-green"
-                  >
-                    Disclaimer
-                  </a>{' '}
-                  di AV-INVEST Research.
-                </span>
-              </label>
-
-              <label
-                htmlFor="market-lens-consent-digital"
-                className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
-                  acceptDigital
-                    ? 'border-av-green-deep/60 bg-av-green/10'
-                    : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
-                }`}
-              >
-                <input
-                  id="market-lens-consent-digital"
-                  type="checkbox"
-                  checked={acceptDigital}
-                  onChange={(e) => setAcceptDigital(e.target.checked)}
-                  aria-required="true"
-                  className="mt-0.5 h-4 w-4 flex-none accent-av-green"
-                />
-                <span className="text-sm leading-relaxed text-white/90">
-                  Richiedo espressamente la fornitura immediata del contenuto
-                  digitale (indicatore Pine Script e guida PDF di AV Market Lens)
-                  e riconosco che, per contenuti digitali non realizzati su
-                  supporto materiale forniti a seguito di mia richiesta esplicita,
-                  il diritto di recesso è escluso nei casi previsti dalla legge
-                  e, in ogni caso, la fornitura completa del contenuto estingue
-                  il diritto di recesso stesso.
-                </span>
-              </label>
-            </div>
-
+      {modalOpen && mounted
+        ? createPortal(
             <div
-              className={`mt-5 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${
-                bothChecked
-                  ? 'border-av-green-deep/40 bg-av-green/5 text-av-green'
-                  : 'border-av-line bg-av-bg/60 text-av-muted'
-              }`}
-              aria-live="polite"
+              className="fixed inset-0 z-[999] flex items-end justify-center sm:items-center p-0 sm:p-4"
+              role="presentation"
             >
-              <CheckCircle2
-                className={`mt-0.5 h-4 w-4 flex-none ${
-                  bothChecked ? 'text-av-green' : 'text-av-muted/60'
-                }`}
-              />
-              <p className="leading-relaxed">
-                {bothChecked
-                  ? 'Puoi continuare. Confermando, confermi anche le due dichiarazioni sopra.'
-                  : 'Seleziona entrambe le caselle per sbloccare il pulsante Continua.'}
-              </p>
-            </div>
-
-            <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3">
-              <button
-                type="button"
+              <div
+                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
                 onClick={closeModal}
-                disabled={submitting}
-                className="btn-ghost w-full sm:w-auto items-center justify-center disabled:opacity-50"
+                aria-hidden="true"
+              />
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="market-lens-consent-title"
+                aria-describedby="market-lens-consent-desc"
+                className="relative z-10 w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl border border-av-line bg-av-surface p-5 sm:p-6 shadow-2xl animate-fade-in-up focus:outline-none"
+                tabIndex={-1}
               >
-                Annulla
-              </button>
-              <button
-                type="button"
-                onClick={onSubmitConsent}
-                disabled={!bothChecked || submitting}
-                aria-disabled={!bothChecked || submitting}
-                className="btn-primary w-full sm:w-auto items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-glow-green-sm"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Avvio pagamento...
-                  </>
-                ) : (
-                  <>
-                    Continua al pagamento
-                    <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <span className="eyebrow">Passaggio obbligatorio</span>
+                    <h3
+                      id="market-lens-consent-title"
+                      className="mt-2 font-display text-xl sm:text-2xl font-semibold text-white"
+                    >
+                      Conferma per AV Market Lens
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    disabled={submitting}
+                    aria-label="Chiudi"
+                    className="grid h-9 w-9 flex-none place-items-center rounded-full border border-av-line text-av-muted transition hover:border-white/20 hover:text-white disabled:opacity-50"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <p
+                  id="market-lens-consent-desc"
+                  className="mt-3 text-sm leading-relaxed text-av-muted"
+                >
+                  Prima di procedere al pagamento, conferma le due opzioni seguenti.
+                  Sono obbligatorie per completare l&apos;acquisto.
+                </p>
+
+                <div className="mt-5 space-y-3">
+                  <label
+                    htmlFor="market-lens-consent-terms"
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
+                      acceptTerms
+                        ? 'border-av-green-deep/60 bg-av-green/10'
+                        : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
+                    }`}
+                  >
+                    <input
+                      id="market-lens-consent-terms"
+                      type="checkbox"
+                      checked={acceptTerms}
+                      onChange={(e) => setAcceptTerms(e.target.checked)}
+                      aria-required="true"
+                      className="mt-0.5 h-4 w-4 flex-none accent-av-green"
+                    />
+                    <span className="text-sm leading-relaxed text-white/90">
+                      Ho letto e accetto i{' '}
+                      <a
+                        href="/termini"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-av-green-deep underline-offset-2 hover:text-av-green"
+                      >
+                        Termini e condizioni generali
+                      </a>{' '}
+                      e il{' '}
+                      <a
+                        href="/disclaimer"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-av-green-deep underline-offset-2 hover:text-av-green"
+                      >
+                        Disclaimer
+                      </a>{' '}
+                      di AV-INVEST Research.
+                    </span>
+                  </label>
+
+                  <label
+                    htmlFor="market-lens-consent-digital"
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
+                      acceptDigital
+                        ? 'border-av-green-deep/60 bg-av-green/10'
+                        : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
+                    }`}
+                  >
+                    <input
+                      id="market-lens-consent-digital"
+                      type="checkbox"
+                      checked={acceptDigital}
+                      onChange={(e) => setAcceptDigital(e.target.checked)}
+                      aria-required="true"
+                      className="mt-0.5 h-4 w-4 flex-none accent-av-green"
+                    />
+                    <span className="text-sm leading-relaxed text-white/90">
+                      Richiedo espressamente la fornitura immediata del contenuto
+                      digitale (indicatore Pine Script e guida PDF di AV Market Lens)
+                      e riconosco che, per contenuti digitali non realizzati su
+                      supporto materiale forniti a seguito di mia richiesta esplicita,
+                      il diritto di recesso è escluso nei casi previsti dalla legge
+                      e, in ogni caso, la fornitura completa del contenuto estingue
+                      il diritto di recesso stesso.
+                    </span>
+                  </label>
+                </div>
+
+                <div
+                  className={`mt-5 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${
+                    bothChecked
+                      ? 'border-av-green-deep/40 bg-av-green/5 text-av-green'
+                      : 'border-av-line bg-av-bg/60 text-av-muted'
+                  }`}
+                  aria-live="polite"
+                >
+                  <CheckCircle2
+                    className={`mt-0.5 h-4 w-4 flex-none ${
+                      bothChecked ? 'text-av-green' : 'text-av-muted/60'
+                    }`}
+                  />
+                  <p className="leading-relaxed">
+                    {bothChecked
+                      ? 'Puoi continuare. Confermando, confermi anche le due dichiarazioni sopra.'
+                      : 'Seleziona entrambe le caselle per sbloccare il pulsante Continua.'}
+                  </p>
+                </div>
+
+                <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    disabled={submitting}
+                    className="btn-ghost w-full sm:w-auto items-center justify-center disabled:opacity-50"
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onSubmitConsent}
+                    disabled={!bothChecked || submitting}
+                    aria-disabled={!bothChecked || submitting}
+                    className="btn-primary w-full sm:w-auto items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-glow-green-sm"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Avvio pagamento...
+                      </>
+                    ) : (
+                      <>
+                        Continua al pagamento
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }
