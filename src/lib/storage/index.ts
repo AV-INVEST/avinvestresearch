@@ -384,6 +384,7 @@ export async function serverUploadMarketLens(
         access: 'private',
         contentType: kind === 'indicator' ? 'text/plain' : opts.contentType || 'application/pdf',
         addRandomSuffix: false,
+        allowOverwrite: true,
       });
 
       const savedSize = typeof (result as any).size === 'number' ? (result as any).size : undefined;
