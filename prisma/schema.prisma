@@ -209,3 +209,19 @@ model ResearchDoc {
   @@index([status, publishedAt(sort: Desc)])
   @@index([status, publicationDate(sort: Desc)])
 }
+
+model DownloadRateLimitBucket {
+  id                String   @id @default(cuid())
+  userEmail         String   @db.VarChar(255)
+  scope             String   @db.VarChar(64)
+  resourceKey       String   @db.VarChar(256)
+  windowStart       DateTime
+  windowSizeMinutes Int
+  count             Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userEmail, scope, resourceKey, windowStart, windowSizeMinutes], name: "RateLimitBucket_unique_key")
+  @@index([userEmail, scope])
+  @@index([windowStart])
+}

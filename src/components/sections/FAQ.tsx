@@ -19,7 +19,7 @@ const faqs: FAQItem[] = [
   {
     question: 'Come funziona il Research Club?',
     answer:
-      'È un ambiente riservato con approfondimenti settimanali su mercati, aziende e settori: analisi documentate, scenari, catalizzatori e rischi. Non è un segnale, non sostituisce la tua valutazione e non promette risultati. È materiale di ricerca e studio, pensato per approfondire e allenare il processo decisionale.',
+      'È un ambiente riservato con approfondimenti settimanali su mercati, aziende e settori: analisi documentate, scenari, catalizzatori e rischi. L\'area membri contiene un archivio rotativo delle 5 pubblicazioni più recenti. Non è un segnale, non sostituisce la tua valutazione e non promette risultati. È materiale di ricerca e studio, pensato per approfondire e allenare il processo decisionale.',
   },
   {
     question: 'Il servizio include segnali di acquisto o vendita?',

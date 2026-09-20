@@ -301,7 +301,12 @@ export default function TerminiPage() {
           abbonamento ricorrente con cadenza mensile. L&apos;abbonamento
           include l&apos;accesso al materiale riservato pubblicato per i
           membri (ricerche PDF, analisi, approfondimenti) secondo quanto
-          descritto nella pagina di presentazione del servizio. Il numero di
+          descritto nella pagina di presentazione del servizio. L&apos;area
+          membri rende disponibili le 5 pubblicazioni più recenti del Research
+          Club secondo un archivio rotativo. Alla pubblicazione di un nuovo
+          contenuto, la pubblicazione più vecchia può essere rimossa
+          dall&apos;area riservata e non è garantita la disponibilità
+          permanente dei contenuti precedentemente pubblicati. Il numero di
           pubblicazioni, gli argomenti trattati e la frequenza di aggiornamento
           dell&apos;archivio possono variare nel tempo, purch&eacute; il
           servizio resti coerente con la finalit&agrave; generale di ricerca

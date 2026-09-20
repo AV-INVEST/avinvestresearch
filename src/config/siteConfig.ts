@@ -99,11 +99,12 @@ export const siteConfig = {
       'Un ambiente riservato dedicato a ricerca, scenari di mercato e approfondimenti documentati su aziende Small & Mid Cap. Nessun segnale di trading, nessuna promessa.',
     priceMonthly: 19.9,
     currency: 'EUR',
+    archiveLimit: 5,
     features: [
       'Weekly Market Radar',
       'Small & Mid Cap Focus',
       'Scenari, catalizzatori e rischi',
-      'Archivio ricerche recenti',
+      'Archivio ultime 5 ricerche',
     ],
     notes: [
       'Disdici quando vuoi. In caso di disdetta, l\'accesso resta attivo fino alla fine del periodo già pagato.',

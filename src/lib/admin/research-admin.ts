@@ -14,10 +14,10 @@ import {
   type AuthorizedReadResult,
 } from '@/lib/storage';
 import type { Prisma } from '@prisma/client';
+import { siteConfig } from '@/config/siteConfig';
 
 const SORT_ASC: Prisma.SortOrder = 'asc';
 const SORT_DESC: Prisma.SortOrder = 'desc';
-const MAX_PUBLISHED_DOCS = 12;
 
 export interface ActionResult {
   ok: boolean;
@@ -235,9 +235,10 @@ async function enforceMaxPublishedDocs(): Promise<string[]> {
   const warnings: string[] = [];
   if (!isDatabaseConfigured()) return warnings;
   try {
+    const limit = siteConfig.researchClub.archiveLimit;
     const count = await prisma.researchDoc.count({ where: { status: 'PUBLISHED' } });
-    if (count <= MAX_PUBLISHED_DOCS) return warnings;
-    const excess = count - MAX_PUBLISHED_DOCS;
+    if (count <= limit) return warnings;
+    const excess = count - limit;
     const oldest = await prisma.researchDoc.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: [

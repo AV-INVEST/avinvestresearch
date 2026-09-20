@@ -5,6 +5,7 @@ import { normalizeEmail } from '@/lib/stripe/normalize';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { getResearchClubEntitlement } from '@/lib/entitlements';
 import { getPdfStream } from '@/lib/storage';
+import { checkAndConsumeDownload } from '@/lib/security/download-rate-limit';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -33,7 +34,40 @@ export async function GET(
   }
 
   const userEmail = normalizeEmail(session.user.email);
+  if (!userEmail) {
+    return new NextResponse('Account non valido', { status: 400 });
+  }
   const isAdmin = isAdminSession(session as any);
+
+  if (!isAdmin) {
+    const rateResult = await checkAndConsumeDownload(userEmail, [
+      {
+        scope: 'research-club',
+        resourceKey: `research:${id}`,
+        windowSizeMinutes: 60,
+        maxCount: 2,
+      },
+      {
+        scope: 'research-club',
+        resourceKey: 'global-day',
+        windowSizeMinutes: 1440,
+        maxCount: 8,
+      },
+    ]);
+    if (!rateResult.allowed) {
+      const retryAfter = rateResult.retryAfterSeconds ?? 3600;
+      return new NextResponse(
+        'Hai raggiunto il limite temporaneo di consultazione. Riprova più tardi.',
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(retryAfter),
+            'Cache-Control': 'private, no-store',
+          },
+        },
+      );
+    }
+  }
 
   const doc = await prisma.researchDoc.findUnique({
     where: { id },

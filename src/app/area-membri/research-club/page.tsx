@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { getResearchClubEntitlement } from '@/lib/entitlements';
+import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
 import {
@@ -123,9 +124,9 @@ export default async function ResearchClubPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className={`h-4 w-4 flex-none mt-0.5 ${GOLD.text}`} />
                   <span>
-                    <strong className="text-white">Archivio aggiornato</strong>
+                    <strong className="text-white">Archivio ultime 5 ricerche</strong>
                     <span className="text-av-muted">
-                      {' '}— con le pubblicazioni recenti del Research Club, sempre disponibili per gli abbonati attivi.
+                      {' '}— archivio rotativo con le 5 pubblicazioni più recenti del Research Club, sempre disponibili per gli abbonati attivi.
                     </span>
                   </span>
                 </li>
@@ -197,7 +198,7 @@ export default async function ResearchClubPage() {
           pdfFileSizeBytes: true,
           storageObjectKey: true,
         },
-        take: 24,
+        take: siteConfig.researchClub.archiveLimit,
       })
     : [];
 
@@ -218,12 +219,10 @@ export default async function ResearchClubPage() {
             AV Research Club · Archivio ricerche
           </p>
           <h1 className="mt-3 font-display text-2xl font-semibold text-white sm:text-3xl">
-            Ricerche recenti
+            Le 5 pubblicazioni più recenti
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-av-muted sm:text-base max-w-2xl">
-            Le ultime pubblicazioni dell&apos;AV Research Club. L&apos;archivio
-            viene aggiornato regolarmente e mantiene le ricerche recenti
-            pubblicate per i membri attivi.
+            Le 5 pubblicazioni più recenti dell&apos;AV Research Club. Archivio rotativo delle 5 ricerche più recenti. Quando viene pubblicata una nuova ricerca, la più vecchia viene rimossa dall&apos;area membri.
           </p>
         </div>
 

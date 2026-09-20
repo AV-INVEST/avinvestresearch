@@ -46,6 +46,7 @@ export default function DownloadButton({
   const Icon = KIND_ICON[kind];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rateLimited, setRateLimited] = useState(false);
   const [cooldownLeft, setCooldownLeft] = useState(0);
   const cooldownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -81,6 +82,7 @@ export default function DownloadButton({
     if (disabled) return;
     setLoading(true);
     setError(null);
+    setRateLimited(false);
     let success = false;
     try {
       const resp = await fetch(KIND_ENDPOINT[kind], {
@@ -92,6 +94,13 @@ export default function DownloadButton({
         if (resp.status === 401) {
           window.location.assign(
             '/login?callbackUrl=' + encodeURIComponent('/area-membri/prodotti'),
+          );
+          return;
+        }
+        if (resp.status === 429) {
+          setRateLimited(true);
+          setError(
+            'Per proteggere il servizio puoi scaricare questo file al massimo 3 volte ogni ora. Riprova più tardi.',
           );
           return;
         }
@@ -204,7 +213,9 @@ export default function DownloadButton({
         <div className="flex items-start gap-2 rounded-xl border border-red-500/40 bg-red-500/5 px-3 py-2 text-xs sm:text-sm text-red-200">
           <AlertCircle className="mt-0.5 h-4 w-4 flex-none text-red-400" />
           <div className="min-w-0">
-            <p className="font-semibold">Download non riuscito</p>
+            <p className="font-semibold">
+              {rateLimited ? 'Limite temporaneo raggiunto' : 'Download non riuscito'}
+            </p>
             <p className="mt-1 leading-relaxed break-words">{error}</p>
           </div>
         </div>
