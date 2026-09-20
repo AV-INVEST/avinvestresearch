@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Mail, Linkedin, Instagram, Cookie } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
@@ -15,7 +16,20 @@ const legalLinks = [
 ];
 
 export default function Footer() {
-  const socials = [
+  const socials: Array<
+    | {
+        href: string;
+        label: string;
+        Icon: typeof Linkedin;
+        svg?: undefined;
+      }
+    | {
+        href: string;
+        label: string;
+        Icon?: undefined;
+        svg: ReactNode;
+      }
+  > = [
     {
       href: siteConfig.social.linkedin,
       label: 'LinkedIn (link esterno)',
@@ -25,6 +39,15 @@ export default function Footer() {
       href: siteConfig.social.instagram,
       label: 'Instagram (link esterno)',
       Icon: Instagram,
+    },
+    {
+      href: 'https://www.tiktok.com/@av.invest.research',
+      label: 'TikTok AV-INVEST Research',
+      svg: (
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
+          <path d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.148 3.02h.01v3.28a6.76 6.76 0 0 0 3.74 1.16v3.04a9.46 9.46 0 0 1-3.74-.76v6.71A7.42 7.42 0 1 1 7.7 12.97v3.18a4.28 4.28 0 0 0 3 3.89v.01A4.25 4.25 0 0 0 15.61 14V8.5a6.77 6.77 0 0 0 3.77 1.13v-3.05a9.46 9.46 0 0 1-2.78-.76z" />
+        </svg>
+      ),
     },
   ];
 
@@ -54,7 +77,7 @@ export default function Footer() {
               {siteConfig.description}
             </p>
             <div className="mt-6 flex items-center gap-3">
-              {socials.map(({ href, label, Icon }) => (
+              {socials.map(({ href, label, Icon, svg }) => (
                 <a
                   key={label}
                   href={href}
@@ -63,7 +86,7 @@ export default function Footer() {
                   className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-line bg-av-surface/60 text-av-muted transition-colors hover:border-av-green-deep/60 hover:text-av-green"
                   aria-label={label}
                 >
-                  <Icon className="h-4 w-4" />
+                  {Icon ? <Icon className="h-4 w-4" /> : svg}
                 </a>
               ))}
             </div>

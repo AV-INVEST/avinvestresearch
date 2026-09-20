@@ -99,8 +99,8 @@ export default function DownloadButton({
 
   const variantClass =
     variant === 'primary'
-      ? 'btn-primary w-full items-start justify-between gap-3 text-left shadow-glow-green-sm'
-      : 'btn-ghost w-full items-start justify-between gap-3 text-left border border-av-line hover:border-av-green-deep/40';
+      ? 'w-full flex-col sm:flex-row sm:items-start sm:justify-between gap-3 text-left sm:text-left text-center bg-av-green hover:bg-av-green-deep text-white shadow-glow-green-sm hover:shadow-glow-green-md transition-all duration-200'
+      : 'btn-ghost w-full flex-col sm:flex-row sm:items-start sm:justify-between gap-3 text-left border border-av-line hover:border-av-green-deep/40';
 
   return (
     <div className={`w-full space-y-2 ${className}`}>
@@ -111,26 +111,42 @@ export default function DownloadButton({
         aria-busy={loading}
         className={`${variantClass} !py-3 !px-4 sm:!py-4 sm:!px-5 disabled:opacity-60 disabled:cursor-not-allowed`}
       >
-        <div className="flex items-start gap-3 min-w-0">
-          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl border border-av-green-deep/40 bg-av-green/10 text-av-green">
+        <div className="flex items-start sm:items-start items-center sm:justify-start justify-center gap-3 min-w-0 w-full sm:w-auto">
+          <span
+            className={`grid h-9 w-9 flex-none place-items-center rounded-xl border ${
+              variant === 'primary'
+                ? 'border-white/20 bg-white/15 text-white'
+                : 'border-av-green-deep/40 bg-av-green/10 text-av-green'
+            }`}
+          >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Icon className="h-4 w-4" />
             )}
           </span>
-          <div className="min-w-0">
+          <div className="min-w-0 text-left sm:text-left text-center">
             <p className="font-semibold text-white text-sm sm:text-base">
               {label}
             </p>
             {subLabel ? (
-              <p className="mt-0.5 text-xs text-av-muted/90 leading-relaxed">
+              <p
+                className={`mt-0.5 text-xs leading-relaxed ${
+                  variant === 'primary' ? 'text-white/85' : 'text-av-muted/90'
+                }`}
+              >
                 {subLabel}
               </p>
             ) : null}
           </div>
         </div>
-        <span className="flex-none inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/90 self-center">
+        <span
+          className={`flex-none inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider sm:w-auto w-full sm:max-w-none max-w-[220px] mx-auto sm:mx-0 ${
+            variant === 'primary'
+              ? 'border-white/20 bg-white/10 text-white'
+              : 'border-white/10 text-white/90'
+          }`}
+        >
           <Download className="h-3.5 w-3.5" />
           DOWNLOAD
         </span>

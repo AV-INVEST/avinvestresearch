@@ -175,6 +175,18 @@ export default async function MyProductsPage({
                   </div>
                 </div>
 
+                <div className="sm:hidden mt-4 mb-4 flex items-start gap-2 rounded-xl border border-av-line bg-av-bg-2/60 px-3 py-2.5">
+                  <Info className="mt-0.5 h-4 w-4 flex-none text-av-green" />
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-av-green">
+                      Installazione consigliata da computer
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-av-muted/90">
+                      Puoi scaricare i file anche da smartphone, ma per installare AV Market Lens utilizza TradingView da browser desktop e segui la guida PDF.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <DownloadButton
                     kind="indicator"
