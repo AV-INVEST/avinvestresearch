@@ -11,7 +11,7 @@ import {
 } from '@/lib/stripe/subscription-sync';
 import type { PurchaseStatus } from '@prisma/client';
 import { normalizeEmail } from '@/lib/stripe/normalize';
-import { isDatabaseConfigured } from '@/lib/db/prisma';
+import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -124,6 +124,23 @@ async function handleAsyncPaymentFailed(session: Stripe.Checkout.Session): Promi
   });
 }
 
+async function handleCheckoutSessionExpired(session: Stripe.Checkout.Session): Promise<void> {
+  if (!isDatabaseConfigured()) return;
+  const mode = session.mode;
+  if (mode === 'subscription') return;
+  try {
+    await prisma.purchase.updateMany({
+      where: {
+        checkoutSessionId: session.id,
+        status: 'pending',
+      },
+      data: { status: 'failed' },
+    });
+  } catch (err) {
+    console.warn('[stripe:webhook] checkout.session.expired update failed', session.id, err);
+  }
+}
+
 export async function POST(req: Request): Promise<Response> {
   if (!isDatabaseConfigured()) {
     return NextResponse.json(
@@ -183,6 +200,11 @@ export async function POST(req: Request): Promise<Response> {
       case 'checkout.session.async_payment_failed': {
         const session = event.data.object as Stripe.Checkout.Session;
         await handleAsyncPaymentFailed(session);
+        break;
+      }
+      case 'checkout.session.expired': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        await handleCheckoutSessionExpired(session);
         break;
       }
       case 'charge.refunded': {

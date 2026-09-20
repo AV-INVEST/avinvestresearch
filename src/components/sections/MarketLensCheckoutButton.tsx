@@ -11,17 +11,31 @@ import {
 } from 'lucide-react';
 
 type ButtonState = 'idle' | 'loading' | 'error';
+type LabelVariant = 'buy' | 'resume';
+
+interface Props {
+  label?: LabelVariant;
+  compact?: boolean;
+  className?: string;
+}
 
 const CONSENT_TERMS_VERSION = 'v1';
 const CONSENT_DIGITAL_WITHDRAWAL_VERSION = 'v1';
 
-export default function MarketLensCheckoutButton() {
+export default function MarketLensCheckoutButton({
+  label = 'buy',
+  compact = false,
+  className = '',
+}: Props) {
   const [state, setState] = useState<ButtonState>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptDigital, setAcceptDigital] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const ctaLabel = label === 'resume' ? 'RIPRENDI PAGAMENTO' : 'Acquista a 39,90 €';
+  const loadingLabel = label === 'resume' ? 'Verifica accesso...' : 'Verifica accesso...';
 
   const onOpen = useCallback(async () => {
     setState('loading');
@@ -126,24 +140,26 @@ export default function MarketLensCheckoutButton() {
   const bothChecked = acceptTerms && acceptDigital;
 
   return (
-    <div className="w-full space-y-3">
+    <div className={`w-full space-y-3 ${className}`}>
       <button
         type="button"
         onClick={onOpen}
         disabled={isLoading}
         aria-busy={isLoading}
-        className="btn-primary w-full items-center justify-center gap-2 shadow-glow-green-sm disabled:opacity-60 disabled:cursor-not-allowed"
+        className={`btn-primary w-full items-center justify-center gap-2 shadow-glow-green-sm disabled:opacity-60 disabled:cursor-not-allowed ${
+          compact ? '!py-2 !px-3.5 text-[12px]' : ''
+        }`}
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-5 w-5 animate-spin" />
-            Verifica accesso...
+            <Loader2 className={compact ? 'h-3.5 w-3.5 animate-spin' : 'h-5 w-5 animate-spin'} />
+            {loadingLabel}
           </>
         ) : (
           <>
-            <CreditCard className="h-5 w-5" />
-            Acquista a 39,90 €
-            <ArrowRight className="h-4 w-4" />
+            <CreditCard className={compact ? 'h-3.5 w-3.5' : 'h-5 w-5'} />
+            {ctaLabel}
+            <ArrowRight className={compact ? 'h-3.5 w-3.5' : 'h-4 w-4'} />
           </>
         )}
       </button>

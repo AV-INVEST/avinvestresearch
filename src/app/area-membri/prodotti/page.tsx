@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import DownloadButton from '@/components/products/DownloadButton';
+import MarketLensCheckoutButton from '@/components/sections/MarketLensCheckoutButton';
 
 export const metadata: Metadata = {
   title: 'I miei prodotti',
@@ -203,25 +204,26 @@ export default async function MyProductsPage({
                 </p>
               </div>
             ) : marketLens.status === 'payment_pending' ? (
-              <div className="mt-6 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4 sm:p-5">
+              <div className="mt-6 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4 sm:p-5 space-y-4">
                 <div className="flex items-start gap-3">
                   <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-yellow-400/40 bg-yellow-400/10 text-yellow-300">
                     <Clock className="h-5 w-5 animate-pulse" />
                   </span>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-yellow-200">
                       Pagamento in fase di elaborazione
                     </p>
                     <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                      Stiamo aspettando la conferma definitiva da Stripe. Nella
-                      maggior parte dei casi bastano pochi secondi. Resta in questa
-                      pagina: si aggiornerà automaticamente.
+                      Stiamo aspettando la conferma definitiva da Stripe. Se hai
+                      abbandonato il checkout, puoi riprenderlo o riprovare qui
+                      sotto.
                     </p>
                     <div className="mt-4">
                       <PendingPaymentRefresher initialAnyPending compact />
                     </div>
                   </div>
                 </div>
+                <MarketLensCheckoutButton label="resume" />
               </div>
             ) : (
               <div className="mt-6 rounded-2xl border border-av-line bg-av-bg-2/60 p-4 sm:p-5">

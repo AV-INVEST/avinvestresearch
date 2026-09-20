@@ -193,21 +193,25 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                 {entitlements === undefined || isLocked ? (
                   <CourseCheckoutButton slug={course.slug} />
                 ) : isPending ? (
-                  <div
-                    role="status"
-                    aria-live="polite"
-                    className="mt-6 rounded-xl border border-av-yellow-deep/40 bg-av-yellow/5 px-4 py-3 text-sm text-av-yellow"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold">Stiamo confermando il pagamento</p>
-                        <p className="mt-0.5 text-xs text-av-yellow/80">
-                          La conferma richiede di solito meno di 30 secondi.
-                        </p>
-                        <PendingPaymentRefresher initialAnyPending compact />
+                  <div className="mt-6 space-y-3">
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      className="rounded-xl border border-av-yellow-deep/40 bg-av-yellow/5 px-4 py-3 text-sm text-av-yellow"
+                    >
+                      <div className="flex items-start gap-3">
+                        <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold">Stiamo confermando il pagamento</p>
+                          <p className="mt-0.5 text-xs text-av-yellow/80">
+                            La conferma richiede di solito meno di 30 secondi. Se hai
+                            abbandonato il checkout, puoi riprenderlo qui sotto.
+                          </p>
+                          <PendingPaymentRefresher initialAnyPending compact />
+                        </div>
                       </div>
                     </div>
+                    <CourseCheckoutButton slug={course.slug} />
                   </div>
                 ) : isOwned && ownedHref ? (
                   <Link

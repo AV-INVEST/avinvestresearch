@@ -6,6 +6,7 @@ import { isAdminSession } from '@/lib/auth/admin';
 import { getEntitlements, getResearchClubEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
 import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
+import MarketLensCheckoutButton from '@/components/sections/MarketLensCheckoutButton';
 import {
   BookOpenCheck,
   CheckCircle2,
@@ -481,7 +482,7 @@ export default async function PanoramicaPage() {
                       Conferma in corso
                     </p>
                     <p className="mt-1 text-sm font-semibold text-yellow-100">
-                      Attendi la conferma del pagamento.
+                      Riprendi o riprova il pagamento.
                     </p>
                   </div>
                   <span className="inline-flex items-center gap-1 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-yellow-300">
@@ -489,6 +490,7 @@ export default async function PanoramicaPage() {
                   </span>
                 </div>
                 <div className="mt-3 flex flex-col gap-2">
+                  <MarketLensCheckoutButton label="resume" compact />
                   <Link
                     href="/area-membri/prodotti?checkout=success"
                     className="btn-ghost !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 flex-1"

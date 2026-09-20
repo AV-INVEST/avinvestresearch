@@ -109,18 +109,21 @@ export default async function MarketLens() {
                   </Link>
                 </div>
               ) : entitlement.status === 'payment_pending' ? (
-                <div className="flex flex-wrap items-center gap-3 pt-1 w-full max-w-md">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-300">
-                    <Clock className="h-3.5 w-3.5 animate-pulse" />
-                    Pagamento in corso
-                  </span>
-                  <Link
-                    href="/area-membri/prodotti"
-                    className="btn-ghost items-center gap-2"
-                  >
-                    Controlla lo stato
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
+                <div className="w-full max-w-md pt-1 space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-300">
+                      <Clock className="h-3.5 w-3.5 animate-pulse" />
+                      Pagamento in corso
+                    </span>
+                    <Link
+                      href="/area-membri/prodotti"
+                      className="btn-ghost items-center gap-2 !py-2.5 !px-4 text-sm"
+                    >
+                      Controlla lo stato
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                  <MarketLensCheckoutButton label="resume" />
                 </div>
               ) : (
                 <div className="w-full max-w-md pt-1">
@@ -163,19 +166,14 @@ export default async function MarketLens() {
                       />
                       <div className="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
                         <div className="w-full max-w-md">
-                          <div className="flex items-center justify-between border-b border-av-line pb-3">
-                            <div>
-                              <p className="text-[11px] uppercase tracking-widest text-av-muted">
-                                Anteprima indicatore
-                              </p>
-                              <p className="mt-1 font-display text-lg font-semibold text-white">
-                                {ml.title}
-                              </p>
-                            </div>
+                          <div className="flex items-center justify-between border-b border-av-line py-2 sm:py-3">
+                            <p className="font-display text-base sm:text-lg font-semibold text-white leading-none">
+                              {ml.title}
+                            </p>
                             <div className="flex items-center gap-2">
                               <span className="h-2 w-2 rounded-full bg-av-green animate-pulse" />
-                              <span className="font-mono text-[11px] uppercase tracking-widest text-av-green">
-                                Live
+                              <span className="font-mono text-[11px] uppercase tracking-widest text-av-green leading-none">
+                                LIVE
                               </span>
                             </div>
                           </div>
@@ -209,16 +207,31 @@ export default async function MarketLens() {
 
                   {ml.features.map((f) => {
                     const Icon = featureIcons[f.key] ?? Sparkles;
+                    const isLevels = f.key === 'levels';
                     return (
                       <div
                         key={f.key}
-                        className="group rounded-2xl border border-av-line bg-av-bg-2/40 p-4 sm:p-5 transition-all duration-300 hover:border-av-green-deep/40 hover:bg-av-surface"
+                        className={`group rounded-2xl p-4 sm:p-5 transition-all duration-300 ${
+                          isLevels
+                            ? 'border border-[#C9A961]/35 bg-[#C9A961]/[0.05] hover:border-[#D4B46A]/55 hover:bg-[#C9A961]/[0.08] shadow-[0_0_0_1px_rgba(201,169,97,0.05),0_4px_24px_-10px_rgba(201,169,97,0.25)] hover:shadow-[0_0_0_1px_rgba(212,180,106,0.08),0_6px_28px_-8px_rgba(201,169,97,0.35)]'
+                            : 'border border-av-line bg-av-bg-2/40 hover:border-av-green-deep/40 hover:bg-av-surface'
+                        }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="grid h-10 w-10 place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm transition-all">
+                          <div
+                            className={`grid h-10 w-10 place-items-center rounded-xl transition-all ${
+                              isLevels
+                                ? 'border border-[#C9A961]/45 bg-[#C9A961]/12 text-[#D4B46A] group-hover:shadow-[0_0_12px_rgba(201,169,97,0.25)]'
+                                : 'border border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
+                            }`}
+                          >
                             <Icon className="h-5 w-5" />
                           </div>
-                          <h3 className="font-display text-base sm:text-lg font-semibold text-white">
+                          <h3
+                            className={`font-display text-base sm:text-lg font-semibold ${
+                              isLevels ? 'text-[#D4B46A]' : 'text-white'
+                            }`}
+                          >
                             {f.title}
                           </h3>
                         </div>
