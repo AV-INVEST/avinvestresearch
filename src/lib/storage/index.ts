@@ -275,3 +275,118 @@ function extractFileName(contentDisposition: string | undefined | null): string 
     return match[1];
   }
 }
+
+export const MARKET_LENS_STORAGE_KEYS = Object.freeze({
+  indicator: 'products/av-market-lens/AV-Market-Lens.pine',
+  guide: 'products/av-market-lens/AV-Market-Lens-Guida.pdf',
+} as const);
+
+export const MARKET_LENS_SIZE_LIMITS = Object.freeze({
+  indicator: 2 * 1024 * 1024,
+  guide: 25 * 1024 * 1024,
+} as const);
+
+export type MarketLensKind = keyof typeof MARKET_LENS_STORAGE_KEYS;
+
+export function getMarketLensStorageKey(kind: MarketLensKind): string {
+  return MARKET_LENS_STORAGE_KEYS[kind];
+}
+
+export async function getMarketLensStream(
+  kind: MarketLensKind,
+): Promise<DownloadStreamResult> {
+  const status = getStorageStatus();
+  if (!status.configured) {
+    return {
+      ok: false,
+      error: 'UNCONFIGURED',
+      message: 'Storage privato non configurato. Download non disponibile.',
+    };
+  }
+  const storageKey = getMarketLensStorageKey(kind);
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { get } = await import('@vercel/blob');
+      const res = await get(storageKey, { access: 'private' });
+      if (!res) {
+        return { ok: false, error: 'NOT_FOUND', message: 'File Market Lens non trovato sullo storage.' };
+      }
+      if (res.statusCode === 304) {
+        return { ok: false, error: 'INTERNAL', message: 'Risposta 304 non supportata in streaming diretto.' };
+      }
+      const body = res.stream;
+      if (!body) return { ok: false, error: 'INTERNAL', message: 'Risposta storage vuota.' };
+      const fallbackContentType = kind === 'indicator' ? 'text/plain' : 'application/pdf';
+      return {
+        ok: true,
+        stream: body as ReadableStream<Uint8Array>,
+        contentType: res.blob.contentType || fallbackContentType,
+        contentLength: typeof res.blob.size === 'number' ? res.blob.size : undefined,
+        fileName: extractFileName(res.blob.contentDisposition),
+      };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('not found') || msg.includes('NoSuchKey') || /404/i.test(msg)) {
+        return { ok: false, error: 'NOT_FOUND', message: 'File Market Lens non trovato sullo storage.' };
+      }
+      return { ok: false, error: 'INTERNAL', message: `Errore download storage: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per lo streaming server.` };
+}
+
+export async function serverUploadMarketLens(
+  kind: MarketLensKind,
+  data: ReadableStream | Uint8Array | Blob | Buffer,
+  opts: { contentType: string; fileName?: string; contentLength?: number },
+): Promise<ServerUploadResult> {
+  const status = getStorageStatus();
+  if (!status.configured) {
+    return {
+      ok: false,
+      error: 'UNCONFIGURED',
+      message: 'Storage privato non configurato. Nessun upload verrà eseguito.',
+    };
+  }
+  const maxBytes = MARKET_LENS_SIZE_LIMITS[kind];
+  if (typeof opts.contentLength === 'number' && opts.contentLength > maxBytes) {
+    const mb = (maxBytes / (1024 * 1024)).toFixed(0);
+    return { ok: false, error: 'INVALID_FILE', message: `File troppo grande. Massimo ${mb} MB.` };
+  }
+  if (kind === 'guide') {
+    const allowed = ['application/pdf'];
+    if (opts.contentType && !allowed.includes(opts.contentType)) {
+      return { ok: false, error: 'INVALID_FILE', message: 'MIME type non valido. Solo application/pdf accettato per la guida.' };
+    }
+  } else {
+    const allowed = ['text/plain', 'application/octet-stream', 'text/pine', 'application/pine', ''];
+    if (opts.contentType && !allowed.includes(opts.contentType)) {
+      const { fileName } = opts;
+      const fromName = fileName ? /\.pine$/i.test(fileName.trim()) : false;
+      if (!fromName) {
+        return {
+          ok: false,
+          error: 'INVALID_FILE',
+          message: 'MIME type non valido per l\'indicatore. Usa un file .pine (text/plain o application/octet-stream).',
+        };
+      }
+    }
+  }
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { put } = await import('@vercel/blob');
+      const storageKey = getMarketLensStorageKey(kind);
+      const putBody = data as Parameters<typeof put>[1];
+      const result = await put(storageKey, putBody, {
+        access: 'private',
+        contentType: kind === 'indicator' ? 'text/plain' : opts.contentType || 'application/pdf',
+        addRandomSuffix: false,
+      });
+      return { ok: true, pathname: result.pathname, url: result.url };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return { ok: false, error: 'INTERNAL', message: `Errore upload Vercel Blob: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per upload.` };
+}

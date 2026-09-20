@@ -11,6 +11,9 @@ export const dynamic = 'force-dynamic';
 
 interface CheckoutPayload {
   slug?: unknown;
+  consentTermsVersion?: unknown;
+  consentDigitalWithdrawalVersion?: unknown;
+  consentAcceptedAt?: unknown;
 }
 
 type StripeCheckoutSession = Stripe.Checkout.Session;
@@ -76,12 +79,15 @@ function buildSafeStripeError(err: unknown): SafeStripeErrorLog {
   return out;
 }
 
-function ownedRedirectResponse() {
+function ownedRedirectResponse(slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens') {
+  const redirectTo = slug === 'market-lens'
+    ? '/area-membri/prodotti'
+    : '/area-membri/percorsi';
+  const error = slug === 'market-lens'
+    ? 'Hai gia acquistato AV Market Lens.'
+    : 'Hai gia acquistato questo percorso.';
   return NextResponse.json(
-    {
-      error: 'Hai gia acquistato questo percorso.',
-      redirectTo: '/area-membri/percorsi',
-    },
+    { error, redirectTo },
     { status: 409 },
   );
 }
@@ -190,6 +196,11 @@ async function createPendingPurchase(
   checkoutSessionId: string,
   amountTotal: number,
   currency: string,
+  opts?: {
+    consentTermsVersion?: string | null;
+    consentDigitalWithdrawalVersion?: string | null;
+    consentAcceptedAt?: Date | null;
+  },
 ): Promise<void> {
   if (!isDatabaseConfigured()) return;
   try {
@@ -201,6 +212,9 @@ async function createPendingPurchase(
         amountTotal,
         currency: String(currency || 'EUR').toUpperCase(),
         status: 'pending',
+        consentTermsVersion: opts?.consentTermsVersion ?? undefined,
+        consentDigitalWithdrawalVersion: opts?.consentDigitalWithdrawalVersion ?? undefined,
+        consentAcceptedAt: opts?.consentAcceptedAt ?? undefined,
       },
       select: { id: true },
     });
@@ -244,7 +258,15 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
       const fd = await req.formData();
       const slugRaw = fd.get('slug');
       const slug = typeof slugRaw === 'string' ? slugRaw : undefined;
-      payload = { slug };
+      const consentTermsVersion = fd.get('consentTermsVersion');
+      const consentDigitalWithdrawalVersion = fd.get('consentDigitalWithdrawalVersion');
+      const consentAcceptedAt = fd.get('consentAcceptedAt');
+      payload = {
+        slug,
+        consentTermsVersion: typeof consentTermsVersion === 'string' ? consentTermsVersion : undefined,
+        consentDigitalWithdrawalVersion: typeof consentDigitalWithdrawalVersion === 'string' ? consentDigitalWithdrawalVersion : undefined,
+        consentAcceptedAt: typeof consentAcceptedAt === 'string' ? consentAcceptedAt : undefined,
+      };
     } else {
       payload = (await req.json()) as CheckoutPayload;
     }
@@ -257,6 +279,30 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     return NextResponse.json({ error: 'Invalid product' }, { status: 400 });
   }
 
+  const consentTermsVersion = typeof payload.consentTermsVersion === 'string' && payload.consentTermsVersion.length > 0
+    ? payload.consentTermsVersion
+    : null;
+  const consentDigitalWithdrawalVersion = typeof payload.consentDigitalWithdrawalVersion === 'string' && payload.consentDigitalWithdrawalVersion.length > 0
+    ? payload.consentDigitalWithdrawalVersion
+    : null;
+  let consentAcceptedAt: Date | null = null;
+  if (typeof payload.consentAcceptedAt === 'string' && payload.consentAcceptedAt.length > 0) {
+    const t = new Date(payload.consentAcceptedAt);
+    if (!Number.isNaN(t.getTime())) consentAcceptedAt = t;
+  }
+
+  if (resolved.slug === 'market-lens') {
+    const consentVOk = typeof consentTermsVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentTermsVersion);
+    const consentDwOk = typeof consentDigitalWithdrawalVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentDigitalWithdrawalVersion);
+    const consentAtOk = consentAcceptedAt instanceof Date && !Number.isNaN(consentAcceptedAt.getTime());
+    if (!consentVOk || !consentDwOk || !consentAtOk) {
+      return NextResponse.json(
+        { error: 'Consenso digitale obbligatorio mancante o non valido per AV Market Lens.' },
+        { status: 400 },
+      );
+    }
+  }
+
   if (resolved.billingMode === 'subscription') {
     if (resolved.slug === 'research-club') {
       if (await checkActiveResearchClubSubscription(userEmail)) {
@@ -265,7 +311,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     }
   } else {
     if (await checkAlreadySucceeded(userEmail, resolved.slug)) {
-      return ownedRedirectResponse();
+      return ownedRedirectResponse(resolved.slug);
     }
   }
 
@@ -300,18 +346,34 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
 
   const isSubscription = resolved.billingMode === 'subscription';
 
-  const successUrl = new URL(
-    isSubscription ? '/area-membri/research-club' : '/area-membri',
-    baseUrl,
-  );
+  const successPath = isSubscription
+    ? '/area-membri/research-club'
+    : resolved.slug === 'market-lens'
+      ? '/area-membri/prodotti'
+      : '/area-membri';
+  const cancelPath = isSubscription
+    ? '/#research-club'
+    : resolved.slug === 'market-lens'
+      ? '/#market-lens'
+      : '/#percorsi';
+
+  const successUrl = new URL(successPath, baseUrl);
   successUrl.searchParams.set('checkout', 'success');
   successUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
 
-  const cancelUrl = new URL(
-    isSubscription ? '/#research-club' : '/#percorsi',
-    baseUrl,
-  );
+  const cancelUrl = new URL(cancelPath, baseUrl);
   cancelUrl.searchParams.set('checkout', 'cancelled');
+
+  const commonMetadata: Record<string, string> = {
+    product_slug: resolved.slug,
+    user_email: userEmail,
+    billing_mode: isSubscription ? 'subscription' : 'one_time',
+  };
+  if (resolved.slug === 'market-lens' && consentTermsVersion && consentDigitalWithdrawalVersion && consentAcceptedAt) {
+    commonMetadata.consent_terms_v = consentTermsVersion;
+    commonMetadata.consent_digital_withdrawal_v = consentDigitalWithdrawalVersion;
+    commonMetadata.consent_at = consentAcceptedAt.toISOString();
+  }
 
   const commonParams: Stripe.Checkout.SessionCreateParams = {
     customer_email: userEmail,
@@ -321,11 +383,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         quantity: 1,
       },
     ],
-    metadata: {
-      product_slug: resolved.slug,
-      user_email: userEmail,
-      billing_mode: isSubscription ? 'subscription' : 'one_time',
-    },
+    metadata: commonMetadata,
     success_url: successUrl.toString(),
     cancel_url: cancelUrl.toString(),
     allow_promotion_codes: true,
@@ -373,6 +431,13 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         checkoutSession.id,
         typeof checkoutSession.amount_total === 'number' ? checkoutSession.amount_total : 0,
         checkoutSession.currency || 'EUR',
+        resolved.slug === 'market-lens'
+          ? {
+              consentTermsVersion,
+              consentDigitalWithdrawalVersion,
+              consentAcceptedAt,
+            }
+          : undefined,
       );
     } catch (err) {
       const safe = buildSafeStripeError(err);

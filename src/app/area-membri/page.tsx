@@ -21,6 +21,12 @@ import {
   Crown,
   ShieldAlert,
   XCircle,
+  Package,
+  Eye,
+  FileCode,
+  FileText,
+  Clock,
+  Download,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -387,6 +393,140 @@ export default async function PanoramicaPage() {
                   Dettagli prodotto
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </GlassCard>
+
+      <GlassCard
+        className="overflow-hidden p-5 sm:p-6 border border-white/5"
+        style={{
+          backgroundImage:
+            'radial-gradient(900px 300px at 100% -10%, rgba(0,255,106,0.06), transparent 60%)',
+        }}
+      >
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
+                <Eye className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-av-green">
+                  PRODOTTO ONE-TIME
+                </p>
+                <h2 className="font-display text-xl font-semibold text-white">
+                  AV Market Lens
+                </h2>
+              </div>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-av-muted sm:text-base max-w-2xl">
+              Indicatore Pine Script per TradingView con trend, livelli chiave,
+              volatilità, sessioni e setup evidenziati. Più guida PDF con esempi e
+              istruzioni.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-stretch gap-3 lg:w-[320px] flex-none">
+            {entitlements.marketLens.status === 'owned' ? (
+              <div className="rounded-2xl border border-av-green-deep/40 bg-av-green/[0.04] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-av-green">
+                      39,90 € una tantum
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-white">
+                      Accesso permanente
+                      {entitlements.marketLens.purchasedAt ? (
+                        <>
+                          {' · '}
+                          <span className="text-av-muted text-xs font-normal">
+                            {new Date(
+                              entitlements.marketLens.purchasedAt,
+                            ).toLocaleDateString('it-IT')}
+                          </span>
+                        </>
+                      ) : null}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-av-green-deep/40 bg-av-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-av-green">
+                    <CheckCircle2 className="h-3 w-3" /> POSSEDUTO
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-col gap-2">
+                  <Link
+                    href="/area-membri/prodotti"
+                    className="btn-primary !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 flex-1 shadow-glow-green-sm"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Scarica file
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                  <div className="flex items-center justify-between text-[11px] text-av-muted/90 px-1">
+                    <span className="inline-flex items-center gap-1">
+                      <FileCode className="h-3 w-3" /> Pine Script
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <FileText className="h-3 w-3" /> Guida PDF
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : entitlements.marketLens.status === 'payment_pending' ? (
+              <div className="rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-yellow-300">
+                      Conferma in corso
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-yellow-100">
+                      Attendi la conferma del pagamento.
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-yellow-300">
+                    <Clock className="h-3 w-3 animate-pulse" /> PENDING
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-col gap-2">
+                  <Link
+                    href="/area-membri/prodotti?checkout=success"
+                    className="btn-ghost !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 flex-1"
+                  >
+                    <Package className="h-3.5 w-3.5" />
+                    Controlla stato
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-av-line bg-av-bg-2/80 p-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-display text-3xl font-semibold text-av-green">
+                    39,90
+                  </span>
+                  <span className="text-sm text-av-muted">€ una tantum</span>
+                </div>
+                <p className="mt-1 text-[11px] text-av-muted/85">
+                  Pagamento unico. Accesso illimitato ai file dal tuo account.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-av-muted/90">
+                  <span className="chip border border-white/10 bg-av-bg px-2 py-1">
+                    <FileCode className="h-3 w-3" /> Pine Script
+                  </span>
+                  <span className="chip border border-white/10 bg-av-bg px-2 py-1">
+                    <FileText className="h-3 w-3" /> Guida PDF
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-col gap-2">
+                  <Link
+                    href="/#market-lens"
+                    className="btn-primary !py-2 !px-3.5 text-[12px] items-center justify-center gap-1.5 flex-1 shadow-glow-green-sm whitespace-nowrap"
+                  >
+                    Scopri e acquista
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
               </div>
             )}
           </div>

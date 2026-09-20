@@ -70,6 +70,9 @@ async function handleCheckoutSessionCompleted(stripe: Stripe, session: Stripe.Ch
     purchasedAt,
     invoiceHostedUrl: invoiceInfo.hosted,
     invoicePdfUrl: invoiceInfo.pdf,
+    consentTermsVersion: meta.consentTermsVersion,
+    consentDigitalWithdrawalVersion: meta.consentDigitalWithdrawalVersion,
+    consentAcceptedAt: meta.consentAcceptedAt,
   });
 }
 
@@ -95,6 +98,9 @@ async function handleAsyncPaymentSucceeded(stripe: Stripe, session: Stripe.Check
     purchasedAt: new Date(),
     invoiceHostedUrl: invoiceInfo.hosted,
     invoicePdfUrl: invoiceInfo.pdf,
+    consentTermsVersion: meta.consentTermsVersion,
+    consentDigitalWithdrawalVersion: meta.consentDigitalWithdrawalVersion,
+    consentAcceptedAt: meta.consentAcceptedAt,
   });
 }
 

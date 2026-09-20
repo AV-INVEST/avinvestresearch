@@ -2,6 +2,7 @@ import { auth } from '@/auth';
 import { getEntitlements } from '@/lib/entitlements';
 import Hero from '@/components/sections/Hero';
 import Positioning from '@/components/sections/Positioning';
+import MarketLens from '@/components/sections/MarketLens';
 import Courses from '@/components/sections/Courses';
 import Method from '@/components/sections/Method';
 import ResearchClub from '@/components/sections/ResearchClub';
@@ -29,6 +30,7 @@ export default async function HomePage() {
         <MarketLine className="opacity-70" />
       </div>
       <Positioning />
+      <MarketLens />
       <Courses entitlements={entitlements ?? undefined} />
       <Method />
       <section

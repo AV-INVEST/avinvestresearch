@@ -11,6 +11,7 @@ import {
   ShieldAlert,
   Home,
   ArrowUpRight,
+  Eye,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -31,6 +32,7 @@ const NAV: Array<{ href: string; label: string; Icon: typeof Home }> = [
   { href: '/admin', label: 'Panoramica', Icon: LayoutDashboard },
   { href: '/admin/corsi', label: 'Percorsi formativi', Icon: BookOpenCheck },
   { href: '/admin/research', label: 'Research Club', Icon: FileSearch },
+  { href: '/admin/market-lens', label: 'AV Market Lens', Icon: Eye },
 ];
 
 export default async function AdminLayout({

@@ -236,7 +236,45 @@ export default function DisclaimerPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          10. Fonti, accuratezza e completezza dei dati
+          10. AV Market Lens: marker tecnici predefiniti
+        </h2>
+        <p>
+          AV Market Lens &egrave; un prodotto digitale composto da un
+          indicatore in formato Pine Script per la piattaforma TradingView e da
+          una guida PDF di utilizzo. L&apos;indicatore pu&ograve; evidenziare
+          marker, avvisi, zone, livelli o segnali visivi derivanti esclusivamente
+          da condizioni tecniche predefinite e parametri calcolati in modo
+          automatico su dati di mercato storici o in tempo reale forniti da
+          TradingView. Tali evidenze visive hanno natura puramente tecnica e
+          descrittiva.
+        </p>
+        <p className="mt-2">
+          Nessun marker, alert, evidenziazione, livello o output generato
+          dall&apos;indicatore AV Market Lens costituisce: (a) una raccomandazione
+          personalizzata di investimento, di gestione patrimoniale o fiscale;
+          (b) un&apos;istruzione o un consiglio di acquisto, vendita o
+          mantenimento di uno strumento finanziario; (c) una sollecitazione
+          all&apos;investimento o al pubblico risparmio; (d) una previsione,
+          stima o garanzia di risultati, profitti o rendimenti futuri; (e) un
+          segnale operativo sostitutivo della valutazione autonoma dell&apos;utente.
+        </p>
+        <p className="mt-2">
+          I marker possono essere soggetti a ripittura (repainting), ritardi,
+          falsi positivi o falsi negativi in ragione della dinamica dei prezzi,
+          delle fonti dati, delle impostazioni grafiche di TradingView, della
+          volatilit&agrave; o di altri fattori tecnici. Il Titolare non
+          garantisce l&apos;accuratezza, la tempestivit&agrave;, la completezza,
+          la stabilit&agrave; nel tempo o l&apos;utilit&agrave; pratica di
+          qualsiasi output dell&apos;indicatore in qualsiasi contesto di
+          mercato. L&apos;utente assume ogni e qualsiasi responsabilit&agrave;
+          per decisioni di natura finanziaria o operativa assunte anche in
+          presenza di marker o alert di AV Market Lens.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          11. Fonti, accuratezza e completezza dei dati
         </h2>
         <p>
           I contenuti si basano su fonti ritenute attendibili e pubblicamente
@@ -254,7 +292,7 @@ export default function DisclaimerPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          11. Valutazione autonoma e consulenza qualificata
+          12. Valutazione autonoma e consulenza qualificata
         </h2>
         <p>
           Ogni decisione di investimento, finanziaria, patrimoniale, fiscale o
@@ -272,7 +310,7 @@ export default function DisclaimerPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          12. Decisione finale sotto esclusiva responsabilit&agrave; dell&apos;utente
+          13. Decisione finale sotto esclusiva responsabilit&agrave; dell&apos;utente
         </h2>
         <p>
           Qualsiasi decisione, azione od operazione di natura finanziaria o
@@ -296,11 +334,12 @@ export default function DisclaimerPage() {
           Il presente disclaimer trova applicazione in relazione a qualsiasi
           utilizzo dei contenuti pubblicati sul Sito. In particolare: la
           registrazione e il primo accesso all&apos;account Google per l&apos;area
-          membri, l&apos;acquisto dei corsi digitali e la sottoscrizione
-          dell&apos;abbonamento al Research Club, cos&igrave; come l&apos;utilizzo
-          dei servizi riservati, comportano la presa visione e l&apos;accettazione
-          integrale del presente disclaimer, nonch&eacute; dei Termini e
-          condizioni d&apos;uso e della Privacy Policy pubblicati nelle
+          membri, l&apos;acquisto dei corsi digitali, l&apos;acquisto one-time di
+          AV Market Lens (indicatore Pine Script e guida PDF) e la
+          sottoscrizione dell&apos;abbonamento al Research Club, cos&igrave; come
+          l&apos;utilizzo dei servizi riservati, comportano la presa visione e
+          l&apos;accettazione integrale del presente disclaimer, nonch&eacute; dei
+          Termini e condizioni d&apos;uso e della Privacy Policy pubblicati nelle
           rispettive pagine del Sito.
         </p>
       </section>

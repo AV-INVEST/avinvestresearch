@@ -70,24 +70,27 @@ model StripeEvent {
 }
 
 model Purchase {
-  id                String         @id @default(cuid())
-  userEmail         String         @db.VarChar(255)
-  productSlug       String         @db.VarChar(64)
-  checkoutSessionId String         @unique @db.VarChar(255)
-  customerId        String?        @db.VarChar(255)
-  paymentIntentId   String?        @unique @db.VarChar(255)
-  invoiceId         String?        @db.VarChar(255)
-  amountTotal       Int
-  currency          String         @default("EUR") @db.VarChar(8)
-  status            PurchaseStatus @default(pending)
-  purchasedAt       DateTime?
-  refundedAt        DateTime?
-  refundedAmount    Int?           @default(0)
-  invoiceHostedUrl  String?        @db.Text
-  invoicePdfUrl     String?        @db.Text
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  user              User?          @relation(fields: [userEmail], references: [email])
+  id                         String         @id @default(cuid())
+  userEmail                  String         @db.VarChar(255)
+  productSlug                String         @db.VarChar(64)
+  checkoutSessionId         String         @unique @db.VarChar(255)
+  customerId                 String?        @db.VarChar(255)
+  paymentIntentId           String?        @unique @db.VarChar(255)
+  invoiceId                  String?        @db.VarChar(255)
+  amountTotal                Int
+  currency                   String         @default("EUR") @db.VarChar(8)
+  status                     PurchaseStatus @default(pending)
+  purchasedAt                DateTime?
+  refundedAt                 DateTime?
+  refundedAmount             Int?           @default(0)
+  invoiceHostedUrl          String?        @db.Text
+  invoicePdfUrl             String?        @db.Text
+  consentTermsVersion        String?        @db.VarChar(32)
+  consentDigitalWithdrawalVersion String?   @db.VarChar(32)
+  consentAcceptedAt          DateTime?
+  createdAt                  DateTime       @default(now())
+  updatedAt                  DateTime       @updatedAt
+  user                       User?          @relation(fields: [userEmail], references: [email])
 
   @@index([userEmail, status])
   @@index([paymentIntentId])

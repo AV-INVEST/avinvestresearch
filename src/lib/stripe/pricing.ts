@@ -1,5 +1,5 @@
 export interface ResolvedProduct {
-  slug: 'foundations' | 'trading-lab' | 'research-club';
+  slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens';
   priceId: string;
   title: string;
   amountInCents: number;
@@ -40,6 +40,14 @@ const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
     amountInCents: 1990,
     currency: 'EUR',
     billingMode: 'subscription',
+  },
+  'market-lens': {
+    envKey: 'STRIPE_PRICE_AV_MARKET_LENS',
+    slug: 'market-lens',
+    title: 'AV Market Lens',
+    amountInCents: 3990,
+    currency: 'EUR',
+    billingMode: 'one_time',
   },
 };
 

@@ -19,6 +19,9 @@ export interface SyncPurchaseInput {
   refundedAmount?: number | null;
   invoiceHostedUrl?: string | null;
   invoicePdfUrl?: string | null;
+  consentTermsVersion?: string | null;
+  consentDigitalWithdrawalVersion?: string | null;
+  consentAcceptedAt?: Date | null;
 }
 
 function requireDb(): void {
@@ -77,6 +80,9 @@ export async function syncPurchase(input: SyncPurchaseInput): Promise<void> {
       refundedAmount: input.refundedAmount ?? undefined,
       invoiceHostedUrl: input.invoiceHostedUrl ?? undefined,
       invoicePdfUrl: input.invoicePdfUrl ?? undefined,
+      consentTermsVersion: input.consentTermsVersion ?? undefined,
+      consentDigitalWithdrawalVersion: input.consentDigitalWithdrawalVersion ?? undefined,
+      consentAcceptedAt: input.consentAcceptedAt ?? undefined,
     },
     update: {
       customerId: input.customerId ?? undefined,
@@ -90,18 +96,41 @@ export async function syncPurchase(input: SyncPurchaseInput): Promise<void> {
       refundedAmount: input.refundedAmount ?? undefined,
       invoiceHostedUrl: input.invoiceHostedUrl ?? undefined,
       invoicePdfUrl: input.invoicePdfUrl ?? undefined,
+      consentTermsVersion: input.consentTermsVersion ?? undefined,
+      consentDigitalWithdrawalVersion: input.consentDigitalWithdrawalVersion ?? undefined,
+      consentAcceptedAt: input.consentAcceptedAt ?? undefined,
     },
   });
+}
+
+export interface ConsentFromSession {
+  consentTermsVersion: string | null;
+  consentDigitalWithdrawalVersion: string | null;
+  consentAcceptedAt: Date | null;
 }
 
 export function metadataFromSession(session: Stripe.Checkout.Session): {
   user_email: string | null;
   product_slug: ResolvedProduct['slug'] | null;
-} {
+} & ConsentFromSession {
   const raw = session.metadata ?? {};
+  const consentTermsV = typeof raw.consent_terms_v === 'string' && raw.consent_terms_v.length > 0
+    ? raw.consent_terms_v
+    : null;
+  const consentDigitalV = typeof raw.consent_digital_withdrawal_v === 'string' && raw.consent_digital_withdrawal_v.length > 0
+    ? raw.consent_digital_withdrawal_v
+    : null;
+  let consentAt: Date | null = null;
+  if (typeof raw.consent_at === 'string' && raw.consent_at.length > 0) {
+    const t = new Date(raw.consent_at);
+    if (!Number.isNaN(t.getTime())) consentAt = t;
+  }
   return {
     user_email: typeof raw.user_email === 'string' ? normalizeEmail(raw.user_email) : normalizeEmail(session.customer_email),
     product_slug: isKnownProductSlug(raw.product_slug) ? raw.product_slug : null,
+    consentTermsVersion: consentTermsV,
+    consentDigitalWithdrawalVersion: consentDigitalV,
+    consentAcceptedAt: consentAt,
   };
 }
 

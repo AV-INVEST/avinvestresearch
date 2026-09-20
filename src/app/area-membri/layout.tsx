@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Kanban,
   Info,
+  Package,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -54,6 +55,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: '/area-membri', label: 'Panoramica', Icon: LayoutDashboard },
   { href: '/area-membri/percorsi', label: 'I miei percorsi', Icon: BookOpenCheck },
+  { href: '/area-membri/prodotti', label: 'I miei prodotti', Icon: Package },
   { href: '/area-membri/profilo', label: 'Profilo e sicurezza', Icon: UserCircle },
   { href: '/area-membri/assistenza', label: 'Assistenza', Icon: LifeBuoy },
 ];

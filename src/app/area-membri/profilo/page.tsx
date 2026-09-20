@@ -30,6 +30,7 @@ import {
   Sparkles,
   CreditCard,
   XCircle,
+  Package,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -586,6 +587,17 @@ export default async function ProfiloPage() {
                         ) : null}
                       </div>
                       <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
+                        {row.kind === 'purchase' &&
+                        row.productSlug === 'market-lens' &&
+                        row.status === 'succeeded' ? (
+                          <Link
+                            href="/area-membri/prodotti"
+                            className="btn-ghost !py-2 !px-3.5 text-xs sm:text-sm items-center justify-center gap-1.5 whitespace-nowrap border-av-green-deep/40 hover:border-av-green-deep/70"
+                          >
+                            <Package className="h-4 w-4 text-av-green" />
+                            Apri prodotto
+                          </Link>
+                        ) : null}
                         {receiptUrl ? (
                           <a
                             href={receiptUrl}

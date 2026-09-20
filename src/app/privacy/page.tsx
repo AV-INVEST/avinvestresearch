@@ -66,6 +66,16 @@ export default function PrivacyPage() {
             riservato.
           </li>
           <li>
+            Acquisto one-time del prodotto digitale AV Market Lens
+            (indicatore TradingView Pine Script e guida PDF), gestione dello
+            stato di licenza (owned, pending, refunded, failed) e verifica
+            dell&apos;acquisto prima di ogni download dei file privati, nonch&eacute;
+            registrazione dei consensi digitali espressi dall&apos;utente
+            prima del checkout (versione termini e versione consenso alla
+            fornitura immediata con perdita del diritto di recesso, unitamente
+            al timestamp di accettazione).
+          </li>
+          <li>
             Tracciamento del progresso personale nell&apos;area membri.
           </li>
           <li>
@@ -102,13 +112,30 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-white">Dati di acquisto e transazione</strong>:
-            in occasione dell&apos;acquisto di corsi o della sottoscrizione
+            in occasione dell&apos;acquisto di corsi, dell&apos;acquisto one-time
+            del prodotto AV Market Lens o della sottoscrizione
             del Research Club, il Titolare riceve da Stripe le informazioni
             necessarie alla gestione dell&apos;ordine, quali identificativo
             cliente, email associata al pagamento, oggetto dell&apos;acquisto,
             importo, valuta, data e ora della transazione, stato del pagamento
             e, per gli abbonamenti, identificativo e stato della
             sottoscrizione.
+          </li>
+          <li>
+            <strong className="text-white">
+              Dati di licenza AV Market Lens e consensi digitali
+            </strong>
+            : in relazione all&apos;acquisto di AV Market Lens, vengono
+            memorizzati nel database del Titolare - oltre ai dati di transazione
+            ricevuti da Stripe - lo stato della licenza (Purchase productSlug
+            &quot;market-lens&quot; e relativo status), la versione dei Termini
+            e condizioni accettati, la versione del consenso alla fornitura
+            immediata di contenuto digitale e alla conseguente perdita del
+            diritto di recesso, nonch&eacute; il timestamp di accettazione di
+            tali consensi. Tali informazioni sono altres&igrave; riportate nei
+            metadata della sessione di checkout Stripe al fine di garantire
+            tracciabilit&agrave; e allineamento tra sistema interno e registro
+            del fornitore di pagamento.
           </li>
           <li>
             <strong className="text-white">Dati Calendly</strong>: quando
@@ -188,6 +215,10 @@ export default function PrivacyPage() {
             - Registrazione e mantenimento dell&apos;account per l&apos;accesso all&apos;area membri.
             <br />
             - Gestione degli ordini di acquisto dei corsi digitali e consegna del relativo accesso.
+            <br />
+            - Gestione dell&apos;ordine di acquisto one-time di AV Market Lens, verifica dello stato della licenza prima di ogni download dei file privati e consegna dei contenuti digitali al solo account autorizzato.
+            <br />
+            - Registrazione e conservazione dei consensi digitali resi dall&apos;utente prima dell&apos;acquisto di AV Market Lens (accettazione Termini/Disclaimer e consenso alla fornitura immediata con perdita del diritto di recesso), unitamente alla versione delle clausole e al timestamp di accettazione, necessari alla corretta esecuzione del contratto di vendita di contenuto digitale e alla gestione del recesso secondo la normativa applicabile.
             <br />
             - Attivazione, gestione e rinnovo dell&apos;abbonamento mensile al Research Club.
             <br />

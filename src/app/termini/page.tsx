@@ -51,6 +51,16 @@ export default function TerminiPage() {
             l&apos;accettazione integrale dei presenti Termini.
           </li>
           <li>
+            <strong className="text-white">Acquisto one-time AV Market Lens</strong>:
+            la conclusione dell&apos;ordine e il pagamento a tantum del prodotto
+            digitale AV Market Lens (indicatore TradingView in Pine Script e
+            guida PDF), tramite Stripe, comportano l&apos;accettazione integrale
+            dei presenti Termini, del Disclaimer e la dichiarazione di consenso
+            alla fornitura immediata del contenuto digitale con perdita del
+            diritto di recesso ai sensi dell&apos;art. 59 del Codice del Consumo,
+            ove applicabile.
+          </li>
+          <li>
             <strong className="text-white">Sottoscrizione abbonamento</strong>:
             l&apos;attivazione dell&apos;abbonamento mensile al Research Club,
             tramite Stripe, comporta l&apos;accettazione integrale dei
@@ -99,6 +109,13 @@ export default function TerminiPage() {
             : servizio in abbonamento mensile che include l&apos;accesso a
             ricerche PDF, analisi riservate e archivio del materiale
             pubblicato per gli abbonati.
+          </li>
+          <li>
+            <strong className="text-white">AV Market Lens</strong>
+            : prodotto digitale one-time venduto con pagamento a tantum che
+            include il download di un indicatore TradingView in formato Pine
+            Script e di una guida PDF di utilizzo, riservati al solo account
+            che ha completato l&apos;acquisto.
           </li>
           <li>
             <strong className="text-white">Area membri</strong>
@@ -299,7 +316,64 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          11. Rinnovo automatico del Research Club
+          11. AV Market Lens: prodotto digitale one-time
+        </h2>
+        <p>
+          AV Market Lens &egrave; un prodotto digitale venduto con pagamento
+          unico e una tantum. Dopo la conferma del pagamento da parte di Stripe
+          e la registrazione di un <em>Purchase</em> con stato{' '}
+          <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
+            succeeded
+          </code>{' '}
+          e <em>productSlug</em> uguale a{' '}
+          <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
+            market-lens
+          </code>
+          , l&apos;utente acquisisce il diritto personale, non esclusivo e non
+          trasferibile di scaricare dal proprio account: (a) il file indicatore
+          per la piattaforma TradingView in formato Pine Script, e (b) la guida
+          PDF di utilizzo. Entrambi i file sono conservati su storage privato
+          Vercel Blob e sono scaricabili esclusivamente tramite rotte server
+          protette. Nessun URL pubblico o permanente viene generato o esposto.
+        </p>
+        <p className="mt-2">
+          La licenza d&apos;uso &egrave; concessa esclusivamente per finalit&agrave;
+          di studio, formazione e analisi personale dell&apos;utente. &Egrave;
+          espressamente vietato, senza autorizzazione scritta e preventiva del
+          Titolare: condividere, distribuire o trasmettere a terzi i file
+          ricevuti; pubblicare il codice Pine Script o estratti su qualsiasi
+          piattaforma pubblica o privata (forum, social, gruppi, repository,
+          siti web, drive condivisi, servizi di trading collettivo, ecc.);
+          rivendere, sublicenziare, noleggiare o concedere in uso a terzi il
+          prodotto, in tutto o in parte; integrare l&apos;indicatore in servizi
+          concorrenti, piattaforme di segnali, prodotti commerciali o servizi
+          offerti a corrispettivo.
+        </p>
+        <p className="mt-2">
+          L&apos;indicatore Pine Script &egrave; progettato per essere importato
+          ed eseguito esclusivamente sulla piattaforma TradingView, servizio
+          terzo indipendente che l&apos;utente utilizza secondo i propri termini
+          e condizioni. Il Titolare non fornisce alcuna garanzia sul
+          funzionamento dell&apos;indicatore in contesti diversi da TradingView,
+          n&eacute; sulla disponibilit&agrave;, sulle modifiche o sui costi dei
+          servizi di TradingView.
+        </p>
+        <p className="mt-2">
+          In ragione della natura di contenuto digitale fornito su supporto
+          immateriale, l&apos;utente, con l&apos;apposito consenso espresso
+          reso prima del checkout (registrato nel Purchase e nei metadata di
+          Stripe), richiede la fornitura immediata del contenuto all&apos;atto
+          del pagamento andato a buon fine e riconosce che, in conseguenza di
+          tale fornitura, il diritto di recesso di cui agli articoli 52 e seg.
+          del Codice del Consumo si considera escluso ai sensi dell&apos;art.
+          59, comma 1, lett. o), D.Lgs. 206/2005, nonch&eacute; delle altre
+          norme imperative di diritto UE e nazionale applicabili al caso.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          12. Rinnovo automatico del Research Club
         </h2>
         <p>
           L&apos;abbonamento al Research Club si rinnova automaticamente alla
@@ -321,7 +395,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          12. Disdetta e fine accesso
+          13. Disdetta e fine accesso
         </h2>
         <p>
           L&apos;utente pu&ograve; disattivare il rinnovo automatico
@@ -341,7 +415,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          13. Customer Portal e gestione autonoma
+          14. Customer Portal e gestione autonoma
         </h2>
         <p>
           La gestione autonoma dell&apos;abbonamento (aggiornamento dei dati di
@@ -354,15 +428,15 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          14. Rimborsi e diritto di recesso
+          15. Rimborsi e diritto di recesso
         </h2>
         <p>
-          In relazione ai servizi digitali forniti dal Sito (corsi digitali e
-          abbonamento Research Club), i rimborsi e il diritto di recesso sono
-          regolati esclusivamente nei limiti e nei modi previsti dalla legge
-          applicabile, con particolare riferimento al Codice del Consumo
-          (D.Lgs. 206/2005) e alle disposizioni inderogabili di diritto
-          comunitario e nazionale.
+          In relazione ai servizi digitali forniti dal Sito (corsi digitali,
+          prodotto one-time AV Market Lens e abbonamento Research Club), i
+          rimborsi e il diritto di recesso sono regolati esclusivamente nei
+          limiti e nei modi previsti dalla legge applicabile, con particolare
+          riferimento al Codice del Consumo (D.Lgs. 206/2005) e alle
+          disposizioni inderogabili di diritto comunitario e nazionale.
         </p>
         <p className="mt-2">
           Non sono previsti rimborsi discrezionali al di l&agrave; di quanto
@@ -379,13 +453,16 @@ export default function TerminiPage() {
           dell&apos;utente all&apos;inizio della prestazione, riconoscimento
           della conseguente perdita del diritto di recesso e conferma prevista
           dalla normativa). In assenza di tali condizioni, il diritto di
-          recesso si applica secondo la regola generale.
+          recesso si applica secondo la regola generale. Per AV Market Lens,
+          l&apos;espressa richiesta di fornitura immediata e il riconoscimento
+          della perdita del diritto di recesso sono oggetto di consenso
+          esplicito e documentato prima dell&apos;avvio del checkout.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          15. Sospensione e revoca dell&apos;accesso per abuso
+          16. Sospensione e revoca dell&apos;accesso per abuso
         </h2>
         <p>
           Il Titolare si riserva il diritto, a propria esclusiva discrezione
@@ -424,7 +501,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          16. Disponibilit&agrave; del servizio e manutenzioni
+          17. Disponibilit&agrave; del servizio e manutenzioni
         </h2>
         <p>
           Il Titolare adopera ogni ragionevole sforzo per garantire la
@@ -446,7 +523,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          17. Servizi di terze parti
+          18. Servizi di terze parti
         </h2>
         <p>
           Il Sito si avvale di fornitori terzi per l&apos;erogazione dei servizi.
@@ -480,7 +557,16 @@ export default function TerminiPage() {
           <li>
             <strong className="text-white">Vercel Blob</strong>: per lo
             storage privato e la distribuzione dei PDF e dei documenti del
-            Research Club.
+            Research Club, nonch&eacute; dei file Pine Script e PDF del
+            prodotto AV Market Lens.
+          </li>
+          <li>
+            <strong className="text-white">TradingView</strong>: piattaforma
+            terza indipendente utilizzata per l&apos;esecuzione dell&apos;indicatore
+            Pine Script di AV Market Lens. L&apos;indicatore &egrave; progettato
+            esclusivamente per l&apos;importazione e l&apos;utilizzo all&apos;interno
+            dell&apos;ambiente TradingView secondo i termini e le politiche
+            di TradingView.
           </li>
         </ul>
         <p className="mt-2">

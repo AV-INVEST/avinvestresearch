@@ -36,6 +36,31 @@ const faqs: FAQItem[] = [
     answer:
       'Puoi pagare con le principali carte di credito e debito tramite Stripe. Gli eventuali altri metodi disponibili vengono mostrati direttamente durante il checkout. I pagamenti sono gestiti tramite una connessione sicura.',
   },
+  {
+    question: 'Cos\'è AV Market Lens?',
+    answer:
+      'AV Market Lens è un prodotto digitale one-time composto da un indicatore per la piattaforma TradingView (formato Pine Script) e da una guida PDF di utilizzo. L\'indicatore evidenzia condizioni tecniche predefinite su grafico, per aiutarti a leggere più velocemente struttura, livelli e dinamiche di mercato. Non sostituisce la tua analisi e non promette risultati.',
+  },
+  {
+    question: 'Cosa ricevo esattamente dopo l\'acquisto di AV Market Lens?',
+    answer:
+      'Dopo l\'acquisto andato a buon fine (Purchase status succeeded, productSlug market-lens) puoi scaricare dal tuo account, nella sezione "I miei prodotti" dell\'area membri: 1) il file sorgente Pine Script dell\'indicatore (nome file: AV-Market-Lens.pine) e 2) la guida PDF ufficiale all\'utilizzo (nome file: AV-Market-Lens-Guida.pdf). Entrambi sono in formato scaricabile direttamente dal browser, senza URL pubblico.',
+  },
+  {
+    question: 'Dove trovo i file di AV Market Lens dopo aver pagato?',
+    answer:
+      'Accedi all\'area membri con lo stesso account Google usato per il pagamento e vai a "I miei prodotti" (sezione /area-membri/prodotti), oppure dalla pagina del tuo profilo in "Acquisti e fatturazione" clicca sul pulsante "Apri prodotto" accanto alla riga di AV Market Lens. Se il pagamento è ancora in elaborazione, la pagina mostra uno stato di attesa con aggiornamento automatico.',
+  },
+  {
+    question: 'Serve un account TradingView per usare l\'indicatore di AV Market Lens?',
+    answer:
+      'Sì: AV Market Lens è progettato esclusivamente per essere importato ed eseguito all\'interno della piattaforma TradingView, che è un servizio terzo indipendente. È sufficiente anche un account TradingView gratuito per importare il file .pine; funzionalità avanzate o abbonamenti specifici di TradingView, se richiesti, dipendono esclusivamente dalle politiche di TradingView.',
+  },
+  {
+    question: 'AV Market Lens è un segnale di acquisto o vendita?',
+    answer:
+      'No. Assolutamente no. I marker, gli alert o le evidenziazioni prodotte dall\'indicatore derivano unicamente da regole tecniche predefinite su dati di mercato e hanno esclusivamente natura descrittiva e di supporto alla lettura grafica. Non costituiscono in alcun modo consigli personalizzati, istruzioni di acquisto/vendita, segnali operativi, previsioni o garanzie di risultato. Ogni decisione operativa resta sotto la tua esclusiva responsabilità. Consulta il Disclaimer pubblicato sul sito per i dettagli completi.',
+  },
 ];
 
 export default function FAQ() {

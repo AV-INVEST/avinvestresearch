@@ -36,6 +36,25 @@ const RESEARCH_CLUB_DEFAULT: ResearchClubEntitlement = {
   subscription: null,
 };
 
+export type MarketLensStatus =
+  | 'locked'
+  | 'payment_pending'
+  | 'owned';
+
+export interface MarketLensEntitlement {
+  status: MarketLensStatus;
+  purchasedAt: Date | null;
+  createdAt: Date | null;
+  message: string;
+}
+
+const MARKET_LENS_DEFAULT: MarketLensEntitlement = {
+  status: 'locked',
+  purchasedAt: null,
+  createdAt: null,
+  message: 'AV Market Lens non ancora acquistato.',
+};
+
 export type CourseStatus =
   | 'locked'
   | 'payment_pending'
@@ -61,6 +80,7 @@ export interface EntitlementsState {
   anyAvailable: boolean;
   anyPending: boolean;
   researchClub: ResearchClubEntitlement;
+  marketLens: MarketLensEntitlement;
 }
 
 export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
@@ -68,6 +88,7 @@ export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
   anyAvailable: false,
   anyPending: false,
   researchClub: RESEARCH_CLUB_DEFAULT,
+  marketLens: MARKET_LENS_DEFAULT,
 };
 
 function lockedEntitlement(slug: string, title: string): CourseEntitlement {
@@ -93,7 +114,13 @@ export function buildLockedEntitlements(): EntitlementsState {
     const cfg = siteConfig.courses[key];
     courses[cfg.slug] = lockedEntitlement(cfg.slug, cfg.title);
   }
-  return { courses, anyAvailable: false, anyPending: false, researchClub: RESEARCH_CLUB_DEFAULT };
+  return {
+    courses,
+    anyAvailable: false,
+    anyPending: false,
+    researchClub: RESEARCH_CLUB_DEFAULT,
+    marketLens: MARKET_LENS_DEFAULT,
+  };
 }
 
 interface PurchaseRow {
@@ -406,7 +433,27 @@ export async function getEntitlements(
   const researchClubSub = userEmail ? await loadResearchClubSubscription(userEmail) : null;
   const researchClub = researchClubEntitlementFromSubscription(researchClubSub);
 
-  return { courses, anyAvailable, anyPending, researchClub };
+  const mlResolved = resolvedBySlug.get('market-lens');
+  let marketLens: MarketLensEntitlement = MARKET_LENS_DEFAULT;
+  if (mlResolved && mlResolved.type === 'succeeded') {
+    marketLens = {
+      status: 'owned',
+      purchasedAt: mlResolved.purchasedAt,
+      createdAt: mlResolved.createdAt,
+      message: 'Hai acquistato AV Market Lens. Puoi scaricare i file dall\'area membri.',
+    };
+    anyAvailable = true;
+  } else if (mlResolved && mlResolved.type === 'pending') {
+    marketLens = {
+      status: 'payment_pending',
+      purchasedAt: null,
+      createdAt: mlResolved.createdAt,
+      message: 'Pagamento AV Market Lens in corso. Completa la conferma da parte di Stripe.',
+    };
+    anyPending = true;
+  }
+
+  return { courses, anyAvailable, anyPending, researchClub, marketLens };
 }
 
 export function getCourseEntitlement(

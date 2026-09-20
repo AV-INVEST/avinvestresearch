@@ -110,6 +110,52 @@ export const siteConfig = {
     ],
   },
 
+  marketLens: {
+    slug: 'market-lens',
+    title: 'AV Market Lens',
+    tagline: 'L\'indicatore per leggere il contesto di mercato in pochi secondi, direttamente sul tuo grafico TradingView.',
+    description:
+      'Un indicatore Pine Script progettato per aiutarti a identificare trend, livelli chiave, volatilità e sessioni di mercato. Strumento di supporto all\'analisi, per principianti e persone attive sui mercati che cercano una struttura più chiara.',
+    price: 39.9,
+    currency: 'EUR',
+    features: [
+      {
+        key: 'trend',
+        title: 'Trend',
+        text: 'Indicazione visiva della direzione tendenziale, per non partire a occhio chiuso.',
+      },
+      {
+        key: 'levels',
+        title: 'Livelli chiave',
+        text: 'Zone di supporto e resistenza evidenziate, dove il mercato ha spesso reagito in passato.',
+      },
+      {
+        key: 'volatility',
+        title: 'Volatilità',
+        text: 'Lettura della volatilità contestuale, per capire quando il mercato accelera o rallenta.',
+      },
+      {
+        key: 'sessions',
+        title: 'Sessioni',
+        text: 'Separazione visiva delle sessioni Asia, Londra e New York, per contestualizzare i movimenti.',
+      },
+      {
+        key: 'daily-context',
+        title: 'Contesto giornaliero',
+        text: 'Riepilogo rapido delle condizioni del giorno, per affinare la tua routine pre-mercato.',
+      },
+      {
+        key: 'setups',
+        title: 'Setup evidenziati',
+        text: 'Marker e alert quando si verificano condizioni tecniche predefinite, per allenare l\'occhio.',
+      },
+    ],
+    notes: [
+      'Pagamento unico. IVA inclusa. Nessun abbonamento ricorrente.',
+      'Indicatore e guida sono riservati all\'account che ha completato l\'acquisto. Vietata la condivisione.',
+    ],
+  },
+
   performance: {
     entries: [
       {
@@ -170,6 +216,7 @@ export const siteConfig = {
   ],
 
   navigation: [
+    { label: 'AV Market Lens', href: '/#market-lens' },
     { label: 'Percorsi', href: '/#percorsi' },
     { label: 'Research Club', href: '/#research-club' },
     { label: 'Metodo', href: '/#metodo' },
