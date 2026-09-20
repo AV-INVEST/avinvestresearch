@@ -69,14 +69,15 @@ export async function uploadMarketLensFile(
     }
   }
 
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  if (bytes.byteLength <= 0) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  if (buffer.byteLength <= 0) {
     return { ok: false, error: 'Contenuto file non valido o vuoto.' };
   }
 
   if (kind === 'indicator') {
     const trimmed = new TextDecoder('utf-8', { fatal: false })
-      .decode(bytes)
+      .decode(buffer)
       .trim();
     if (trimmed.length === 0) {
       return { ok: false, error: 'Il file Pine contiene solo spazi vuoti o caratteri non validi.' };
@@ -89,10 +90,10 @@ export async function uploadMarketLensFile(
     }
   }
 
-  const upload = await serverUploadMarketLens(kind, bytes, {
+  const upload = await serverUploadMarketLens(kind, buffer, {
     contentType: kind === 'guide' ? file.type || 'application/pdf' : 'text/plain',
     fileName: file.name,
-    contentLength: bytes.byteLength,
+    contentLength: buffer.byteLength,
   });
 
   if (!upload.ok) {
@@ -105,7 +106,7 @@ export async function uploadMarketLensFile(
     ok: true,
     message: `${LABEL[kind]} caricato con successo (sostituisce qualsiasi versione precedente).`,
     fileName: file.name,
-    fileSizeBytes: bytes.byteLength,
+    fileSizeBytes: buffer.byteLength,
     storageKey: upload.pathname,
   };
 }

@@ -306,7 +306,7 @@ export async function getMarketLensStream(
   const storageKey = getMarketLensStorageKey(kind);
   if (status.provider === 'VERCEL_BLOB') {
     try {
-      const { get } = await import('@vercel/blob');
+      const { get, head } = await import('@vercel/blob');
       const res = await get(storageKey, {
         access: 'private',
         useCache: false,
@@ -319,12 +319,16 @@ export async function getMarketLensStream(
       }
       const body = res.stream;
       if (!body) return { ok: false, error: 'INTERNAL', message: 'Risposta storage vuota.' };
+
+      const headInfo = await head(storageKey);
+      const reliableSize = typeof (headInfo as any).size === 'number' ? (headInfo as any).size : undefined;
+
       const fallbackContentType = kind === 'indicator' ? 'text/plain' : 'application/pdf';
       return {
         ok: true,
         stream: body as ReadableStream<Uint8Array>,
         contentType: res.blob.contentType || fallbackContentType,
-        contentLength: typeof res.blob.size === 'number' ? res.blob.size : undefined,
+        contentLength: reliableSize,
         fileName: extractFileName(res.blob.contentDisposition),
       };
     } catch (e) {
@@ -390,29 +394,25 @@ export async function serverUploadMarketLens(
         allowOverwrite: true,
       });
 
-      const savedSize = typeof (result as any).size === 'number' ? (result as any).size : undefined;
-      if (typeof savedSize === 'number') {
-        if (savedSize <= 0) {
+      let headInfo;
+      try {
+        headInfo = await head(result.pathname);
+      } catch (headErr) {
+        const headMsg = headErr instanceof Error ? headErr.message : String(headErr);
+        try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+        return { ok: false, error: 'INTERNAL', message: `Upload fallito: verifica post-upload HEAD non riuscita (${headMsg}). Riprovare.` };
+      }
+
+      const savedSize = typeof (headInfo as any).size === 'number' ? (headInfo as any).size : undefined;
+      if (typeof savedSize !== 'number' || savedSize <= 0) {
+        try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+        return { ok: false, error: 'INTERNAL', message: 'Upload fallito: il file salvato risulta vuoto (0 byte). Riprovare.' };
+      }
+      if (typeof opts.contentLength === 'number' && opts.contentLength > 0) {
+        const diff = Math.abs(savedSize - opts.contentLength);
+        if (diff > Math.max(1024, Math.floor(opts.contentLength * 0.05))) {
           try { await del(result.pathname); } catch { /* ignore cleanup error */ }
-          return { ok: false, error: 'INTERNAL', message: 'Upload fallito: il file salvato risulta vuoto (0 byte). Riprovare.' };
-        }
-        if (typeof opts.contentLength === 'number' && opts.contentLength > 0) {
-          const diff = Math.abs(savedSize - opts.contentLength);
-          if (diff > Math.max(1024, Math.floor(opts.contentLength * 0.05))) {
-            try { await del(result.pathname); } catch { /* ignore cleanup error */ }
-            return { ok: false, error: 'INTERNAL', message: `Upload fallito: dimensione salvata (${savedSize} byte) non corrisponde a quella attesa (${opts.contentLength} byte). Riprovare.` };
-          }
-        }
-      } else {
-        try {
-          const headInfo = await head(result.pathname);
-          const headSize = typeof (headInfo as any).size === 'number' ? (headInfo as any).size : undefined;
-          if (typeof headSize === 'number' && headSize <= 0) {
-            try { await del(result.pathname); } catch { /* ignore cleanup error */ }
-            return { ok: false, error: 'INTERNAL', message: 'Upload fallito: il file salvato risulta vuoto (0 byte). Riprovare.' };
-          }
-        } catch {
-          /* head not available or failed, skip secondary check */
+          return { ok: false, error: 'INTERNAL', message: `Upload fallito: dimensione salvata (${savedSize} byte) non corrisponde a quella attesa (${opts.contentLength} byte). Riprovare.` };
         }
       }
 
