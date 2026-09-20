@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
   Download,
@@ -26,6 +26,8 @@ const KIND_ICON: Record<Kind, typeof FileCode> = {
   guide: FileText,
 };
 
+const COOLDOWN_SECONDS = 30;
+
 interface Props {
   kind: Kind;
   label: string;
@@ -44,10 +46,42 @@ export default function DownloadButton({
   const Icon = KIND_ICON[kind];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cooldownLeft, setCooldownLeft] = useState(0);
+  const cooldownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (cooldownTimerRef.current) {
+        clearInterval(cooldownTimerRef.current);
+        cooldownTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  const startCooldown = useCallback(() => {
+    setCooldownLeft(COOLDOWN_SECONDS);
+    if (cooldownTimerRef.current) clearInterval(cooldownTimerRef.current);
+    cooldownTimerRef.current = setInterval(() => {
+      setCooldownLeft((prev) => {
+        if (prev <= 1) {
+          if (cooldownTimerRef.current) {
+            clearInterval(cooldownTimerRef.current);
+            cooldownTimerRef.current = null;
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const disabled = loading || cooldownLeft > 0;
 
   const onClick = useCallback(async () => {
+    if (disabled) return;
     setLoading(true);
     setError(null);
+    let success = false;
     try {
       const resp = await fetch(KIND_ENDPOINT[kind], {
         method: 'GET',
@@ -90,32 +124,43 @@ export default function DownloadButton({
       } finally {
         setTimeout(() => URL.revokeObjectURL(url), 2000);
       }
+      success = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Errore sconosciuto.');
     } finally {
       setLoading(false);
+      if (success) startCooldown();
     }
-  }, [kind]);
+  }, [kind, disabled, startCooldown]);
 
   const variantClass =
     variant === 'primary'
-      ? 'w-full flex-col sm:flex-row sm:items-start sm:justify-between gap-3 text-left sm:text-left text-center bg-av-green hover:bg-av-green-deep text-white shadow-glow-green-sm hover:shadow-glow-green-md transition-all duration-200'
+      ? 'w-full flex-col sm:flex-row sm:items-start sm:justify-between gap-3 text-left sm:text-left text-center text-white transition-all duration-200 border border-[#1a6b4a]/70 shadow-[0_0_24px_rgba(11,85,58,0.25)] hover:shadow-[0_0_32px_rgba(13,94,64,0.45)]'
       : 'btn-ghost w-full flex-col sm:flex-row sm:items-start sm:justify-between gap-3 text-left border border-av-line hover:border-av-green-deep/40';
+
+  const primaryBgClass =
+    variant === 'primary'
+      ? 'bg-[#0B3D2A] hover:bg-[#0F5238]'
+      : '';
+
+  const badgeLabel = cooldownLeft > 0
+    ? `ATTENDI ${cooldownLeft}s`
+    : 'DOWNLOAD';
 
   return (
     <div className={`w-full space-y-2 ${className}`}>
       <button
         type="button"
         onClick={onClick}
-        disabled={loading}
+        disabled={disabled}
         aria-busy={loading}
-        className={`${variantClass} !py-3 !px-4 sm:!py-4 sm:!px-5 disabled:opacity-60 disabled:cursor-not-allowed`}
+        className={`${variantClass} ${primaryBgClass} !py-3 !px-4 sm:!py-4 sm:!px-5 disabled:opacity-60 disabled:cursor-not-allowed`}
       >
         <div className="flex items-start sm:items-start items-center sm:justify-start justify-center gap-3 min-w-0 w-full sm:w-auto">
           <span
             className={`grid h-9 w-9 flex-none place-items-center rounded-xl border ${
               variant === 'primary'
-                ? 'border-white/20 bg-white/15 text-white'
+                ? 'border-[#1a6b4a]/60 bg-[#08281c] text-white'
                 : 'border-av-green-deep/40 bg-av-green/10 text-av-green'
             }`}
           >
@@ -143,12 +188,16 @@ export default function DownloadButton({
         <span
           className={`flex-none inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider sm:w-auto w-full sm:max-w-none max-w-[220px] mx-auto sm:mx-0 ${
             variant === 'primary'
-              ? 'border-white/20 bg-white/10 text-white'
+              ? 'border-[#1a6b4a]/60 bg-[#08281c]/90 text-white'
               : 'border-white/10 text-white/90'
           }`}
         >
-          <Download className="h-3.5 w-3.5" />
-          DOWNLOAD
+          {cooldownLeft > 0 ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Download className="h-3.5 w-3.5" />
+          )}
+          {badgeLabel}
         </span>
       </button>
       {error ? (

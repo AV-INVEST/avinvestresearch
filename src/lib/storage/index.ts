@@ -353,6 +353,9 @@ export async function serverUploadMarketLens(
     const mb = (maxBytes / (1024 * 1024)).toFixed(0);
     return { ok: false, error: 'INVALID_FILE', message: `File troppo grande. Massimo ${mb} MB.` };
   }
+  if (typeof opts.contentLength === 'number' && opts.contentLength <= 0) {
+    return { ok: false, error: 'INVALID_FILE', message: 'File vuoto o contenuto non valido.' };
+  }
   if (kind === 'guide') {
     const allowed = ['application/pdf'];
     if (opts.contentType && !allowed.includes(opts.contentType)) {
@@ -374,7 +377,7 @@ export async function serverUploadMarketLens(
   }
   if (status.provider === 'VERCEL_BLOB') {
     try {
-      const { put } = await import('@vercel/blob');
+      const { put, del, head } = await import('@vercel/blob');
       const storageKey = getMarketLensStorageKey(kind);
       const putBody = data as Parameters<typeof put>[1];
       const result = await put(storageKey, putBody, {
@@ -382,6 +385,33 @@ export async function serverUploadMarketLens(
         contentType: kind === 'indicator' ? 'text/plain' : opts.contentType || 'application/pdf',
         addRandomSuffix: false,
       });
+
+      const savedSize = typeof (result as any).size === 'number' ? (result as any).size : undefined;
+      if (typeof savedSize === 'number') {
+        if (savedSize <= 0) {
+          try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+          return { ok: false, error: 'INTERNAL', message: 'Upload fallito: il file salvato risulta vuoto (0 byte). Riprovare.' };
+        }
+        if (typeof opts.contentLength === 'number' && opts.contentLength > 0) {
+          const diff = Math.abs(savedSize - opts.contentLength);
+          if (diff > Math.max(1024, Math.floor(opts.contentLength * 0.05))) {
+            try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+            return { ok: false, error: 'INTERNAL', message: `Upload fallito: dimensione salvata (${savedSize} byte) non corrisponde a quella attesa (${opts.contentLength} byte). Riprovare.` };
+          }
+        }
+      } else {
+        try {
+          const headInfo = await head(result.pathname);
+          const headSize = typeof (headInfo as any).size === 'number' ? (headInfo as any).size : undefined;
+          if (typeof headSize === 'number' && headSize <= 0) {
+            try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+            return { ok: false, error: 'INTERNAL', message: 'Upload fallito: il file salvato risulta vuoto (0 byte). Riprovare.' };
+          }
+        } catch {
+          /* head not available or failed, skip secondary check */
+        }
+      }
+
       return { ok: true, pathname: result.pathname, url: result.url };
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);

@@ -76,6 +76,13 @@ export async function GET(
     });
   }
 
+  if (typeof stream.contentLength === 'number' && stream.contentLength <= 0) {
+    return new NextResponse(
+      'File corrotto o vuoto sullo storage. Contattare l\'amministrazione per ricaricare il file.',
+      { status: 500 },
+    );
+  }
+
   const filename = FILENAMES[validKind];
   const encoded = encodeURIComponent(filename);
 

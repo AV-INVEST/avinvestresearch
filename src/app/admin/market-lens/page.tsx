@@ -12,7 +12,7 @@ export const metadata = {
   description: 'Caricamento file privati AV Market Lens (Pine Script + Guida PDF).',
 };
 
-type FilePresence = { present: boolean; sizeBytes?: number | null };
+type FilePresence = { present: boolean; sizeBytes?: number | null; corrupted?: boolean };
 
 async function getFilePresence(kind: 'indicator' | 'guide'): Promise<FilePresence> {
   try {
@@ -20,7 +20,11 @@ async function getFilePresence(kind: 'indicator' | 'guide'): Promise<FilePresenc
     if (!res.ok) {
       return { present: false };
     }
-    return { present: true, sizeBytes: res.contentLength ?? null };
+    const size = typeof res.contentLength === 'number' ? res.contentLength : null;
+    if (size !== null && size <= 0) {
+      return { present: false, sizeBytes: size, corrupted: true };
+    }
+    return { present: true, sizeBytes: size };
   } catch {
     return { present: false };
   }
@@ -62,8 +66,11 @@ export default async function AdminMarketLensPage() {
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-surface/60 px-2.5 py-1 text-av-muted">
             <FileCode className="h-3 w-3 text-av-green" aria-hidden="true" />
-            Pine Script: {indicatorPresence.present ? 'Caricato' : 'Assente'}
-            {indicatorPresence.sizeBytes ? (
+            Pine Script:{' '}
+            {indicatorPresence.corrupted
+              ? <span className="text-red-300">File non valido o vuoto — ricaricalo</span>
+              : indicatorPresence.present ? 'Caricato' : 'Assente'}
+            {indicatorPresence.sizeBytes && indicatorPresence.sizeBytes > 0 ? (
               <span className="text-av-green ml-1">
                 {(indicatorPresence.sizeBytes / (1024 * 1024)).toFixed(2)} MB
               </span>
@@ -71,8 +78,11 @@ export default async function AdminMarketLensPage() {
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-surface/60 px-2.5 py-1 text-av-muted">
             <FileText className="h-3 w-3 text-av-green" aria-hidden="true" />
-            Guida PDF: {guidePresence.present ? 'Caricata' : 'Assente'}
-            {guidePresence.sizeBytes ? (
+            Guida PDF:{' '}
+            {guidePresence.corrupted
+              ? <span className="text-red-300">File non valido o vuoto — ricaricalo</span>
+              : guidePresence.present ? 'Caricata' : 'Assente'}
+            {guidePresence.sizeBytes && guidePresence.sizeBytes > 0 ? (
               <span className="text-av-green ml-1">
                 {(guidePresence.sizeBytes / (1024 * 1024)).toFixed(2)} MB
               </span>
