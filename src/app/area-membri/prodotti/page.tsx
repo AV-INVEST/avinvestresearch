@@ -12,8 +12,6 @@ import {
   Clock,
   Download,
   Eye,
-  FileCode,
-  FileText,
   Info,
   Lock,
   Package,
@@ -182,14 +180,12 @@ export default async function MyProductsPage({
                     kind="indicator"
                     label="Scarica indicatore"
                     subLabel="File Pine Script per TradingView"
-                    Icon={FileCode}
                     variant="primary"
                   />
                   <DownloadButton
                     kind="guide"
                     label="Scarica guida PDF"
                     subLabel="Istruzioni e panoramica completa"
-                    Icon={FileText}
                     variant="secondary"
                   />
                 </div>

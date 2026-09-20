@@ -4,8 +4,9 @@ import { useCallback, useState } from 'react';
 import {
   AlertCircle,
   Download,
+  FileCode,
+  FileText,
   Loader2,
-  type LucideIcon,
 } from 'lucide-react';
 
 type Kind = 'indicator' | 'guide';
@@ -20,11 +21,15 @@ const KIND_FILENAME_HINT: Record<Kind, string> = {
   guide: 'AV-Market-Lens-Guida.pdf',
 };
 
+const KIND_ICON: Record<Kind, typeof FileCode> = {
+  indicator: FileCode,
+  guide: FileText,
+};
+
 interface Props {
   kind: Kind;
   label: string;
   subLabel?: string;
-  Icon?: LucideIcon;
   variant?: 'primary' | 'secondary';
   className?: string;
 }
@@ -33,10 +38,10 @@ export default function DownloadButton({
   kind,
   label,
   subLabel,
-  Icon = Download,
   variant = 'secondary',
   className = '',
 }: Props) {
+  const Icon = KIND_ICON[kind];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
