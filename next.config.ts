@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.resolve(__dirname),
   experimental: {
     // Force project root to prevent Next.js from picking up an orphan package-lock.json in ancestor directories
+    serverActions: {
+      bodySizeLimit: '4mb',
+    },
   },
 };
 

@@ -430,7 +430,7 @@ export const TRADING_STARTER_STORAGE_KEYS = Object.freeze({
 } as const);
 
 export const TRADING_STARTER_SIZE_LIMITS = Object.freeze({
-  pdf: 25 * 1024 * 1024,
+  pdf: 3 * 1024 * 1024,
 } as const);
 
 export type TradingStarterKind = keyof typeof TRADING_STARTER_STORAGE_KEYS;
