@@ -121,10 +121,6 @@ export default function InformazioniLegaliPage() {
         </h2>
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
-            L&apos;attivit&agrave; &egrave; esercitata da persona fisica, secondo
-            limiti e modalit&agrave; previste dalla normativa vigente.
-          </li>
-          <li>
             Per richieste, assistenza post-vendita o chiarimenti sui servizi
             offerti, utilizza i riferimenti di contatto riportati sopra o
             consulta la sezione <a href="/termini" className="link-underline">Termini e condizioni</a>.
