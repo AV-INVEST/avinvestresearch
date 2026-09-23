@@ -362,9 +362,9 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         ? '/#trading-starter'
         : '/#percorsi';
 
-  const successUrl = new URL(successPath, baseUrl);
-  successUrl.searchParams.set('checkout', 'success');
-  successUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
+  const baseSuccessUrl = new URL(successPath, baseUrl);
+  baseSuccessUrl.searchParams.set('checkout', 'success');
+  const successUrl = baseSuccessUrl.toString() + '&session_id={CHECKOUT_SESSION_ID}';
 
   const cancelUrl = new URL(cancelPath, baseUrl);
   cancelUrl.searchParams.set('checkout', 'cancelled');

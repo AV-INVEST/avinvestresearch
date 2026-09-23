@@ -50,7 +50,10 @@ async function handleCheckoutSessionCompleted(stripe: Stripe, session: Stripe.Ch
   const userEmail = meta.user_email ?? normalizeEmail(session.customer_email);
   const productSlug = meta.product_slug;
   const paymentStatus = session.payment_status;
-  const status: PurchaseStatus = paymentStatus === 'paid' ? 'succeeded' : 'pending';
+  const isOneTime = !isSubscription;
+  const status: PurchaseStatus = isOneTime
+    ? (paymentStatus === 'paid' || paymentStatus === 'no_payment_required' ? 'succeeded' : 'pending')
+    : (paymentStatus === 'paid' ? 'succeeded' : 'pending');
   const purchasedAt = status === 'succeeded' ? new Date() : null;
   const customerId = typeof session.customer === 'string' ? session.customer : session.customer?.id ?? null;
   const paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id ?? null;

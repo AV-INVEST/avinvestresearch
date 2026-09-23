@@ -205,20 +205,36 @@ export default async function MyProductsPage({
                     <Clock className="h-5 w-5 animate-pulse" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-yellow-200">
-                      Pagamento in fase di elaborazione
-                    </p>
-                    <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                      Stiamo aspettando la conferma definitiva da Stripe. Se hai
-                      abbandonato il checkout, puoi riprenderlo o riprovare qui
-                      sotto.
-                    </p>
+                    {checkoutSuccess ? (
+                      <>
+                        <p className="text-sm font-semibold text-yellow-200">
+                          Acquisto completato
+                        </p>
+                        <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                          Stiamo attivando il tuo accesso. Attendi qualche
+                          secondo: la pagina si aggiornerà automaticamente.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm font-semibold text-yellow-200">
+                          Pagamento in fase di elaborazione
+                        </p>
+                        <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                          Stiamo aspettando la conferma definitiva da Stripe. Se hai
+                          abbandonato il checkout, puoi riprenderlo o riprovare qui
+                          sotto.
+                        </p>
+                      </>
+                    )}
                     <div className="mt-4">
                       <PendingPaymentRefresher initialAnyPending compact />
                     </div>
                   </div>
                 </div>
-                <TradingStarterCheckoutButton label="resume" />
+                {!checkoutSuccess ? (
+                  <TradingStarterCheckoutButton label="resume" />
+                ) : null}
               </div>
             ) : (
               <div className="mt-6 rounded-2xl border border-av-line bg-av-bg-2/60 p-4 sm:p-5">
@@ -363,20 +379,36 @@ export default async function MyProductsPage({
                     <Clock className="h-5 w-5 animate-pulse" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-yellow-200">
-                      Pagamento in fase di elaborazione
-                    </p>
-                    <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                      Stiamo aspettando la conferma definitiva da Stripe. Se hai
-                      abbandonato il checkout, puoi riprenderlo o riprovare qui
-                      sotto.
-                    </p>
+                    {checkoutSuccess ? (
+                      <>
+                        <p className="text-sm font-semibold text-yellow-200">
+                          Acquisto completato
+                        </p>
+                        <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                          Stiamo attivando il tuo accesso. Attendi qualche
+                          secondo: la pagina si aggiornerà automaticamente.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm font-semibold text-yellow-200">
+                          Pagamento in fase di elaborazione
+                        </p>
+                        <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                          Stiamo aspettando la conferma definitiva da Stripe. Se hai
+                          abbandonato il checkout, puoi riprenderlo o riprovare qui
+                          sotto.
+                        </p>
+                      </>
+                    )}
                     <div className="mt-4">
                       <PendingPaymentRefresher initialAnyPending compact />
                     </div>
                   </div>
                 </div>
-                <MarketLensCheckoutButton label="resume" />
+                {!checkoutSuccess ? (
+                  <MarketLensCheckoutButton label="resume" />
+                ) : null}
               </div>
             ) : (
               <div className="mt-6 rounded-2xl border border-av-line bg-av-bg-2/60 p-4 sm:p-5">
