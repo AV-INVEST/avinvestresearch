@@ -304,6 +304,15 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         { status: 400 },
       );
     }
+  } else if (resolved.slug === 'research-club') {
+    const consentVOk = typeof consentTermsVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentTermsVersion);
+    const consentAtOk = consentAcceptedAt instanceof Date && !Number.isNaN(consentAcceptedAt.getTime());
+    if (!consentVOk || !consentAtOk) {
+      return NextResponse.json(
+        { error: 'Consenso ai termini obbligatorio mancante o non valido per AV Research Club.' },
+        { status: 400 },
+      );
+    }
   }
 
   if (resolved.billingMode === 'subscription') {
@@ -378,6 +387,9 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     commonMetadata.consent_terms_v = consentTermsVersion;
     commonMetadata.consent_digital_withdrawal_v = consentDigitalWithdrawalVersion;
     commonMetadata.consent_at = consentAcceptedAt.toISOString();
+  } else if (resolved.slug === 'research-club' && consentTermsVersion && consentAcceptedAt) {
+    commonMetadata.consent_terms_v = consentTermsVersion;
+    commonMetadata.consent_at = consentAcceptedAt.toISOString();
   }
 
   const commonParams: Stripe.Checkout.SessionCreateParams = {
@@ -394,6 +406,11 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     allow_promotion_codes: true,
   };
 
+  const invoiceFooterText =
+    resolved.slug === 'market-lens' || resolved.slug === 'trading-starter'
+      ? "Il cliente ha richiesto l'accesso immediato al contenuto digitale e ha riconosciuto che, con l'inizio della fornitura, perde il diritto di recesso nei casi previsti dalla legge."
+      : undefined;
+
   const checkoutSession = isSubscription
     ? await stripe.checkout.sessions.create({
         ...commonParams,
@@ -404,6 +421,12 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
           metadata: {
             product_slug: resolved.slug,
             user_email: userEmail,
+            ...(consentTermsVersion && consentAcceptedAt
+              ? {
+                  consent_terms_v: consentTermsVersion,
+                  consent_at: consentAcceptedAt.toISOString(),
+                }
+              : {}),
           },
         },
       })
@@ -414,6 +437,13 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         billing_address_collection: 'auto',
         invoice_creation: {
           enabled: true,
+          ...(invoiceFooterText
+            ? {
+                invoice_data: {
+                  footer: invoiceFooterText,
+                },
+              }
+            : {}),
         },
         automatic_tax: { enabled: true },
       });

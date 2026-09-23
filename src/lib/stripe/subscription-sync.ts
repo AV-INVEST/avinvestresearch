@@ -3,7 +3,7 @@ import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import type { SubscriptionStatus, SubscriptionProduct } from '@prisma/client';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { isKnownProductSlug } from '@/lib/stripe/pricing';
-import { ensureUser } from '@/lib/stripe/purchase-sync';
+import { ensureUser, metadataFromSession } from '@/lib/stripe/purchase-sync';
 import { getStripeClient, isStripeConfigured } from '@/lib/stripe/client';
 
 function requireDb(): void {
@@ -52,16 +52,36 @@ export function resolveProductForSubscription(
   return { product: 'AV_RESEARCH_CLUB', slug: productSlugRaw ?? null };
 }
 
+interface ExtractedMetadata {
+  user_email: string | null;
+  product_slug: string | null;
+  consentTermsVersion: string | null;
+  consentAcceptedAt: Date | null;
+}
+
 function extractMetadata(
   meta: Record<string, string> | null | undefined,
   fallbackEmail?: string | null,
-): { user_email: string | null; product_slug: string | null } {
+): ExtractedMetadata {
   const raw = meta ?? {};
   const userEmail = typeof raw.user_email === 'string'
     ? normalizeEmail(raw.user_email)
     : normalizeEmail(fallbackEmail ?? null);
   const productSlug = typeof raw.product_slug === 'string' ? raw.product_slug : null;
-  return { user_email: userEmail, product_slug: productSlug };
+  const consentTermsV = typeof raw.consent_terms_v === 'string' && raw.consent_terms_v.length > 0
+    ? raw.consent_terms_v
+    : null;
+  let consentAt: Date | null = null;
+  if (typeof raw.consent_at === 'string' && raw.consent_at.length > 0) {
+    const t = new Date(raw.consent_at);
+    if (!Number.isNaN(t.getTime())) consentAt = t;
+  }
+  return {
+    user_email: userEmail,
+    product_slug: productSlug,
+    consentTermsVersion: consentTermsV,
+    consentAcceptedAt: consentAt,
+  };
 }
 
 export interface UpsertSubscriptionInput {
@@ -76,6 +96,8 @@ export interface UpsertSubscriptionInput {
   latestInvoicePaidAt?: Date | null;
   paymentProblem?: boolean;
   paymentProblemAt?: Date | null;
+  consentTermsVersion?: string | null;
+  consentAcceptedAt?: Date | null;
 }
 
 export async function upsertSubscription(input: UpsertSubscriptionInput): Promise<void> {
@@ -92,6 +114,8 @@ export async function upsertSubscription(input: UpsertSubscriptionInput): Promis
     latestInvoicePaidAt,
     paymentProblem,
     paymentProblemAt,
+    consentTermsVersion,
+    consentAcceptedAt,
   } = input;
   if (!userEmail) throw new Error('userEmail required for subscription upsert');
   if (!stripeSubscriptionId) throw new Error('stripeSubscriptionId required for subscription upsert');
@@ -109,6 +133,8 @@ export async function upsertSubscription(input: UpsertSubscriptionInput): Promis
     latestInvoicePaidAt: latestInvoicePaidAt ?? undefined,
     paymentProblem: paymentProblem ?? false,
     paymentProblemAt: paymentProblemAt ?? undefined,
+    consentTermsVersion: consentTermsVersion ?? undefined,
+    consentAcceptedAt: consentAcceptedAt ?? undefined,
   };
 
   await prisma.subscription.upsert({
@@ -123,6 +149,12 @@ export async function upsertSubscription(input: UpsertSubscriptionInput): Promis
       latestInvoicePaidAt: latestInvoicePaidAt ?? undefined,
       paymentProblem: paymentProblem ?? undefined,
       paymentProblemAt: paymentProblemAt ?? undefined,
+      ...(consentTermsVersion || consentAcceptedAt
+        ? {
+            consentTermsVersion: consentTermsVersion ?? undefined,
+            consentAcceptedAt: consentAcceptedAt ?? undefined,
+          }
+        : {}),
     },
   });
 }
@@ -217,6 +249,7 @@ export async function handleCheckoutSessionCompletedSubscription(
   session: Stripe.Checkout.Session,
 ): Promise<{ handled: boolean; reason?: string }> {
   requireDb();
+  const sessionMeta = metadataFromSession(session);
   const meta = extractMetadata(session.metadata, session.customer_email);
   const isSubscriptionMode = session.mode === 'subscription';
   const subscriptionObj = session.subscription;
@@ -243,7 +276,8 @@ export async function handleCheckoutSessionCompletedSubscription(
   const firstItem = session.line_items?.data?.[0] ?? null;
   const priceField = firstItem?.price ?? null;
   const priceId = typeof priceField === 'object' && priceField ? priceField.id : priceField ?? null;
-  const now = new Date();
+  const consentTermsVersion = sessionMeta.consentTermsVersion ?? meta.consentTermsVersion;
+  const consentAcceptedAt = sessionMeta.consentAcceptedAt ?? meta.consentAcceptedAt;
   await prisma.subscription.upsert({
     where: { stripeSubscriptionId },
     create: {
@@ -254,15 +288,22 @@ export async function handleCheckoutSessionCompletedSubscription(
       stripePriceId: priceId ?? undefined,
       status: 'INCOMPLETE',
       cancelAtPeriodEnd: false,
+      consentTermsVersion: consentTermsVersion ?? undefined,
+      consentAcceptedAt: consentAcceptedAt ?? undefined,
     },
     update: {
       stripeCustomerId,
       stripePriceId: priceId ?? undefined,
       product: productInfo.product,
       userEmail,
+      ...(consentTermsVersion || consentAcceptedAt
+        ? {
+            consentTermsVersion: consentTermsVersion ?? undefined,
+            consentAcceptedAt: consentAcceptedAt ?? undefined,
+          }
+        : {}),
     },
   });
-  void now;
   return { handled: true };
 }
 
@@ -314,6 +355,8 @@ export async function handleSubscriptionUpsertFromStripe(
     currentPeriodEnd,
     paymentProblem,
     paymentProblemAt,
+    consentTermsVersion: meta.consentTermsVersion,
+    consentAcceptedAt: meta.consentAcceptedAt,
   });
 }
 

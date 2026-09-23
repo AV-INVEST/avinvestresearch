@@ -23,9 +23,8 @@ export default function InformazioniLegaliPage() {
           Dati del venditore
         </h2>
         <p className="mt-2">
-          I prodotti e i servizi presenti sul sito sono venduti da persona fisica
-          nell&apos;esercizio della propria attivit&agrave; professionale, secondo
-          la normativa applicabile.
+          I prodotti e i servizi presenti sul sito sono offerti dal venditore
+          indicato di seguito, secondo la normativa applicabile.
         </p>
         <div className="mt-4 rounded-2xl border border-av-line bg-av-bg-2/40 p-5 sm:p-6">
           <dl className="grid gap-4 sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-4">
