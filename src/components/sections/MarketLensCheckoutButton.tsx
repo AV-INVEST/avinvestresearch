@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useSession } from 'next-auth/react';
 import {
   AlertCircle,
   ArrowRight,
@@ -28,6 +29,7 @@ export default function MarketLensCheckoutButton({
   compact = false,
   className = '',
 }: Props) {
+  const { data: session, status: sessionStatus } = useSession();
   const [state, setState] = useState<ButtonState>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,21 +45,13 @@ export default function MarketLensCheckoutButton({
   const ctaLabel = label === 'resume' ? 'RIPRENDI PAGAMENTO' : 'Acquista a 39,90 €';
   const loadingLabel = label === 'resume' ? 'Verifica accesso...' : 'Verifica accesso...';
 
-  const onOpen = useCallback(async () => {
+  const onOpen = useCallback(() => {
     setState('loading');
     setErrorMsg(null);
     try {
-      const sessionResp = await fetch('/api/auth/session', {
-        cache: 'no-store',
-      });
-      type AuthSessionShape = { user?: { email?: string; id?: string } } | null;
-      let session: AuthSessionShape = null;
-      if (sessionResp.ok) {
-        try {
-          session = (await sessionResp.json()) as AuthSessionShape;
-        } catch {
-          session = null;
-        }
+      if (sessionStatus === 'loading') {
+        setState('idle');
+        return;
       }
       const userEmail = session?.user?.email;
       if (!userEmail) {
@@ -74,7 +68,7 @@ export default function MarketLensCheckoutButton({
     } finally {
       setState((s) => (s === 'error' ? 'error' : 'idle'));
     }
-  }, []);
+  }, [session, sessionStatus]);
 
   const onSubmitConsent = useCallback(async () => {
     if (!acceptTerms || !acceptDigital) return;

@@ -112,6 +112,18 @@ export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
   tradingStarter: TRADING_STARTER_DEFAULT,
 };
 
+export interface OneTimeProductEntitlements {
+  marketLens: MarketLensEntitlement;
+  tradingStarter: TradingStarterEntitlement;
+  anyPending: boolean;
+}
+
+export const DEFAULT_ONE_TIME_ENTITLEMENTS: OneTimeProductEntitlements = {
+  marketLens: MARKET_LENS_DEFAULT,
+  tradingStarter: TRADING_STARTER_DEFAULT,
+  anyPending: false,
+};
+
 function lockedEntitlement(slug: string, title: string): CourseEntitlement {
   return {
     slug,
@@ -342,6 +354,88 @@ export async function getResearchClubEntitlement(
   return researchClubEntitlementFromSubscription(sub);
 }
 
+type ResolvedPurchaseMap = Map<
+  string,
+  { type: 'succeeded' | 'pending'; purchasedAt: Date | null; createdAt: Date }
+>;
+
+function resolveOneTimeProducts(
+  resolvedBySlug: ResolvedPurchaseMap,
+): { marketLens: MarketLensEntitlement; tradingStarter: TradingStarterEntitlement; anyPending: boolean } {
+  let anyPending = false;
+
+  const mlResolved = resolvedBySlug.get('market-lens');
+  let marketLens: MarketLensEntitlement = MARKET_LENS_DEFAULT;
+  if (mlResolved && mlResolved.type === 'succeeded') {
+    marketLens = {
+      status: 'owned',
+      purchasedAt: mlResolved.purchasedAt,
+      createdAt: mlResolved.createdAt,
+      message: 'Hai acquistato AV Market Lens. Puoi scaricare i file dall\'area membri.',
+    };
+  } else if (mlResolved && mlResolved.type === 'pending') {
+    marketLens = {
+      status: 'payment_pending',
+      purchasedAt: null,
+      createdAt: mlResolved.createdAt,
+      message: 'Pagamento AV Market Lens in corso. Completa la conferma da parte di Stripe.',
+    };
+    anyPending = true;
+  }
+
+  const tsResolved = resolvedBySlug.get('trading-starter');
+  let tradingStarter: TradingStarterEntitlement = TRADING_STARTER_DEFAULT;
+  if (tsResolved && tsResolved.type === 'succeeded') {
+    tradingStarter = {
+      status: 'owned',
+      purchasedAt: tsResolved.purchasedAt,
+      createdAt: tsResolved.createdAt,
+      message: 'Hai acquistato AV Trading Starter. Puoi scaricare la guida PDF dall\'area membri.',
+    };
+  } else if (tsResolved && tsResolved.type === 'pending') {
+    tradingStarter = {
+      status: 'payment_pending',
+      purchasedAt: null,
+      createdAt: tsResolved.createdAt,
+      message: 'Pagamento AV Trading Starter in corso. Completa la conferma da parte di Stripe.',
+    };
+    anyPending = true;
+  }
+
+  return { marketLens, tradingStarter, anyPending };
+}
+
+export async function getOneTimeProductEntitlements(
+  userId?: string,
+  email?: string | null,
+): Promise<OneTimeProductEntitlements> {
+  if (!isDatabaseConfigured()) {
+    return DEFAULT_ONE_TIME_ENTITLEMENTS;
+  }
+  const userEmail = await resolveUserEmail(userId, email);
+  const purchased = userEmail ? await loadPurchases(userEmail) : [];
+
+  const resolvedBySlug: ResolvedPurchaseMap = new Map();
+  for (const p of purchased) {
+    if (resolvedBySlug.has(p.productSlug)) continue;
+    if (p.status === 'succeeded') {
+      resolvedBySlug.set(p.productSlug, {
+        type: 'succeeded',
+        purchasedAt: p.purchasedAt,
+        createdAt: p.createdAt,
+      });
+    } else if (p.status === 'pending') {
+      resolvedBySlug.set(p.productSlug, {
+        type: 'pending',
+        purchasedAt: null,
+        createdAt: p.createdAt,
+      });
+    }
+  }
+
+  return resolveOneTimeProducts(resolvedBySlug);
+}
+
 export async function getEntitlements(
   userId?: string,
   email?: string | null,
@@ -353,10 +447,7 @@ export async function getEntitlements(
   const purchased = userEmail ? await loadPurchases(userEmail) : [];
 
   const ownedSlugs: string[] = [];
-  const resolvedBySlug = new Map<
-    string,
-    { type: 'succeeded' | 'pending'; purchasedAt: Date | null; createdAt: Date }
-  >();
+  const resolvedBySlug: ResolvedPurchaseMap = new Map();
   for (const p of purchased) {
     if (resolvedBySlug.has(p.productSlug)) continue;
     if (p.status === 'succeeded') {
@@ -455,43 +546,13 @@ export async function getEntitlements(
   const researchClubSub = userEmail ? await loadResearchClubSubscription(userEmail) : null;
   const researchClub = researchClubEntitlementFromSubscription(researchClubSub);
 
-  const mlResolved = resolvedBySlug.get('market-lens');
-  let marketLens: MarketLensEntitlement = MARKET_LENS_DEFAULT;
-  if (mlResolved && mlResolved.type === 'succeeded') {
-    marketLens = {
-      status: 'owned',
-      purchasedAt: mlResolved.purchasedAt,
-      createdAt: mlResolved.createdAt,
-      message: 'Hai acquistato AV Market Lens. Puoi scaricare i file dall\'area membri.',
-    };
+  const oneTime = resolveOneTimeProducts(resolvedBySlug);
+  const marketLens = oneTime.marketLens;
+  const tradingStarter = oneTime.tradingStarter;
+  if (marketLens.status === 'owned' || tradingStarter.status === 'owned') {
     anyAvailable = true;
-  } else if (mlResolved && mlResolved.type === 'pending') {
-    marketLens = {
-      status: 'payment_pending',
-      purchasedAt: null,
-      createdAt: mlResolved.createdAt,
-      message: 'Pagamento AV Market Lens in corso. Completa la conferma da parte di Stripe.',
-    };
-    anyPending = true;
   }
-
-  const tsResolved = resolvedBySlug.get('trading-starter');
-  let tradingStarter: TradingStarterEntitlement = TRADING_STARTER_DEFAULT;
-  if (tsResolved && tsResolved.type === 'succeeded') {
-    tradingStarter = {
-      status: 'owned',
-      purchasedAt: tsResolved.purchasedAt,
-      createdAt: tsResolved.createdAt,
-      message: 'Hai acquistato AV Trading Starter. Puoi scaricare la guida PDF dall\'area membri.',
-    };
-    anyAvailable = true;
-  } else if (tsResolved && tsResolved.type === 'pending') {
-    tradingStarter = {
-      status: 'payment_pending',
-      purchasedAt: null,
-      createdAt: tsResolved.createdAt,
-      message: 'Pagamento AV Trading Starter in corso. Completa la conferma da parte di Stripe.',
-    };
+  if (oneTime.anyPending) {
     anyPending = true;
   }
 

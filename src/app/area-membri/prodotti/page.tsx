@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { getEntitlements } from '@/lib/entitlements';
+import { getOneTimeProductEntitlements } from '@/lib/entitlements';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
-import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
+import RefreshPageButton from '@/components/payment/RefreshPageButton';
 import {
   ArrowRight,
   BookOpen,
@@ -48,7 +48,7 @@ export default async function MyProductsPage({
   const sessionIdParam =
     typeof resolvedParams?.session_id === 'string' ? resolvedParams.session_id : null;
 
-  const entitlements = await getEntitlements(session.user.id, session.user.email);
+  const entitlements = await getOneTimeProductEntitlements(session.user.id, session.user.email);
   const tradingStarter = entitlements.tradingStarter;
   const ts = siteConfig.tradingStarter;
   const marketLens = entitlements.marketLens;
@@ -75,15 +75,14 @@ export default async function MyProductsPage({
         </div>
       </div>
 
-      {checkoutSuccess && marketLens.status !== 'owned' && tradingStarter.status !== 'owned' ? (
+      {checkoutSuccess && (marketLens.status === 'payment_pending' || tradingStarter.status === 'payment_pending') ? (
         <div className="flex items-start gap-2 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] px-4 py-3 text-sm">
           <Sparkles className="mt-0.5 h-4 w-4 flex-none text-yellow-300" />
           <div className="min-w-0">
-            <p className="font-semibold text-yellow-200">Pagamento ricevuto</p>
+            <p className="font-semibold text-yellow-200">Acquisto completato</p>
             <p className="mt-1 leading-relaxed text-yellow-100/85">
-              Stiamo confermando l&apos;acquisto con il nostro sistema. Se tra
-              qualche secondo la card non si aggiorna, usa il pulsante per
-              ricaricare manualmente.
+              Il checkout è stato completato. Aggiorna lo stato per verificare
+              l&apos;attivazione del prodotto.
             </p>
             {sessionIdParam ? (
               <p className="mt-1 text-[11px] text-yellow-100/70 font-mono break-all">
@@ -91,7 +90,7 @@ export default async function MyProductsPage({
               </p>
             ) : null}
             <div className="mt-3">
-              <PendingPaymentRefresher initialAnyPending compact />
+              <RefreshPageButton label="AGGIORNA STATO" variant="yellow" compact />
             </div>
           </div>
         </div>
@@ -202,7 +201,7 @@ export default async function MyProductsPage({
               <div className="mt-6 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4 sm:p-5 space-y-4">
                 <div className="flex items-start gap-3">
                   <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-yellow-400/40 bg-yellow-400/10 text-yellow-300">
-                    <Clock className="h-5 w-5 animate-pulse" />
+                    <Clock className="h-5 w-5" />
                   </span>
                   <div className="min-w-0 flex-1">
                     {checkoutSuccess ? (
@@ -211,9 +210,12 @@ export default async function MyProductsPage({
                           Acquisto completato
                         </p>
                         <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                          Stiamo attivando il tuo accesso. Attendi qualche
-                          secondo: la pagina si aggiornerà automaticamente.
+                          Il checkout è stato completato. Aggiorna lo stato per
+                          verificare l&apos;attivazione del prodotto.
                         </p>
+                        <div className="mt-4">
+                          <RefreshPageButton label="AGGIORNA STATO" variant="yellow" compact />
+                        </div>
                       </>
                     ) : (
                       <>
@@ -221,15 +223,11 @@ export default async function MyProductsPage({
                           Pagamento in fase di elaborazione
                         </p>
                         <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                          Stiamo aspettando la conferma definitiva da Stripe. Se hai
-                          abbandonato il checkout, puoi riprenderlo o riprovare qui
-                          sotto.
+                          Il pagamento non è ancora stato confermato. Se hai
+                          abbandonato il checkout, puoi riprenderlo qui sotto.
                         </p>
                       </>
                     )}
-                    <div className="mt-4">
-                      <PendingPaymentRefresher initialAnyPending compact />
-                    </div>
                   </div>
                 </div>
                 {!checkoutSuccess ? (
@@ -376,7 +374,7 @@ export default async function MyProductsPage({
               <div className="mt-6 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4 sm:p-5 space-y-4">
                 <div className="flex items-start gap-3">
                   <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-yellow-400/40 bg-yellow-400/10 text-yellow-300">
-                    <Clock className="h-5 w-5 animate-pulse" />
+                    <Clock className="h-5 w-5" />
                   </span>
                   <div className="min-w-0 flex-1">
                     {checkoutSuccess ? (
@@ -385,9 +383,12 @@ export default async function MyProductsPage({
                           Acquisto completato
                         </p>
                         <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                          Stiamo attivando il tuo accesso. Attendi qualche
-                          secondo: la pagina si aggiornerà automaticamente.
+                          Il checkout è stato completato. Aggiorna lo stato per
+                          verificare l&apos;attivazione del prodotto.
                         </p>
+                        <div className="mt-4">
+                          <RefreshPageButton label="AGGIORNA STATO" variant="yellow" compact />
+                        </div>
                       </>
                     ) : (
                       <>
@@ -395,15 +396,11 @@ export default async function MyProductsPage({
                           Pagamento in fase di elaborazione
                         </p>
                         <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
-                          Stiamo aspettando la conferma definitiva da Stripe. Se hai
-                          abbandonato il checkout, puoi riprenderlo o riprovare qui
-                          sotto.
+                          Il pagamento non è ancora stato confermato. Se hai
+                          abbandonato il checkout, puoi riprenderlo qui sotto.
                         </p>
                       </>
                     )}
-                    <div className="mt-4">
-                      <PendingPaymentRefresher initialAnyPending compact />
-                    </div>
                   </div>
                 </div>
                 {!checkoutSuccess ? (

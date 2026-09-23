@@ -31,8 +31,8 @@ export default async function HomePage() {
         <MarketLine className="opacity-70" />
       </div>
       <Positioning />
-      <TradingStarter />
-      <MarketLens />
+      <TradingStarter entitlement={entitlements?.tradingStarter} />
+      <MarketLens entitlement={entitlements?.marketLens} />
       <Courses entitlements={entitlements ?? undefined} />
       <Method />
       <section

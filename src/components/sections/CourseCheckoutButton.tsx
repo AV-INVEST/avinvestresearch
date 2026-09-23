@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { AlertCircle, ArrowRight, CreditCard, Loader2, Clock } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 
@@ -16,6 +17,7 @@ const SLUG_TO_CONFIG_KEY: Record<Props['slug'], 'foundations' | 'tradingLab'> = 
 };
 
 export default function CourseCheckoutButton({ slug }: Props) {
+  const { data: session, status: sessionStatus } = useSession();
   const [state, setState] = useState<ButtonState>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -23,19 +25,11 @@ export default function CourseCheckoutButton({ slug }: Props) {
     setState('loading');
     setErrorMsg(null);
     try {
-      const sessionResp = await fetch('/api/auth/session', {
-        cache: 'no-store',
-      });
-      type AuthSessionShape = { user?: { email?: string; id?: string } } | null;
-      let session: AuthSessionShape = null;
-      if (sessionResp.ok) {
-        try {
-          session = (await sessionResp.json()) as AuthSessionShape;
-        } catch {
-          session = null;
-        }
+      if (sessionStatus === 'loading') {
+        setState('idle');
+        return;
       }
-      const userEmail = (session as AuthSessionShape)?.user?.email;
+      const userEmail = session?.user?.email;
       if (!userEmail) {
         const cb = '/#percorsi';
         window.location.assign('/login?callbackUrl=' + encodeURIComponent(cb));
@@ -74,7 +68,7 @@ export default function CourseCheckoutButton({ slug }: Props) {
     } finally {
       setState((s) => (s === 'error' ? 'error' : 'idle'));
     }
-  }, [slug]);
+  }, [slug, session, sessionStatus]);
 
   const isLoading = state === 'loading';
   const hasError = state === 'error';

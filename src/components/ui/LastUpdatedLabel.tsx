@@ -13,11 +13,7 @@ export default function LastUpdatedLabel({
   suffix = '',
   className = '',
 }: LastUpdatedLabelProps) {
-  const [formattedDate, setFormattedDate] = useState<string>(() =>
-    typeof window === 'undefined'
-      ? ''
-      : formatRomeDate(new Date()),
-  );
+  const [formattedDate, setFormattedDate] = useState<string>('');
 
   useEffect(() => {
     setFormattedDate(formatRomeDate(new Date()));

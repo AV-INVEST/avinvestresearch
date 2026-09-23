@@ -49,7 +49,7 @@ const faqs: FAQItem[] = [
   {
     question: 'Dove trovo i file di AV Market Lens dopo aver pagato?',
     answer:
-      'Accedi all\'area membri con lo stesso account Google usato per il pagamento e vai a "I miei prodotti" (sezione /area-membri/prodotti), oppure dalla pagina del tuo profilo in "Acquisti e fatturazione" clicca sul pulsante "Apri prodotto" accanto alla riga di AV Market Lens. Se il pagamento è ancora in elaborazione, la pagina mostra uno stato di attesa con aggiornamento automatico.',
+      'Accedi all\'area membri con lo stesso account Google usato per il pagamento e vai a "I miei prodotti" (sezione /area-membri/prodotti), oppure dalla pagina del tuo profilo in "Acquisti e fatturazione" clicca sul pulsante "Apri prodotto" accanto alla riga di AV Market Lens. Se il pagamento è ancora in elaborazione, la pagina mostra uno stato di attesa; usa il pulsante "AGGIORNA STATO" o ricarica la pagina per verificare l\'attivazione.',
   },
   {
     question: 'Serve un account TradingView per usare l\'indicatore di AV Market Lens?',
@@ -69,7 +69,7 @@ const faqs: FAQItem[] = [
   {
     question: 'Cosa ricevo esattamente dopo l\'acquisto di AV Trading Starter?',
     answer:
-      'Dopo l\'acquisto andato a buon fine (Purchase status succeeded, productSlug trading-starter) puoi scaricare dal tuo account, nella sezione "I miei prodotti" dell\'area membri, la guida PDF ufficiale in formato scaricabile direttamente dal browser (nome file: AV-Trading-Starter.pdf). Il file è conservato su storage privato e non viene fornito alcun URL pubblico o permanente. Se il pagamento è ancora in elaborazione, la pagina mostra uno stato di attesa con aggiornamento automatico.',
+      'Dopo l\'acquisto andato a buon fine (Purchase status succeeded, productSlug trading-starter) puoi scaricare dal tuo account, nella sezione "I miei prodotti" dell\'area membri, la guida PDF ufficiale in formato scaricabile direttamente dal browser (nome file: AV-Trading-Starter.pdf). Il file è conservato su storage privato e non viene fornito alcun URL pubblico o permanente. Se il pagamento è ancora in elaborazione, la pagina mostra uno stato di attesa; usa il pulsante "AGGIORNA STATO" o ricarica la pagina per verificare l\'attivazione.',
   },
   {
     question: 'AV Trading Starter è un segnale operativo o una consulenza finanziaria?',

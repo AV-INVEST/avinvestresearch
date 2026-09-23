@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import { Check, Sparkles, Loader2, Clock, ArrowRight } from 'lucide-react';
+import { Check, Sparkles, Clock, ArrowRight, RefreshCw } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
-import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import type { ComponentType } from 'react';
 import type { CourseEntitlement, EntitlementsState, CourseStatus } from '@/lib/entitlements';
 
@@ -202,12 +201,20 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                       <div className="flex items-start gap-3">
                         <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
                         <div className="min-w-0 flex-1">
-                          <p className="font-semibold">Stiamo confermando il pagamento</p>
+                          <p className="font-semibold">Pagamento in fase di conferma</p>
                           <p className="mt-0.5 text-xs text-av-yellow/80">
-                            La conferma richiede di solito meno di 30 secondi. Se hai
-                            abbandonato il checkout, puoi riprenderlo qui sotto.
+                            La conferma da parte di Stripe richiede di solito meno di 30 secondi.
+                            Ricarica la pagina o usa il pulsante &quot;Riprendi pagamento&quot; per
+                            aggiornare lo stato.
                           </p>
-                          <PendingPaymentRefresher initialAnyPending compact />
+                          <button
+                            type="button"
+                            onClick={() => window.location.reload()}
+                            className="mt-2.5 inline-flex items-center gap-1.5 rounded-lg border border-av-yellow-deep/50 bg-av-yellow/10 px-3 py-1.5 text-xs font-semibold text-av-yellow hover:bg-av-yellow/20"
+                          >
+                            <RefreshCw className="h-3.5 w-3.5" />
+                            Ricarica stato
+                          </button>
                         </div>
                       </div>
                     </div>

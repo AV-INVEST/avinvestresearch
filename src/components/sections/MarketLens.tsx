@@ -14,11 +14,10 @@ import {
   FileText,
   Package,
 } from 'lucide-react';
-import { auth } from '@/auth';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import MarketLensCheckoutButton from '@/components/sections/MarketLensCheckoutButton';
-import { DEFAULT_ENTITLEMENT_STATE, type EntitlementsState, type MarketLensEntitlement } from '@/lib/entitlements';
+import { DEFAULT_ENTITLEMENT_STATE, type MarketLensEntitlement } from '@/lib/entitlements';
 
 const featureIcons: Record<string, typeof TrendingUp> = {
   trend: TrendingUp,
@@ -29,26 +28,14 @@ const featureIcons: Record<string, typeof TrendingUp> = {
   setups: Sparkles,
 };
 
-async function resolveMarketLensEntitlement(): Promise<MarketLensEntitlement> {
-  const session = await auth().catch(() => null);
-  if (!session?.user?.id && !session?.user?.email) {
-    return DEFAULT_ENTITLEMENT_STATE.marketLens;
-  }
-  try {
-    const { getEntitlements } = await import('@/lib/entitlements');
-    const state = (await getEntitlements(session.user.id, session.user.email).catch(
-      () => DEFAULT_ENTITLEMENT_STATE,
-    )) as EntitlementsState;
-    return state.marketLens;
-  } catch {
-    return DEFAULT_ENTITLEMENT_STATE.marketLens;
-  }
-}
-
-export default async function MarketLens() {
+export default function MarketLens({
+  entitlement,
+}: {
+  entitlement?: MarketLensEntitlement;
+}) {
   const ml = siteConfig.marketLens;
-  const entitlement = await resolveMarketLensEntitlement();
-  const owned = entitlement.status === 'owned';
+  const ent = entitlement ?? DEFAULT_ENTITLEMENT_STATE.marketLens;
+  const owned = ent.status === 'owned';
 
   return (
     <section
@@ -108,7 +95,7 @@ export default async function MarketLens() {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
-              ) : entitlement.status === 'payment_pending' ? (
+              ) : ent.status === 'payment_pending' ? (
                 <div className="w-full max-w-md pt-1 space-y-3">
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-300">
