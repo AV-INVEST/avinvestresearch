@@ -55,6 +55,25 @@ const MARKET_LENS_DEFAULT: MarketLensEntitlement = {
   message: 'AV Market Lens non ancora acquistato.',
 };
 
+export type TradingStarterStatus =
+  | 'locked'
+  | 'payment_pending'
+  | 'owned';
+
+export interface TradingStarterEntitlement {
+  status: TradingStarterStatus;
+  purchasedAt: Date | null;
+  createdAt: Date | null;
+  message: string;
+}
+
+const TRADING_STARTER_DEFAULT: TradingStarterEntitlement = {
+  status: 'locked',
+  purchasedAt: null,
+  createdAt: null,
+  message: 'AV Trading Starter non ancora acquistato.',
+};
+
 export type CourseStatus =
   | 'locked'
   | 'payment_pending'
@@ -81,6 +100,7 @@ export interface EntitlementsState {
   anyPending: boolean;
   researchClub: ResearchClubEntitlement;
   marketLens: MarketLensEntitlement;
+  tradingStarter: TradingStarterEntitlement;
 }
 
 export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
@@ -89,6 +109,7 @@ export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
   anyPending: false,
   researchClub: RESEARCH_CLUB_DEFAULT,
   marketLens: MARKET_LENS_DEFAULT,
+  tradingStarter: TRADING_STARTER_DEFAULT,
 };
 
 function lockedEntitlement(slug: string, title: string): CourseEntitlement {
@@ -120,6 +141,7 @@ export function buildLockedEntitlements(): EntitlementsState {
     anyPending: false,
     researchClub: RESEARCH_CLUB_DEFAULT,
     marketLens: MARKET_LENS_DEFAULT,
+    tradingStarter: TRADING_STARTER_DEFAULT,
   };
 }
 
@@ -453,7 +475,27 @@ export async function getEntitlements(
     anyPending = true;
   }
 
-  return { courses, anyAvailable, anyPending, researchClub, marketLens };
+  const tsResolved = resolvedBySlug.get('trading-starter');
+  let tradingStarter: TradingStarterEntitlement = TRADING_STARTER_DEFAULT;
+  if (tsResolved && tsResolved.type === 'succeeded') {
+    tradingStarter = {
+      status: 'owned',
+      purchasedAt: tsResolved.purchasedAt,
+      createdAt: tsResolved.createdAt,
+      message: 'Hai acquistato AV Trading Starter. Puoi scaricare la guida PDF dall\'area membri.',
+    };
+    anyAvailable = true;
+  } else if (tsResolved && tsResolved.type === 'pending') {
+    tradingStarter = {
+      status: 'payment_pending',
+      purchasedAt: null,
+      createdAt: tsResolved.createdAt,
+      message: 'Pagamento AV Trading Starter in corso. Completa la conferma da parte di Stripe.',
+    };
+    anyPending = true;
+  }
+
+  return { courses, anyAvailable, anyPending, researchClub, marketLens, tradingStarter };
 }
 
 export function getCourseEntitlement(

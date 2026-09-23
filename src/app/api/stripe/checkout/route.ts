@@ -79,13 +79,15 @@ function buildSafeStripeError(err: unknown): SafeStripeErrorLog {
   return out;
 }
 
-function ownedRedirectResponse(slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens') {
-  const redirectTo = slug === 'market-lens'
+function ownedRedirectResponse(slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens' | 'trading-starter') {
+  const redirectTo = slug === 'market-lens' || slug === 'trading-starter'
     ? '/area-membri/prodotti'
     : '/area-membri/percorsi';
   const error = slug === 'market-lens'
     ? 'Hai gia acquistato AV Market Lens.'
-    : 'Hai gia acquistato questo percorso.';
+    : slug === 'trading-starter'
+      ? 'Hai gia acquistato AV Trading Starter.'
+      : 'Hai gia acquistato questo percorso.';
   return NextResponse.json(
     { error, redirectTo },
     { status: 409 },
@@ -291,13 +293,14 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     if (!Number.isNaN(t.getTime())) consentAcceptedAt = t;
   }
 
-  if (resolved.slug === 'market-lens') {
+  if (resolved.slug === 'market-lens' || resolved.slug === 'trading-starter') {
     const consentVOk = typeof consentTermsVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentTermsVersion);
     const consentDwOk = typeof consentDigitalWithdrawalVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentDigitalWithdrawalVersion);
     const consentAtOk = consentAcceptedAt instanceof Date && !Number.isNaN(consentAcceptedAt.getTime());
     if (!consentVOk || !consentDwOk || !consentAtOk) {
+      const productLabel = resolved.slug === 'market-lens' ? 'AV Market Lens' : 'AV Trading Starter';
       return NextResponse.json(
-        { error: 'Consenso digitale obbligatorio mancante o non valido per AV Market Lens.' },
+        { error: `Consenso digitale obbligatorio mancante o non valido per ${productLabel}.` },
         { status: 400 },
       );
     }
@@ -348,14 +351,16 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
 
   const successPath = isSubscription
     ? '/area-membri/research-club'
-    : resolved.slug === 'market-lens'
+    : resolved.slug === 'market-lens' || resolved.slug === 'trading-starter'
       ? '/area-membri/prodotti'
       : '/area-membri';
   const cancelPath = isSubscription
     ? '/#research-club'
     : resolved.slug === 'market-lens'
       ? '/#market-lens'
-      : '/#percorsi';
+      : resolved.slug === 'trading-starter'
+        ? '/#trading-starter'
+        : '/#percorsi';
 
   const successUrl = new URL(successPath, baseUrl);
   successUrl.searchParams.set('checkout', 'success');
@@ -369,7 +374,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     user_email: userEmail,
     billing_mode: isSubscription ? 'subscription' : 'one_time',
   };
-  if (resolved.slug === 'market-lens' && consentTermsVersion && consentDigitalWithdrawalVersion && consentAcceptedAt) {
+  if ((resolved.slug === 'market-lens' || resolved.slug === 'trading-starter') && consentTermsVersion && consentDigitalWithdrawalVersion && consentAcceptedAt) {
     commonMetadata.consent_terms_v = consentTermsVersion;
     commonMetadata.consent_digital_withdrawal_v = consentDigitalWithdrawalVersion;
     commonMetadata.consent_at = consentAcceptedAt.toISOString();
@@ -431,7 +436,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         checkoutSession.id,
         typeof checkoutSession.amount_total === 'number' ? checkoutSession.amount_total : 0,
         checkoutSession.currency || 'EUR',
-        resolved.slug === 'market-lens'
+        resolved.slug === 'market-lens' || resolved.slug === 'trading-starter'
           ? {
               consentTermsVersion,
               consentDigitalWithdrawalVersion,

@@ -157,6 +157,21 @@ export const siteConfig = {
     ],
   },
 
+  tradingStarter: {
+    slug: 'trading-starter',
+    title: 'AV Trading Starter',
+    tagline: 'Capire i mercati da zero',
+    description:
+      'Una guida PDF pensata per i principianti: basi di grafici, riconoscimento trend, livelli chiave, nozioni di gestione del rischio e approccio mentale corretto. Il punto di partenza per chi vuole costruirsi basi solide, senza giri di parole.',
+    price: 9.9,
+    currency: 'EUR',
+    notes: [
+      'Pagamento unico. IVA inclusa. Nessun abbonamento ricorrente.',
+      'Guida PDF riservata all\'account che ha completato l\'acquisto. Vietata la condivisione o la rivendita.',
+      'Materiale esclusivamente educativo e informativo. Nessun consiglio finanziario o segnale operativo.',
+    ],
+  },
+
   performance: {
     entries: [
       {

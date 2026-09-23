@@ -1,5 +1,5 @@
 export interface ResolvedProduct {
-  slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens';
+  slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens' | 'trading-starter';
   priceId: string;
   title: string;
   amountInCents: number;
@@ -46,6 +46,14 @@ const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
     slug: 'market-lens',
     title: 'AV Market Lens',
     amountInCents: 3990,
+    currency: 'EUR',
+    billingMode: 'one_time',
+  },
+  'trading-starter': {
+    envKey: 'STRIPE_PRICE_AV_TRADING_STARTER',
+    slug: 'trading-starter',
+    title: 'AV Trading Starter',
+    amountInCents: 990,
     currency: 'EUR',
     billingMode: 'one_time',
   },

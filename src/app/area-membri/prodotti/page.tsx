@@ -8,6 +8,7 @@ import GlassCard from '@/components/ui/GlassCard';
 import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import {
   ArrowRight,
+  BookOpen,
   CheckCircle2,
   Clock,
   Download,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 import DownloadButton from '@/components/products/DownloadButton';
 import MarketLensCheckoutButton from '@/components/sections/MarketLensCheckoutButton';
+import TradingStarterCheckoutButton from '@/components/sections/TradingStarterCheckoutButton';
 
 export const metadata: Metadata = {
   title: 'I miei prodotti',
@@ -47,6 +49,8 @@ export default async function MyProductsPage({
     typeof resolvedParams?.session_id === 'string' ? resolvedParams.session_id : null;
 
   const entitlements = await getEntitlements(session.user.id, session.user.email);
+  const tradingStarter = entitlements.tradingStarter;
+  const ts = siteConfig.tradingStarter;
   const marketLens = entitlements.marketLens;
   const ml = siteConfig.marketLens;
 
@@ -71,7 +75,7 @@ export default async function MyProductsPage({
         </div>
       </div>
 
-      {checkoutSuccess && marketLens.status !== 'owned' ? (
+      {checkoutSuccess && marketLens.status !== 'owned' && tradingStarter.status !== 'owned' ? (
         <div className="flex items-start gap-2 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] px-4 py-3 text-sm">
           <Sparkles className="mt-0.5 h-4 w-4 flex-none text-yellow-300" />
           <div className="min-w-0">
@@ -107,6 +111,147 @@ export default async function MyProductsPage({
       ) : null}
 
       <div className="grid gap-4 lg:grid-cols-12">
+        <GlassCard
+          id="trading-starter"
+          className="lg:col-span-8 overflow-hidden border border-white/5"
+          style={{
+            backgroundImage:
+              'radial-gradient(800px 300px at 100% 0%, rgba(0,255,106,0.05), transparent 60%)',
+          }}
+        >
+          <div className="relative p-5 sm:p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green">
+                    <BookOpen className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-av-green">
+                      ENTRY-LEVEL · ONE-TIME
+                    </p>
+                    <h2 className="mt-1 font-display text-xl font-semibold text-white">
+                      {ts.title}
+                    </h2>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-av-muted/95 sm:text-base max-w-2xl">
+                  {ts.tagline}
+                </p>
+              </div>
+
+              {tradingStarter.status === 'owned' ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/40 bg-av-green/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-green">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Posseduto
+                </span>
+              ) : tradingStarter.status === 'payment_pending' ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-300">
+                  <Clock className="h-3.5 w-3.5 animate-pulse" />
+                  In conferma
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-muted">
+                  <Lock className="h-3.5 w-3.5" />
+                  Non disponibile
+                </span>
+              )}
+            </div>
+
+            {tradingStarter.status === 'owned' ? (
+              <div className="mt-6 rounded-2xl border border-av-green-deep/40 bg-av-green/[0.04] p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white">
+                      Acquisto completato
+                    </p>
+                    {tradingStarter.purchasedAt ? (
+                      <p className="mt-1 text-xs text-av-muted/90">
+                        Data:{' '}
+                        {new Date(tradingStarter.purchasedAt).toLocaleDateString('it-IT', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-1">
+                  <DownloadButton
+                    kind="trading-starter-pdf"
+                    label="Scarica guida PDF"
+                    subLabel="Materiale educativo per principianti"
+                    variant="primary"
+                  />
+                </div>
+
+                <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-av-muted/90">
+                  <Info className="mt-0.5 h-3.5 w-3.5 flex-none text-av-green" />
+                  <span>
+                    Questa guida è riservata al tuo account personale. Non
+                    condividere, pubblicare, vendere o rivendere il file PDF.
+                    Materiale esclusivamente educativo e informativo.
+                  </span>
+                </p>
+              </div>
+            ) : tradingStarter.status === 'payment_pending' ? (
+              <div className="mt-6 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4 sm:p-5 space-y-4">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-yellow-400/40 bg-yellow-400/10 text-yellow-300">
+                    <Clock className="h-5 w-5 animate-pulse" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-yellow-200">
+                      Pagamento in fase di elaborazione
+                    </p>
+                    <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                      Stiamo aspettando la conferma definitiva da Stripe. Se hai
+                      abbandonato il checkout, puoi riprenderlo o riprovare qui
+                      sotto.
+                    </p>
+                    <div className="mt-4">
+                      <PendingPaymentRefresher initialAnyPending compact />
+                    </div>
+                  </div>
+                </div>
+                <TradingStarterCheckoutButton label="resume" />
+              </div>
+            ) : (
+              <div className="mt-6 rounded-2xl border border-av-line bg-av-bg-2/60 p-4 sm:p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-line bg-av-bg-2/80 text-av-muted">
+                      <Lock className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white">
+                        Non hai ancora acquistato {ts.title}
+                      </p>
+                      <p className="mt-1 leading-relaxed text-av-muted/90 text-sm sm:text-base">
+                        Acquista dalla homepage per ricevere subito l&apos;accesso
+                        alla guida PDF.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href="/#trading-starter"
+                      className="btn-primary shadow-glow-green-sm whitespace-nowrap"
+                    >
+                      Scopri AV Trading Starter
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </GlassCard>
+
         <GlassCard
           className="lg:col-span-8 overflow-hidden border border-white/5"
           style={{

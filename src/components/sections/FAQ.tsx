@@ -61,6 +61,21 @@ const faqs: FAQItem[] = [
     answer:
       'No. Assolutamente no. I marker, gli alert o le evidenziazioni prodotte dall\'indicatore derivano unicamente da regole tecniche predefinite su dati di mercato e hanno esclusivamente natura descrittiva e di supporto alla lettura grafica. Non costituiscono in alcun modo consigli personalizzati, istruzioni di acquisto/vendita, segnali operativi, previsioni o garanzie di risultato. Ogni decisione operativa resta sotto la tua esclusiva responsabilità. Consulta il Disclaimer pubblicato sul sito per i dettagli completi.',
   },
+  {
+    question: 'Cos\'è AV Trading Starter?',
+    answer:
+      'AV Trading Starter è un prodotto digitale one-time entry-level, consistente in una guida PDF educativa pensata per i principianti: copre le basi della lettura dei grafici, il riconoscimento dei trend, i livelli chiave e i primi concetti di gestione del rischio, con un approccio semplice e strutturato. È materiale esclusivamente formativo, non contiene analisi su strumenti specifici, non promette risultati e non sostituisce la tua valutazione autonoma.',
+  },
+  {
+    question: 'Cosa ricevo esattamente dopo l\'acquisto di AV Trading Starter?',
+    answer:
+      'Dopo l\'acquisto andato a buon fine (Purchase status succeeded, productSlug trading-starter) puoi scaricare dal tuo account, nella sezione "I miei prodotti" dell\'area membri, la guida PDF ufficiale in formato scaricabile direttamente dal browser (nome file: AV-Trading-Starter.pdf). Il file è conservato su storage privato e non viene fornito alcun URL pubblico o permanente. Se il pagamento è ancora in elaborazione, la pagina mostra uno stato di attesa con aggiornamento automatico.',
+  },
+  {
+    question: 'AV Trading Starter è un segnale operativo o una consulenza finanziaria?',
+    answer:
+      'No. Assolutamente no. AV Trading Starter è esclusivamente materiale formativo introduttivo: non contiene consigli personalizzati, raccomandazioni di acquisto o vendita, target di prezzo, indicazioni di timing o segnali operativi di qualsiasi genere. Non menziona strumenti finanziari specifici e non costituisce consulenza finanziaria, legale o fiscale. Ogni decisione di investimento o operativa resta sotto la tua esclusiva responsabilità. Consulta il Disclaimer e i Termini pubblicati sul sito per i dettagli completi.',
+  },
 ];
 
 export default function FAQ() {

@@ -61,6 +61,15 @@ export default function TerminiPage() {
             ove applicabile.
           </li>
           <li>
+            <strong className="text-white">Acquisto one-time AV Trading Starter</strong>:
+            la conclusione dell&apos;ordine e il pagamento a tantum della guida
+            PDF AV Trading Starter (materiale educativo entry-level), tramite
+            Stripe, comportano l&apos;accettazione integrale dei presenti Termini,
+            del Disclaimer e la dichiarazione di consenso alla fornitura
+            immediata del contenuto digitale con perdita del diritto di recesso
+            ai sensi dell&apos;art. 59 del Codice del Consumo, ove applicabile.
+          </li>
+          <li>
             <strong className="text-white">Sottoscrizione abbonamento</strong>:
             l&apos;attivazione dell&apos;abbonamento mensile al Research Club,
             tramite Stripe, comporta l&apos;accettazione integrale dei
@@ -116,6 +125,13 @@ export default function TerminiPage() {
             include il download di un indicatore TradingView in formato Pine
             Script e di una guida PDF di utilizzo, riservati al solo account
             che ha completato l&apos;acquisto.
+          </li>
+          <li>
+            <strong className="text-white">AV Trading Starter</strong>
+            : prodotto digitale one-time venduto con pagamento a tantum che
+            include il download di una guida PDF educativa entry-level su
+            grafici, trend, livelli chiave e gestione del rischio, riservata
+            al solo account che ha completato l&apos;acquisto.
           </li>
           <li>
             <strong className="text-white">Area membri</strong>
@@ -378,7 +394,69 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          12. Rinnovo automatico del Research Club
+          12. AV Trading Starter: guida PDF one-time
+        </h2>
+        <p>
+          AV Trading Starter &egrave; un prodotto digitale venduto con pagamento
+          unico e una tantum, consistente in una guida PDF in lingua italiana
+          a carattere esclusivamente educativo e informativo, destinata ai
+          principianti che intendono approcciare i mercati finanziari con
+          conoscenze di base relative a grafici, riconoscimento di trend,
+          livelli chiave, nozioni di gestione del rischio e approccio mentale
+          corretto. Dopo la conferma del pagamento da parte di Stripe e la
+          registrazione di un <em>Purchase</em> con stato{' '}
+          <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
+            succeeded
+          </code>{' '}
+          e <em>productSlug</em> uguale a{' '}
+          <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
+            trading-starter
+          </code>
+          , l&apos;utente acquisisce il diritto personale, non esclusivo e non
+          trasferibile di scaricare dal proprio account la guida PDF. Il file
+          &egrave; conservato su storage privato Vercel Blob ed &egrave;
+          scaricabile esclusivamente tramite rotta server protetta. Nessun
+          URL pubblico o permanente viene generato o esposto.
+        </p>
+        <p className="mt-2">
+          <strong className="text-white">Natura educativa e non finanziaria.</strong>{' '}
+          AV Trading Starter &egrave; esclusivamente materiale formativo e
+          illustrativo. Non costituisce in alcun modo consulenza finanziaria,
+          legale, fiscale o di investimento personalizzata, non &egrave; una
+          sollecitazione al pubblico all&apos;investimento, non contiene
+          raccomandazioni di acquisto o vendita di strumenti finanziari, non
+          fornisce segnali operativi e non promette, garantisce o suggerisce
+          alcun risultato, rendimento o profitto specifico.
+        </p>
+        <p className="mt-2">
+          La licenza d&apos;uso &egrave; concessa esclusivamente per finalit&agrave;
+          di studio e formazione personale dell&apos;utente. &Egrave;
+          espressamente vietato, senza autorizzazione scritta e preventiva del
+          Titolare: condividere, distribuire o trasmettere a terzi la guida PDF
+          o estratti di essa; pubblicare il file o parti di essa su qualsiasi
+          piattaforma pubblica o privata (forum, social network, gruppi di
+          messaggistica, repository, siti web, drive condivisi, servizi di
+          formazione a pagamento, ecc.); rivendere, sublicenziare, noleggiare
+          o concedere in uso a terzi la guida, in tutto o in parte; integrare
+          il contenuto in prodotti o servizi concorrenti, piattaforme di
+          segnali, formazione commerciale o servizi offerti a corrispettivo.
+        </p>
+        <p className="mt-2">
+          In ragione della natura di contenuto digitale fornito su supporto
+          immateriale, l&apos;utente, con l&apos;apposito consenso espresso
+          reso prima del checkout (registrato nel Purchase e nei metadata di
+          Stripe), richiede la fornitura immediata del contenuto all&apos;atto
+          del pagamento andato a buon fine e riconosce che, in conseguenza di
+          tale fornitura, il diritto di recesso di cui agli articoli 52 e seg.
+          del Codice del Consumo si considera escluso ai sensi dell&apos;art.
+          59, comma 1, lett. o), D.Lgs. 206/2005, nonch&eacute; delle altre
+          norme imperative di diritto UE e nazionale applicabili al caso.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          13. Rinnovo automatico del Research Club
         </h2>
         <p>
           L&apos;abbonamento al Research Club si rinnova automaticamente alla
@@ -400,7 +478,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          13. Disdetta e fine accesso
+          14. Disdetta e fine accesso
         </h2>
         <p>
           L&apos;utente pu&ograve; disattivare il rinnovo automatico
@@ -420,7 +498,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          14. Customer Portal e gestione autonoma
+          15. Customer Portal e gestione autonoma
         </h2>
         <p>
           La gestione autonoma dell&apos;abbonamento (aggiornamento dei dati di
@@ -433,15 +511,15 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          15. Rimborsi e diritto di recesso
+          16. Rimborsi e diritto di recesso
         </h2>
         <p>
           In relazione ai servizi digitali forniti dal Sito (corsi digitali,
-          prodotto one-time AV Market Lens e abbonamento Research Club), i
-          rimborsi e il diritto di recesso sono regolati esclusivamente nei
-          limiti e nei modi previsti dalla legge applicabile, con particolare
-          riferimento al Codice del Consumo (D.Lgs. 206/2005) e alle
-          disposizioni inderogabili di diritto comunitario e nazionale.
+          prodotti one-time AV Market Lens e AV Trading Starter, e abbonamento
+          Research Club), i rimborsi e il diritto di recesso sono regolati
+          esclusivamente nei limiti e nei modi previsti dalla legge applicabile,
+          con particolare riferimento al Codice del Consumo (D.Lgs. 206/2005)
+          e alle disposizioni inderogabili di diritto comunitario e nazionale.
         </p>
         <p className="mt-2">
           Non sono previsti rimborsi discrezionali al di l&agrave; di quanto
@@ -458,16 +536,17 @@ export default function TerminiPage() {
           dell&apos;utente all&apos;inizio della prestazione, riconoscimento
           della conseguente perdita del diritto di recesso e conferma prevista
           dalla normativa). In assenza di tali condizioni, il diritto di
-          recesso si applica secondo la regola generale. Per AV Market Lens,
-          l&apos;espressa richiesta di fornitura immediata e il riconoscimento
-          della perdita del diritto di recesso sono oggetto di consenso
-          esplicito e documentato prima dell&apos;avvio del checkout.
+          recesso si applica secondo la regola generale. Per AV Market Lens
+          e per AV Trading Starter, l&apos;espressa richiesta di fornitura
+          immediata e il riconoscimento della perdita del diritto di recesso
+          sono oggetto di consenso esplicito e documentato prima dell&apos;avvio
+          del checkout.
         </p>
       </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          16. Sospensione e revoca dell&apos;accesso per abuso
+          17. Sospensione e revoca dell&apos;accesso per abuso
         </h2>
         <p>
           Il Titolare si riserva il diritto, a propria esclusiva discrezione
@@ -506,7 +585,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          17. Disponibilit&agrave; del servizio e manutenzioni
+          18. Disponibilit&agrave; del servizio e manutenzioni
         </h2>
         <p>
           Il Titolare adopera ogni ragionevole sforzo per garantire la
@@ -528,7 +607,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          18. Servizi di terze parti
+          19. Servizi di terze parti
         </h2>
         <p>
           Il Sito si avvale di fornitori terzi per l&apos;erogazione dei servizi.
@@ -563,7 +642,7 @@ export default function TerminiPage() {
             <strong className="text-white">Vercel Blob</strong>: per lo
             storage privato e la distribuzione dei PDF e dei documenti del
             Research Club, nonch&eacute; dei file Pine Script e PDF del
-            prodotto AV Market Lens.
+            prodotto AV Market Lens e della guida PDF di AV Trading Starter.
           </li>
           <li>
             <strong className="text-white">TradingView</strong>: piattaforma
@@ -585,7 +664,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          18. Responsabilit&agrave; dell&apos;utente e decisioni autonome
+          20. Responsabilit&agrave; dell&apos;utente e decisioni autonome
         </h2>
         <p>
           Qualsiasi decisione di investimento, finanziaria, patrimoniale,
@@ -604,7 +683,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          19. Limitazione di responsabilit&agrave;
+          21. Limitazione di responsabilit&agrave;
         </h2>
         <p>
           Nei limiti massimi consentiti dalla normativa applicabile e fatti
@@ -625,7 +704,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          20. Forza maggiore e cause esterne
+          22. Forza maggiore e cause esterne
         </h2>
         <p>
           Il Titolare non sar&agrave; ritenuto responsabile per inadempimenti
@@ -642,7 +721,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          21. Modifiche ai servizi e ai prezzi
+          23. Modifiche ai servizi e ai prezzi
         </h2>
         <p>
           Il Titolare si riserva il diritto di modificare, aggiornare, ampliare,
@@ -660,7 +739,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          22. Legge applicabile e foro competente
+          24. Legge applicabile e foro competente
         </h2>
         <p>
           I presenti Termini sono regolati dalla legge italiana. Per ogni
@@ -680,7 +759,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          23. Contatti
+          25. Contatti
         </h2>
         <p>
           Per ogni domanda, segnalazione o richiesta relativa ai presenti

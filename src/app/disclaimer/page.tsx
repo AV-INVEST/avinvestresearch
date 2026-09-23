@@ -44,10 +44,10 @@ export default function DisclaimerPage() {
           Tutti i contenuti del Sito - inclusi, a titolo esemplificativo e non
           esaustivo, corsi digitali, ricerche PDF, dispense, esempi, grafici,
           commenti, visualizzazioni, call informative, presentazioni,
-          newsletter, materiale del Research Club, post social, approfondimenti
-          e qualsiasi altra tipologia di materiale pubblicato o reso accessibile
-          - sono forniti a scopo esclusivamente formativo, illustrativo e
-          informativo. Non costituiscono, né possono essere interpretati in
+          newsletter, materiale del Research Club, la guida PDF AV Trading
+          Starter, post social, approfondimenti e qualsiasi altra tipologia di
+          materiale pubblicato o reso accessibile - sono forniti a scopo
+          esclusivamente formativo, illustrativo e informativo. Non costituiscono, né possono essere interpretati in
           alcun modo come, consulenza finanziaria personalizzata, consulenza
           legale o fiscale, sollecitazione all&apos;investimento, suggerimento
           di strategie di investimento, promessa di rendimento, raccomandazione
@@ -212,18 +212,24 @@ export default function DisclaimerPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          9. Corsi di formazione e Research Club
+          9. Corsi di formazione, AV Trading Starter e Research Club
         </h2>
         <p>
-          L&apos;acquisto di un corso digitale, l&apos;iscrizione ad AV Research
-          Club o l&apos;accesso a qualsiasi contenuto formativo o informativo
-          ha ad oggetto esclusivamente materiale didattico, documentale o di
-          ricerca, fruibile secondo modalit&agrave; puramente autonome
-          dall&apos;utente. Nessuno di tali servizi d&agrave; diritto a ricevere
-          segnali di investimento, consigli personalizzati, target di prezzo,
-          indicazioni di timing, accesso a un conto di trading condiviso,
-          gestione del risparmio per conto terzi, performance garantite o
-          rendimenti attesi di alcun tipo.
+          L&apos;acquisto di un corso digitale, l&apos;acquisto one-time di AV
+          Trading Starter (guida PDF educativa entry-level), l&apos;iscrizione
+          ad AV Research Club o l&apos;accesso a qualsiasi contenuto formativo
+          o informativo ha ad oggetto esclusivamente materiale didattico,
+          documentale o di ricerca, fruibile secondo modalit&agrave; puramente
+          autonome dall&apos;utente. In particolare, AV Trading Starter
+          costituisce esclusivamente una guida introduttiva sulle basi della
+          lettura dei mercati (grafici, trend, livelli chiave, elementi di
+          gestione del rischio) e non fornisce in alcun modo indicazioni
+          operative, analisi su specifici strumenti finanziari,
+          raccomandazioni o promesse di performance. Nessuno di tali servizi
+          d&agrave; diritto a ricevere segnali di investimento, consigli
+          personalizzati, target di prezzo, indicazioni di timing, accesso a
+          un conto di trading condiviso, gestione del risparmio per conto
+          terzi, performance garantite o rendimenti attesi di alcun tipo.
         </p>
         <p className="mt-2">
           Il valore dei servizi offerti &egrave; limitato alla componente di

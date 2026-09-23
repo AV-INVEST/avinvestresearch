@@ -9,21 +9,24 @@ import {
   Loader2,
 } from 'lucide-react';
 
-type Kind = 'indicator' | 'guide';
+type Kind = 'indicator' | 'guide' | 'trading-starter-pdf';
 
 const KIND_ENDPOINT: Record<Kind, string> = {
   indicator: '/api/products/market-lens/download/indicator',
   guide: '/api/products/market-lens/download/guide',
+  'trading-starter-pdf': '/api/products/trading-starter/download',
 };
 
 const KIND_FILENAME_HINT: Record<Kind, string> = {
   indicator: 'AV-Market-Lens.pine',
   guide: 'AV-Market-Lens-Guida.pdf',
+  'trading-starter-pdf': 'AV-Trading-Starter.pdf',
 };
 
 const KIND_ICON: Record<Kind, typeof FileCode> = {
   indicator: FileCode,
   guide: FileText,
+  'trading-starter-pdf': FileText,
 };
 
 const COOLDOWN_SECONDS = 30;

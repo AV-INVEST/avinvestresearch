@@ -66,9 +66,10 @@ export default function PrivacyPage() {
             riservato.
           </li>
           <li>
-            Acquisto one-time del prodotto digitale AV Market Lens
-            (indicatore TradingView Pine Script e guida PDF), gestione dello
-            stato di licenza (owned, pending, refunded, failed) e verifica
+            Acquisto one-time dei prodotti digitali AV Market Lens
+            (indicatore TradingView Pine Script e guida PDF) e AV Trading
+            Starter (guida PDF educativa entry-level), gestione dello stato
+            di licenza (owned, pending, refunded, failed) e verifica
             dell&apos;acquisto prima di ogni download dei file privati, nonch&eacute;
             registrazione dei consensi digitali espressi dall&apos;utente
             prima del checkout (versione termini e versione consenso alla
@@ -113,7 +114,7 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-white">Dati di acquisto e transazione</strong>:
             in occasione dell&apos;acquisto di corsi, dell&apos;acquisto one-time
-            del prodotto AV Market Lens o della sottoscrizione
+            dei prodotti AV Market Lens e AV Trading Starter o della sottoscrizione
             del Research Club, il Titolare riceve da Stripe le informazioni
             necessarie alla gestione dell&apos;ordine, quali identificativo
             cliente, email associata al pagamento, oggetto dell&apos;acquisto,
@@ -123,19 +124,20 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-white">
-              Dati di licenza AV Market Lens e consensi digitali
+              Dati di licenza AV Market Lens, AV Trading Starter e consensi digitali
             </strong>
-            : in relazione all&apos;acquisto di AV Market Lens, vengono
-            memorizzati nel database del Titolare - oltre ai dati di transazione
-            ricevuti da Stripe - lo stato della licenza (Purchase productSlug
-            &quot;market-lens&quot; e relativo status), la versione dei Termini
-            e condizioni accettati, la versione del consenso alla fornitura
-            immediata di contenuto digitale e alla conseguente perdita del
-            diritto di recesso, nonch&eacute; il timestamp di accettazione di
-            tali consensi. Tali informazioni sono altres&igrave; riportate nei
-            metadata della sessione di checkout Stripe al fine di garantire
-            tracciabilit&agrave; e allineamento tra sistema interno e registro
-            del fornitore di pagamento.
+            : in relazione all&apos;acquisto di AV Market Lens e di AV Trading
+            Starter, vengono memorizzati nel database del Titolare - oltre ai
+            dati di transazione ricevuti da Stripe - lo stato della licenza
+            (Purchase productSlug &quot;market-lens&quot; o
+            &quot;trading-starter&quot; e relativo status), la versione dei
+            Termini e condizioni accettati, la versione del consenso alla
+            fornitura immediata di contenuto digitale e alla conseguente
+            perdita del diritto di recesso, nonch&eacute; il timestamp di
+            accettazione di tali consensi. Tali informazioni sono
+            altres&igrave; riportate nei metadata della sessione di checkout
+            Stripe al fine di garantire tracciabilit&agrave; e allineamento tra
+            sistema interno e registro del fornitore di pagamento.
           </li>
           <li>
             <strong className="text-white">Dati Calendly</strong>: quando
@@ -216,9 +218,9 @@ export default function PrivacyPage() {
             <br />
             - Gestione degli ordini di acquisto dei corsi digitali e consegna del relativo accesso.
             <br />
-            - Gestione dell&apos;ordine di acquisto one-time di AV Market Lens, verifica dello stato della licenza prima di ogni download dei file privati e consegna dei contenuti digitali al solo account autorizzato.
+            - Gestione dell&apos;ordine di acquisto one-time di AV Market Lens e di AV Trading Starter, verifica dello stato della licenza prima di ogni download dei rispettivi file privati e consegna dei contenuti digitali al solo account autorizzato.
             <br />
-            - Registrazione e conservazione dei consensi digitali resi dall&apos;utente prima dell&apos;acquisto di AV Market Lens (accettazione Termini/Disclaimer e consenso alla fornitura immediata con perdita del diritto di recesso), unitamente alla versione delle clausole e al timestamp di accettazione, necessari alla corretta esecuzione del contratto di vendita di contenuto digitale e alla gestione del recesso secondo la normativa applicabile.
+            - Registrazione e conservazione dei consensi digitali resi dall&apos;utente prima dell&apos;acquisto di AV Market Lens e di AV Trading Starter (accettazione Termini/Disclaimer e consenso alla fornitura immediata con perdita del diritto di recesso), unitamente alla versione delle clausole e al timestamp di accettazione, necessari alla corretta esecuzione del contratto di vendita di contenuto digitale e alla gestione del recesso secondo la normativa applicabile.
             <br />
             - Attivazione, gestione e rinnovo dell&apos;abbonamento mensile al Research Club.
             <br />

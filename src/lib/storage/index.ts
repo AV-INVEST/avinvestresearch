@@ -424,3 +424,142 @@ export async function serverUploadMarketLens(
   }
   return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per upload.` };
 }
+
+export const TRADING_STARTER_STORAGE_KEYS = Object.freeze({
+  pdf: 'products/av-trading-starter/AV-Trading-Starter.pdf',
+} as const);
+
+export const TRADING_STARTER_SIZE_LIMITS = Object.freeze({
+  pdf: 25 * 1024 * 1024,
+} as const);
+
+export type TradingStarterKind = keyof typeof TRADING_STARTER_STORAGE_KEYS;
+
+export function getTradingStarterStorageKey(kind: TradingStarterKind): string {
+  return TRADING_STARTER_STORAGE_KEYS[kind];
+}
+
+export async function getTradingStarterStream(
+  kind: TradingStarterKind,
+): Promise<DownloadStreamResult> {
+  const status = getStorageStatus();
+  if (!status.configured) {
+    return {
+      ok: false,
+      error: 'UNCONFIGURED',
+      message: 'Storage privato non configurato. Download non disponibile.',
+    };
+  }
+  const storageKey = getTradingStarterStorageKey(kind);
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { get, head } = await import('@vercel/blob');
+      const res = await get(storageKey, {
+        access: 'private',
+        useCache: false,
+      });
+      if (!res) {
+        return { ok: false, error: 'NOT_FOUND', message: 'Guida AV Trading Starter non trovata sullo storage.' };
+      }
+      if (res.statusCode === 304) {
+        return { ok: false, error: 'INTERNAL', message: 'Risposta 304 non supportata in streaming diretto.' };
+      }
+      const body = res.stream;
+      if (!body) return { ok: false, error: 'INTERNAL', message: 'Risposta storage vuota.' };
+
+      const headInfo = await head(storageKey);
+      const reliableSize = typeof (headInfo as any).size === 'number' ? (headInfo as any).size : undefined;
+
+      return {
+        ok: true,
+        stream: body as ReadableStream<Uint8Array>,
+        contentType: res.blob.contentType || 'application/pdf',
+        contentLength: reliableSize,
+        fileName: extractFileName(res.blob.contentDisposition),
+      };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('not found') || msg.includes('NoSuchKey') || /404/i.test(msg)) {
+        return { ok: false, error: 'NOT_FOUND', message: 'Guida AV Trading Starter non trovata sullo storage.' };
+      }
+      return { ok: false, error: 'INTERNAL', message: `Errore download storage: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per lo streaming server.` };
+}
+
+export async function serverUploadTradingStarter(
+  kind: TradingStarterKind,
+  data: ReadableStream | Uint8Array | Blob | Buffer,
+  opts: { contentType: string; fileName?: string; contentLength?: number },
+): Promise<ServerUploadResult> {
+  const status = getStorageStatus();
+  if (!status.configured) {
+    return {
+      ok: false,
+      error: 'UNCONFIGURED',
+      message: 'Storage privato non configurato. Nessun upload verrà eseguito.',
+    };
+  }
+  const maxBytes = TRADING_STARTER_SIZE_LIMITS[kind];
+  if (typeof opts.contentLength === 'number' && opts.contentLength > maxBytes) {
+    const mb = (maxBytes / (1024 * 1024)).toFixed(0);
+    return { ok: false, error: 'INVALID_FILE', message: `File troppo grande. Massimo ${mb} MB.` };
+  }
+  if (typeof opts.contentLength === 'number' && opts.contentLength <= 0) {
+    return { ok: false, error: 'INVALID_FILE', message: 'File vuoto o contenuto non valido.' };
+  }
+  const allowedMime = ['application/pdf', 'application/x-pdf', ''];
+  if (opts.contentType && !allowedMime.includes(opts.contentType)) {
+    const { fileName } = opts;
+    const fromName = fileName ? /\.pdf$/i.test(fileName.trim()) : false;
+    if (!fromName) {
+      return {
+        ok: false,
+        error: 'INVALID_FILE',
+        message: 'MIME type non valido per la guida. Usa un file .pdf (application/pdf).',
+      };
+    }
+  }
+  if (status.provider === 'VERCEL_BLOB') {
+    try {
+      const { put, del, head } = await import('@vercel/blob');
+      const storageKey = getTradingStarterStorageKey(kind);
+      const putBody = data as Parameters<typeof put>[1];
+      const result = await put(storageKey, putBody, {
+        access: 'private',
+        contentType: opts.contentType || 'application/pdf',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+      });
+
+      let headInfo;
+      try {
+        headInfo = await head(result.pathname);
+      } catch (headErr) {
+        const headMsg = headErr instanceof Error ? headErr.message : String(headErr);
+        try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+        return { ok: false, error: 'INTERNAL', message: `Upload fallito: verifica post-upload HEAD non riuscita (${headMsg}). Riprovare.` };
+      }
+
+      const savedSize = typeof (headInfo as any).size === 'number' ? (headInfo as any).size : undefined;
+      if (typeof savedSize !== 'number' || savedSize <= 0) {
+        try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+        return { ok: false, error: 'INTERNAL', message: 'Upload fallito: il file salvato risulta vuoto (0 byte). Riprovare.' };
+      }
+      if (typeof opts.contentLength === 'number' && opts.contentLength > 0) {
+        const diff = Math.abs(savedSize - opts.contentLength);
+        if (diff > Math.max(1024, Math.floor(opts.contentLength * 0.05))) {
+          try { await del(result.pathname); } catch { /* ignore cleanup error */ }
+          return { ok: false, error: 'INTERNAL', message: `Upload fallito: dimensione salvata (${savedSize} byte) non corrisponde a quella attesa (${opts.contentLength} byte). Riprovare.` };
+        }
+      }
+
+      return { ok: true, pathname: result.pathname, url: result.url };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return { ok: false, error: 'INTERNAL', message: `Errore upload Vercel Blob: ${msg}` };
+    }
+  }
+  return { ok: false, error: 'INTERNAL', message: `Provider ${status.provider} non supportato per upload.` };
+}
