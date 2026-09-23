@@ -359,6 +359,46 @@ type ResolvedPurchaseMap = Map<
   { type: 'succeeded' | 'pending'; purchasedAt: Date | null; createdAt: Date }
 >;
 
+function buildResolvedPurchaseMap(purchases: PurchaseRow[]): ResolvedPurchaseMap {
+  const map: ResolvedPurchaseMap = new Map();
+  for (const p of purchases) {
+    const entry: { type: 'succeeded' | 'pending'; purchasedAt: Date | null; createdAt: Date } = {
+      type: p.status,
+      purchasedAt: p.status === 'succeeded' ? p.purchasedAt : null,
+      createdAt: p.createdAt,
+    };
+
+    const existing = map.get(p.productSlug);
+    if (!existing) {
+      map.set(p.productSlug, entry);
+      continue;
+    }
+
+    if (existing.type === 'succeeded') {
+      if (p.status === 'succeeded') {
+        const existingTs = (existing.purchasedAt ?? existing.createdAt).getTime();
+        const newTs = (p.purchasedAt ?? p.createdAt).getTime();
+        if (newTs > existingTs) {
+          map.set(p.productSlug, entry);
+        }
+      }
+      continue;
+    }
+
+    if (existing.type === 'pending') {
+      if (p.status === 'succeeded') {
+        map.set(p.productSlug, entry);
+      } else if (p.status === 'pending') {
+        if (p.createdAt.getTime() > existing.createdAt.getTime()) {
+          map.set(p.productSlug, entry);
+        }
+      }
+      continue;
+    }
+  }
+  return map;
+}
+
 function resolveOneTimeProducts(
   resolvedBySlug: ResolvedPurchaseMap,
 ): { marketLens: MarketLensEntitlement; tradingStarter: TradingStarterEntitlement; anyPending: boolean } {
@@ -415,23 +455,7 @@ export async function getOneTimeProductEntitlements(
   const userEmail = await resolveUserEmail(userId, email);
   const purchased = userEmail ? await loadPurchases(userEmail) : [];
 
-  const resolvedBySlug: ResolvedPurchaseMap = new Map();
-  for (const p of purchased) {
-    if (resolvedBySlug.has(p.productSlug)) continue;
-    if (p.status === 'succeeded') {
-      resolvedBySlug.set(p.productSlug, {
-        type: 'succeeded',
-        purchasedAt: p.purchasedAt,
-        createdAt: p.createdAt,
-      });
-    } else if (p.status === 'pending') {
-      resolvedBySlug.set(p.productSlug, {
-        type: 'pending',
-        purchasedAt: null,
-        createdAt: p.createdAt,
-      });
-    }
-  }
+  const resolvedBySlug = buildResolvedPurchaseMap(purchased);
 
   return resolveOneTimeProducts(resolvedBySlug);
 }
@@ -446,23 +470,11 @@ export async function getEntitlements(
   const userEmail = await resolveUserEmail(userId, email);
   const purchased = userEmail ? await loadPurchases(userEmail) : [];
 
+  const resolvedBySlug = buildResolvedPurchaseMap(purchased);
   const ownedSlugs: string[] = [];
-  const resolvedBySlug: ResolvedPurchaseMap = new Map();
-  for (const p of purchased) {
-    if (resolvedBySlug.has(p.productSlug)) continue;
-    if (p.status === 'succeeded') {
-      resolvedBySlug.set(p.productSlug, {
-        type: 'succeeded',
-        purchasedAt: p.purchasedAt,
-        createdAt: p.createdAt,
-      });
-      ownedSlugs.push(p.productSlug);
-    } else if (p.status === 'pending') {
-      resolvedBySlug.set(p.productSlug, {
-        type: 'pending',
-        purchasedAt: null,
-        createdAt: p.createdAt,
-      });
+  for (const [slug, entry] of resolvedBySlug) {
+    if (entry.type === 'succeeded') {
+      ownedSlugs.push(slug);
     }
   }
 
