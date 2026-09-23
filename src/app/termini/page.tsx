@@ -759,16 +759,67 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          25. Contatti
+          25. Contatti e dati del venditore
         </h2>
         <p>
-          Per ogni domanda, segnalazione o richiesta relativa ai presenti
-          Termini o ai servizi offerti:
+          I servizi offerti sul Sito sono forniti da:
         </p>
-        <p>
-          <a href={`mailto:${siteConfig.contactEmail}`} className="link-underline">
-            {siteConfig.contactEmail}
-          </a>
+        <div className="mt-3 rounded-2xl border border-av-line bg-av-bg-2/40 p-4 sm:p-5">
+          <ul className="space-y-1.5 text-sm sm:text-base">
+            {siteConfig.legal.identity.fullName ? (
+              <li>
+                <strong className="text-white/90">{siteConfig.legal.identity.fullName}</strong>
+              </li>
+            ) : null}
+            {siteConfig.legal.identity.address ? (
+              <li className="text-white/80">{siteConfig.legal.identity.address}</li>
+            ) : null}
+            {siteConfig.legal.identity.phone ? (
+              <li className="text-white/80">
+                Telefono:{' '}
+                <a
+                  href={`tel:${siteConfig.legal.identity.phone.replace(/\s+/g, '')}`}
+                  className="link-underline"
+                >
+                  {siteConfig.legal.identity.phone}
+                </a>
+              </li>
+            ) : null}
+            {siteConfig.legal.identity.vatId ? (
+              <li className="text-white/80">P.IVA: {siteConfig.legal.identity.vatId}</li>
+            ) : null}
+            {siteConfig.legal.identity.fiscalCode ? (
+              <li className="text-white/80">C.F.: {siteConfig.legal.identity.fiscalCode}</li>
+            ) : null}
+            {siteConfig.legal.identity.companyRegister ? (
+              <li className="text-white/80">
+                REA / Registro Imprese: {siteConfig.legal.identity.companyRegister}
+              </li>
+            ) : null}
+            {siteConfig.legal.identity.pec ? (
+              <li className="text-white/80 break-all">
+                PEC:{' '}
+                <a href={`mailto:${siteConfig.legal.identity.pec}`} className="link-underline">
+                  {siteConfig.legal.identity.pec}
+                </a>
+              </li>
+            ) : null}
+            <li className="text-white/80 break-all">
+              Email:{' '}
+              <a
+                href={`mailto:${siteConfig.legal.identity.email || siteConfig.contactEmail}`}
+                className="link-underline"
+              >
+                {siteConfig.legal.identity.email || siteConfig.contactEmail}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <p className="mt-3">
+          Per ogni domanda, segnalazione o richiesta relativa ai presenti
+          Termini o ai servizi offerti, puoi scrivere all&apos;indirizzo email
+          riportato sopra o consultare la pagina{' '}
+          <a href="/informazioni-legali" className="link-underline">Informazioni legali</a>.
         </p>
       </section>
     </LegalLayout>

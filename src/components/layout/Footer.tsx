@@ -13,6 +13,7 @@ const legalLinks = [
   { label: 'Cookie Policy', href: '/cookie' },
   { label: 'Termini e condizioni', href: '/termini' },
   { label: 'Disclaimer finanziario', href: '/disclaimer' },
+  { label: 'Informazioni legali', href: '/informazioni-legali' },
 ];
 
 export default function Footer() {

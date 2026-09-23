@@ -280,7 +280,7 @@ export default function TradingStarterCheckoutButton({
                       className="mt-0.5 h-4 w-4 flex-none accent-av-green"
                     />
                     <span className="text-sm leading-relaxed text-white/90">
-                      Richiedo l&rsquo;accesso immediato al contenuto digitale e riconosco che il diritto di recesso pu&ograve; venir meno nei casi previsti dalla legge.
+                      Richiedo l&rsquo;accesso immediato al contenuto digitale e riconosco che, con l&rsquo;inizio della fornitura, perdo il diritto di recesso nei casi previsti dalla legge.
                     </span>
                   </label>
                 </div>

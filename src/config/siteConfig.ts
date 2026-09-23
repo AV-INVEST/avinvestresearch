@@ -255,7 +255,10 @@ export const siteConfig = {
       'L\'acquisto di un corso o l\'accesso a contenuti formativi non dà diritto a ricevere segnali di investimento, consigli personalizzati o risultati garantiti.',
     ],
     identity: {
-      address: null as string | null,
+      fullName: 'Andrea Vivace',
+      address: 'Via per Alzate, 1 - 22063 Cantù (CO)',
+      email: 'avinvestresearch@gmail.com',
+      phone: '+39 340 379 9604',
       vatId: null as string | null,
       fiscalCode: null as string | null,
       companyRegister: null as string | null,
