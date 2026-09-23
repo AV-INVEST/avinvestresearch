@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
+  CheckCircle2,
   Download,
   FileCode,
   FileText,
@@ -51,6 +52,7 @@ export default function DownloadButton({
   const [error, setError] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState(false);
   const [cooldownLeft, setCooldownLeft] = useState(0);
+  const [downloadSucceeded, setDownloadSucceeded] = useState(false);
   const cooldownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -72,6 +74,7 @@ export default function DownloadButton({
             clearInterval(cooldownTimerRef.current);
             cooldownTimerRef.current = null;
           }
+          setDownloadSucceeded(false);
           return 0;
         }
         return prev - 1;
@@ -86,6 +89,7 @@ export default function DownloadButton({
     setLoading(true);
     setError(null);
     setRateLimited(false);
+    setDownloadSucceeded(false);
     let success = false;
     try {
       const resp = await fetch(KIND_ENDPOINT[kind], {
@@ -136,6 +140,7 @@ export default function DownloadButton({
       } finally {
         setTimeout(() => URL.revokeObjectURL(url), 2000);
       }
+      setDownloadSucceeded(true);
       success = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Errore sconosciuto.');
@@ -155,9 +160,14 @@ export default function DownloadButton({
       ? 'bg-[#0B3D2A] hover:bg-[#0F5238]'
       : '';
 
-  const badgeLabel = cooldownLeft > 0
-    ? `ATTENDI ${cooldownLeft}s`
-    : 'DOWNLOAD';
+  const badgeLabel =
+    cooldownLeft > 0 && downloadSucceeded
+      ? 'SCARICATO'
+      : cooldownLeft > 0
+        ? `ATTENDI ${cooldownLeft}s`
+        : 'DOWNLOAD';
+
+  const showSuccessBadge = cooldownLeft > 0 && downloadSucceeded;
 
   return (
     <div className={`w-full space-y-2 ${className}`}>
@@ -199,19 +209,33 @@ export default function DownloadButton({
         </div>
         <span
           className={`flex-none inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider sm:w-auto w-full sm:max-w-none max-w-[220px] mx-auto sm:mx-0 ${
-            variant === 'primary'
-              ? 'border-[#1a6b4a]/60 bg-[#08281c]/90 text-white'
-              : 'border-white/10 text-white/90'
+            showSuccessBadge
+              ? variant === 'primary'
+                ? 'border-[#1a6b4a]/60 bg-[#08281c]/90 text-[#4ade80] shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+                : 'border-[#1a6b4a]/60 bg-av-green/15 text-[#4ade80] shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+              : variant === 'primary'
+                ? 'border-[#1a6b4a]/60 bg-[#08281c]/90 text-white'
+                : 'border-white/10 text-white/90'
           }`}
         >
-          {cooldownLeft > 0 ? (
+          {showSuccessBadge ? (
+            <CheckCircle2 className="h-3.5 w-3.5" />
+          ) : loading ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : cooldownLeft > 0 ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
             <Download className="h-3.5 w-3.5" />
           )}
-          {badgeLabel}
+          {showSuccessBadge ? `\u2713 ${badgeLabel}` : badgeLabel}
         </span>
       </button>
+      {showSuccessBadge ? (
+        <div className="flex items-center justify-center sm:justify-end gap-1.5 px-1 text-[11px] text-av-muted/80 sm:pr-1">
+          <span>Nuovo download disponibile tra</span>
+          <span className="font-semibold text-av-muted">{cooldownLeft}s</span>
+        </div>
+      ) : null}
       {error ? (
         <div className="flex items-start gap-2 rounded-xl border border-red-500/40 bg-red-500/5 px-3 py-2 text-xs sm:text-sm text-red-200">
           <AlertCircle className="mt-0.5 h-4 w-4 flex-none text-red-400" />
