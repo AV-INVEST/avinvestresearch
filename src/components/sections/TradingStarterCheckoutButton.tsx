@@ -248,7 +248,7 @@ export default function TradingStarterCheckoutButton({
                         rel="noreferrer"
                         className="underline decoration-av-green-deep underline-offset-2 hover:text-av-green"
                       >
-                        Termini e condizioni generali
+                        Termini e condizioni
                       </a>{' '}
                       e il{' '}
                       <a
@@ -280,13 +280,7 @@ export default function TradingStarterCheckoutButton({
                       className="mt-0.5 h-4 w-4 flex-none accent-av-green"
                     />
                     <span className="text-sm leading-relaxed text-white/90">
-                      Richiedo espressamente la fornitura immediata del contenuto
-                      digitale (guida PDF di AV Trading Starter) e riconosco che,
-                      per contenuti digitali non realizzati su supporto materiale
-                      forniti a seguito di mia richiesta esplicita, il diritto di
-                      recesso è escluso nei casi previsti dalla legge e, in ogni
-                      caso, la fornitura completa del contenuto estingue il diritto
-                      di recesso stesso.
+                      Richiedo l&rsquo;accesso immediato al contenuto digitale e riconosco che il diritto di recesso pu&ograve; venir meno nei casi previsti dalla legge.
                     </span>
                   </label>
                 </div>
