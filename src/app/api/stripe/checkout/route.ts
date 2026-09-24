@@ -405,17 +405,12 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     allow_promotion_codes: true,
   };
 
-  const invoiceFooterText =
-    resolved.slug === 'market-lens' || resolved.slug === 'trading-starter'
-      ? "Il cliente ha richiesto l'accesso immediato al contenuto digitale e ha riconosciuto che, con l'inizio della fornitura, perde il diritto di recesso nei casi previsti dalla legge."
-      : undefined;
-
   const checkoutSession = isSubscription
     ? await stripe.checkout.sessions.create({
         ...commonParams,
         mode: 'subscription',
         billing_address_collection: 'auto',
-        automatic_tax: { enabled: true },
+        managed_payments: { enabled: true },
         subscription_data: {
           metadata: {
             product_slug: resolved.slug,
@@ -434,17 +429,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         mode: 'payment',
         submit_type: 'pay',
         billing_address_collection: 'auto',
-        invoice_creation: {
-          enabled: true,
-          ...(invoiceFooterText
-            ? {
-                invoice_data: {
-                  footer: invoiceFooterText,
-                },
-              }
-            : {}),
-        },
-        automatic_tax: { enabled: true },
+        managed_payments: { enabled: true },
       });
 
   if (!checkoutSession.url) {
@@ -531,12 +516,15 @@ export async function POST(req: Request): Promise<Response> {
 
     if (inFlightKey) {
       inFlightByKey.set(inFlightKey, pending);
-      pending.finally(() => {
-        inFlightByKey.delete(inFlightKey!);
-      });
     }
 
-    return await pending;
+    try {
+      return await pending;
+    } finally {
+      if (inFlightKey) {
+        inFlightByKey.delete(inFlightKey);
+      }
+    }
   } catch (err) {
     const safeErr = buildSafeStripeError(err);
     console.error('[stripe:checkout] Session creation failed', safeErr);
