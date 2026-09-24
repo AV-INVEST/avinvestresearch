@@ -9,7 +9,7 @@ import {
   ArrowUpRight,
   Home,
   LayoutDashboard,
-  BookOpenCheck,
+  CirclePlay,
   UserCircle,
   LifeBuoy,
   LogOut,
@@ -54,7 +54,7 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { href: '/area-membri', label: 'Panoramica', Icon: LayoutDashboard },
-  { href: '/area-membri/percorsi', label: 'I miei percorsi', Icon: BookOpenCheck },
+  { href: '/area-membri/percorsi', label: 'Videocorsi', Icon: CirclePlay },
   { href: '/area-membri/prodotti', label: 'I miei prodotti', Icon: Package },
   { href: '/area-membri/profilo', label: 'Profilo e sicurezza', Icon: UserCircle },
   { href: '/area-membri/assistenza', label: 'Assistenza', Icon: LifeBuoy },
@@ -199,7 +199,7 @@ export default async function MemberAreaLayout({
               <Info className="mt-0.5 h-3.5 w-3.5 flex-none text-av-green" />
               I corsi acquistati sono associati all&apos;account utilizzato per
               l&apos;acquisto. Se passi a un account diverso, non vedrai i
-              percorsi, i progressi o i permessi di gestione dell&apos;altro
+              videocorsi, i progressi o i permessi di gestione dell&apos;altro
               account.
             </p>
           </div>

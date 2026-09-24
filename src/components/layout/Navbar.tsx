@@ -122,39 +122,56 @@ export default function Navbar() {
       </div>
 
       <div
+        aria-hidden={!open}
+        onClick={() => setOpen(false)}
+        className={`fixed inset-x-0 bottom-0 z-40 bg-black/45 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden ${
+          open
+            ? 'top-16 sm:top-20 opacity-100 pointer-events-auto'
+            : 'top-0 opacity-0 pointer-events-none'
+        }`}
+      />
+
+      <div
         id="mobile-menu"
-        className={`lg:hidden overflow-hidden border-t border-av-line bg-av-bg/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 ${
-          open ? 'max-h-[70vh] opacity-100' : 'max-h-0 opacity-0'
+        role="region"
+        aria-label="Menu mobile"
+        aria-hidden={!open}
+        className={`fixed z-[44] left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md sm:left-auto sm:right-5 sm:translate-x-0 sm:w-[380px] top-[72px] sm:top-[88px] rounded-2xl border border-av-line bg-av-bg/95 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.02)] p-3 sm:p-4 lg:hidden origin-top transition-all duration-200 ease-out ${
+          open
+            ? 'opacity-100 translate-y-0 pointer-events-auto visible'
+            : 'opacity-0 -translate-y-2 pointer-events-none invisible'
         }`}
       >
-        <nav className="container-page flex flex-col gap-0.5 py-2.5" aria-label="Menu mobile">
-          {siteConfig.navigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-av-surface"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="flex flex-col gap-0" aria-label="Menu mobile">
+          <div className="grid grid-cols-2 gap-1.5">
+            {siteConfig.navigation.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="rounded-xl px-3 py-2.5 text-sm font-medium text-white/90 transition-colors hover:bg-av-surface hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
           {showMember ? (
             authenticated ? (
               <Link
                 href="/area-membri"
                 onClick={() => setOpen(false)}
-                className="mt-1 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-av-surface inline-flex items-center gap-2.5 border border-av-green-deep/50 bg-av-green/[0.06]"
+                className="mt-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-av-green/[0.08] inline-flex items-center gap-2.5 border border-av-green-deep/50 bg-av-green/[0.06]"
               >
-                <User className="h-4.5 w-4.5 flex-none text-av-green" />
+                <User className="h-4 w-4 flex-none text-av-green" />
                 Area membri
               </Link>
             ) : (
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="mt-1 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-av-muted transition-colors hover:bg-av-surface hover:text-white inline-flex items-center gap-2.5 border border-av-line"
+                className="mt-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-av-green/[0.08] inline-flex items-center gap-2.5 border border-av-green-deep/50 bg-av-green/[0.06]"
               >
-                <User className="h-4.5 w-4.5 flex-none text-av-green" />
+                <User className="h-4 w-4 flex-none text-av-green" />
                 Accedi all&apos;area membri
               </Link>
             )
