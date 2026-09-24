@@ -164,12 +164,11 @@ async function findReusablePendingSession(
         productSlug,
         status: 'pending',
         createdAt: { gte: cutoff },
-        checkoutSessionId: { not: null } as any,
       },
       orderBy: { createdAt: 'desc' },
       select: { checkoutSessionId: true },
     });
-    if (!row || !row.checkoutSessionId) return null;
+    if (!row) return null;
     return { checkoutSessionId: row.checkoutSessionId };
   } catch {
     return null;
