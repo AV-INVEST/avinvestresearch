@@ -34,7 +34,7 @@ export default async function ResearchClub() {
   return (
     <section
       id="research-club"
-      className="relative py-24 sm:py-32 scroll-mt-28"
+      className="relative py-14 sm:py-32 scroll-mt-28"
       aria-labelledby="rc-heading"
     >
       <div
@@ -42,7 +42,7 @@ export default async function ResearchClub() {
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(201,169,97,0.08),transparent_58%),radial-gradient(ellipse_at_bottom_right,rgba(0,255,106,0.05),transparent_55%)]"
       />
       <div className="container-page">
-        <div className="grid items-center gap-10 lg:grid-cols-12">
+        <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <span
               className={`inline-flex items-center gap-2 rounded-full border ${GOLD.border} ${GOLD.bgSoft} px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${GOLD.text}`}
@@ -53,26 +53,26 @@ export default async function ResearchClub() {
             <h2 id="rc-heading" className="mt-5 heading-lg">
               {rc.title}
             </h2>
-            <p className="mt-5 body-lg">
+            <p className="mt-4 sm:mt-5 body-lg">
               {rc.tagline}
             </p>
-            <p className="mt-5 text-sm text-av-muted sm:text-base">
+            <p className="mt-4 sm:mt-5 text-sm text-av-muted sm:text-base">
               {rc.description}
             </p>
 
-            <div className="mt-8 space-y-4">
+            <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
               <div className="flex flex-wrap items-baseline gap-3">
-                <span className={`font-display text-5xl font-semibold ${GOLD.heading}`}>
+                <span className={`font-display text-4xl sm:text-5xl font-semibold ${GOLD.heading}`}>
                   19,90
                 </span>
-                <span className="text-base text-av-muted">€ / mese</span>
+                <span className="text-sm sm:text-base text-av-muted">€ / mese</span>
               </div>
               <p className="text-xs leading-relaxed text-av-muted/90 max-w-md">
                 {rc.notes?.[0]}
               </p>
 
               {subscribed ? (
-                <div className="flex flex-wrap items-center gap-3 pt-1 w-full max-w-md">
+                <div className="flex flex-wrap items-center gap-3 pt-0.5 sm:pt-1 w-full max-w-md">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/40 bg-av-green/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-green">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Sei dentro
@@ -90,7 +90,7 @@ export default async function ResearchClub() {
                   </Link>
                 </div>
               ) : (
-                <div className="w-full max-w-md pt-1">
+                <div className="w-full max-w-md pt-0.5 sm:pt-1">
                   <ResearchClubCheckoutButton
                     label="full"
                     returnTo="/#research-club"
@@ -102,7 +102,7 @@ export default async function ResearchClub() {
 
           <div className="lg:col-span-7">
             <GlassCard
-              className="relative overflow-hidden p-5 sm:p-8 border border-white/5"
+              className="relative overflow-hidden p-4 sm:p-8 border border-white/5"
               style={{
                 backgroundImage:
                   'radial-gradient(1200px 500px at 100% 0%, rgba(201,169,97,0.06), transparent 60%)',
@@ -112,31 +112,31 @@ export default async function ResearchClub() {
                 aria-hidden="true"
                 className={`absolute -right-24 -top-24 h-64 w-64 rounded-full ${GOLD.bgSoft} blur-3xl`}
               />
-              <div className="relative grid gap-4 sm:grid-cols-2">
+              <div className="-mx-4 flex overflow-x-auto scroll-snap scrollbar-hidden gap-3 px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0 sm:grid sm:gap-4 sm:grid-cols-2">
                 {rc.features.map((feature, i) => {
                   const Icon = icons[i] ?? Radar;
                   const isGold = i === 0 || i === 3;
                   return (
                     <div
                       key={feature}
-                      className={`group rounded-2xl border ${
+                      className={`group flex-none w-[88%] snap-center rounded-2xl border sm:w-full sm:flex-none p-4 sm:p-5 transition-all duration-300 ${
                         isGold
-                          ? `${GOLD.border} ${GOLD.bgSoft}`
-                          : 'border-av-line bg-av-bg-2/50'
-                      } p-5 transition-all duration-300 hover:border-white/20 hover:bg-av-surface`}
+                          ? `${GOLD.border} ${GOLD.bgSoft} hover:border-white/20 hover:bg-av-surface`
+                          : 'border-av-line bg-av-bg-2/50 hover:border-white/20 hover:bg-av-surface'
+                      }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <div
-                          className={`grid h-10 w-10 place-items-center rounded-xl border transition-all ${
+                          className={`grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl border transition-all ${
                             isGold
                               ? `${GOLD.border} ${GOLD.bg} ${GOLD.text} group-hover:shadow-[0_0_24px_-6px_rgba(201,169,97,0.5)]`
                               : 'border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
                           }`}
                         >
-                          <Icon className="h-5 w-5" />
+                          <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
                         </div>
                         <h3
-                          className={`font-display text-lg font-semibold ${
+                          className={`font-display text-base sm:text-lg font-semibold ${
                             isGold ? GOLD.heading : 'text-white'
                           }`}
                         >
@@ -144,7 +144,7 @@ export default async function ResearchClub() {
                         </h3>
                       </div>
                       <div
-                        className={`mt-4 h-px w-full bg-gradient-to-r ${
+                        className={`mt-3 sm:mt-4 h-px w-full bg-gradient-to-r ${
                           isGold
                             ? 'from-[#C9A961]/40 via-av-line to-transparent'
                             : 'from-av-green-deep/40 via-av-line to-transparent'
@@ -154,16 +154,16 @@ export default async function ResearchClub() {
                   );
                 })}
               </div>
-              <div className="relative mt-6 flex flex-wrap items-center gap-2 border-t border-av-line pt-6">
+              <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6">
                 <span className="text-xs font-medium text-av-muted sm:text-sm">
                   Materiali riservati ai membri:
                 </span>
-                <span className={`chip border ${GOLD.border} ${GOLD.bgSoft} ${GOLD.text}`}>
+                <span className={`chip !py-1 border ${GOLD.border} ${GOLD.bgSoft} ${GOLD.text}`}>
                   PDF
                 </span>
-                <span className="chip">Analisi</span>
-                <span className="chip">Archivio</span>
-                <span className="chip">Aggiornamenti</span>
+                <span className="chip !py-1">Analisi</span>
+                <span className="chip !py-1">Archivio</span>
+                <span className="chip !py-1">Aggiornamenti</span>
               </div>
             </GlassCard>
           </div>

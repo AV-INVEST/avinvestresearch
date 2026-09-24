@@ -80,7 +80,7 @@ const faqs: FAQItem[] = [
 
 export default function FAQ() {
   return (
-    <section id="faq" className="relative py-24 sm:py-32 scroll-mt-28" aria-labelledby="faq-heading">
+    <section id="faq" className="relative py-14 sm:py-32 scroll-mt-28" aria-labelledby="faq-heading">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow">FAQ</span>
@@ -93,7 +93,7 @@ export default function FAQ() {
           </p>
         </div>
 
-        <div className="mx-auto mt-14 max-w-3xl">
+        <div className="mx-auto mt-9 sm:mt-14 max-w-3xl">
           <Accordion items={faqs} />
         </div>
       </div>

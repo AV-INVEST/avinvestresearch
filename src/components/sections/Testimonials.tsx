@@ -49,7 +49,7 @@ export default function Testimonials() {
   return (
     <section
       id="feedback"
-      className="relative py-24 sm:py-32 scroll-mt-28"
+      className="relative py-14 sm:py-32 scroll-mt-28"
       aria-labelledby="feedback-heading"
     >
       <div
@@ -69,7 +69,7 @@ export default function Testimonials() {
         </div>
 
         <div
-          className="mx-auto mt-12 max-w-3xl"
+          className="mx-auto mt-8 sm:mt-12 max-w-3xl"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocus={() => setPaused(true)}

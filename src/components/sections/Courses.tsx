@@ -54,7 +54,7 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
   ).map(([key, course]) => ({ key, course, m: meta[key] }));
 
   return (
-    <section id="percorsi" className="relative py-24 sm:py-32 scroll-mt-28" aria-labelledby="courses-heading">
+    <section id="percorsi" className="relative py-14 sm:py-32 scroll-mt-28" aria-labelledby="courses-heading">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 h-[560px] -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(0,255,106,0.08),transparent_60%)]"
@@ -74,7 +74,7 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-2">
+        <div className="mt-9 sm:mt-14 grid gap-5 sm:gap-6 lg:grid-cols-2">
           {entries.map(({ key, course, m }) => {
             const BadgeIcon = m.badgeIcon;
             const ent: CourseEntitlement | undefined = entitlements?.courses[course.slug];

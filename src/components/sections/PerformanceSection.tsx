@@ -126,7 +126,7 @@ export default function PerformanceSection() {
   return (
     <section
       id="performance"
-      className="relative py-24 sm:py-32 scroll-mt-28"
+      className="relative py-14 sm:py-32 scroll-mt-28"
       aria-labelledby="performance-heading"
     >
       <div
@@ -149,7 +149,7 @@ export default function PerformanceSection() {
           </p>
         </div>
 
-        <div ref={ref} className="mt-14">
+        <div ref={ref} className="mt-9 sm:mt-14">
           <GlassCard className="overflow-hidden p-5 sm:p-8">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {siteConfig.performance.entries.map((e) => {

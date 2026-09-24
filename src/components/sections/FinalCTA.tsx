@@ -7,7 +7,7 @@ export default function FinalCTA() {
   return (
     <section
       id="inizia"
-      className="relative isolate overflow-hidden py-24 sm:py-32 scroll-mt-28"
+      className="relative isolate overflow-hidden py-14 sm:py-32 scroll-mt-28"
       aria-labelledby="final-heading"
     >
       <div
@@ -34,11 +34,11 @@ export default function FinalCTA() {
               La differenza è come scegli di affrontarlo.
             </span>
           </h2>
-          <p className="mt-6 body-lg">
+          <p className="mt-4 sm:mt-6 body-lg">
             Scegli se guardare i prezzi salire e scendere senza metodo, oppure costruire
             competenze, processo e criteri. Il resto è conseguenza.
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-7 sm:mt-10 flex flex-col items-center justify-center gap-2.5 sm:gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/#percorsi"
               className="btn-primary-lg inline-flex items-center justify-center gap-2 shadow-glow-green-sm"
