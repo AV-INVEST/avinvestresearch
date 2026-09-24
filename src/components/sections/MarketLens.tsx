@@ -48,8 +48,8 @@ export default function MarketLens({
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(0,255,106,0.08),transparent_58%),radial-gradient(ellipse_at_bottom_left,rgba(76,29,149,0.06),transparent_55%)]"
       />
       <div className="container-page">
-        <div className="grid items-start gap-8 sm:gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+        <div className="grid items-start gap-8 sm:gap-10 lg:grid-cols-12 min-w-0">
+          <div className="lg:col-span-5 min-w-0">
             <span className="eyebrow">
               <Eye className="h-3.5 w-3.5" />
               PRODOTTO ONE-TIME
@@ -127,9 +127,9 @@ export default function MarketLens({
             </p>
           </div>
 
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 min-w-0 w-full">
             <GlassCard
-              className="relative overflow-hidden border border-white/5"
+              className="relative overflow-hidden border border-white/5 w-full min-w-0"
               style={{
                 backgroundImage:
                   'radial-gradient(1000px 400px at 100% 0%, rgba(0,255,106,0.06), transparent 60%)',
@@ -139,10 +139,10 @@ export default function MarketLens({
                 aria-hidden="true"
                 className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-av-green/10 blur-3xl"
               />
-              <div className="relative p-4 sm:p-7">
-                <div className="space-y-4 sm:grid sm:gap-4 sm:grid-cols-2">
-                  <div className="sm:col-span-2">
-                    <div className="relative overflow-hidden rounded-2xl border border-av-line bg-av-bg-2/60 aspect-[16/9]">
+              <div className="relative p-4 sm:p-7 w-full min-w-0">
+                <div className="space-y-4 w-full min-w-0 sm:grid sm:gap-4 sm:grid-cols-2">
+                  <div className="sm:col-span-2 w-full min-w-0">
+                    <div className="relative overflow-hidden rounded-2xl border border-av-line bg-av-bg-2/60 aspect-[16/9] w-full min-w-0">
                       <div
                         aria-hidden="true"
                         className="absolute inset-0 opacity-30"
@@ -152,35 +152,35 @@ export default function MarketLens({
                         }}
                       />
                       <div className="absolute inset-0 p-3 sm:p-6 flex items-center justify-center">
-                        <div className="w-full max-w-md">
+                        <div className="w-full max-w-md min-w-0">
                           <div className="flex items-center justify-between border-b border-av-line py-2 sm:py-3">
-                            <p className="font-display text-base sm:text-lg font-semibold text-white leading-none">
+                            <p className="font-display text-base sm:text-lg font-semibold text-white leading-none min-w-0 max-w-full break-words whitespace-normal">
                               {ml.title}
                             </p>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 shrink-0">
                               <span className="h-2 w-2 rounded-full bg-av-green animate-pulse" />
-                              <span className="font-mono text-[11px] uppercase tracking-widest text-av-green leading-none">
+                              <span className="font-mono text-[11px] uppercase tracking-widest text-av-green leading-none whitespace-nowrap">
                                 LIVE
                               </span>
                             </div>
                           </div>
                           <div className="mt-3 sm:mt-4 grid gap-2.5 sm:gap-3">
-                            <div className="h-2 rounded-full bg-av-bg-2/80 overflow-hidden">
+                            <div className="h-2 rounded-full bg-av-bg-2/80 overflow-hidden w-full min-w-0">
                               <div
                                 className="h-full w-3/4 bg-gradient-to-r from-av-green-deep via-av-green to-emerald-300"
                                 aria-hidden="true"
                               />
                             </div>
-                            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                            <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full min-w-0">
                               {['Trend', 'Livelli', 'Alert'].map((label) => (
                                 <div
                                   key={label}
-                                  className="rounded-xl border border-av-line bg-av-bg-2/50 p-2.5 sm:p-3"
+                                  className="rounded-xl border border-av-line bg-av-bg-2/50 p-2.5 sm:p-3 min-w-0"
                                 >
-                                  <p className="text-[10px] uppercase tracking-widest text-av-muted">
+                                  <p className="text-[10px] uppercase tracking-widest text-av-muted min-w-0 max-w-full break-words whitespace-normal">
                                     {label}
                                   </p>
-                                  <p className="mt-0.5 sm:mt-1 font-mono text-xs sm:text-sm text-white">
+                                  <p className="mt-0.5 sm:mt-1 font-mono text-xs sm:text-sm text-white whitespace-nowrap">
                                     Attivi
                                   </p>
                                 </div>
@@ -192,48 +192,50 @@ export default function MarketLens({
                     </div>
                   </div>
 
-                  <div className="-mx-4 flex overflow-x-auto scroll-snap scrollbar-hidden gap-3 px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0 sm:grid sm:gap-4 sm:grid-cols-2">
-                    {ml.features.map((f) => {
-                      const Icon = featureIcons[f.key] ?? Sparkles;
-                      const isLevels = f.key === 'levels';
-                      return (
-                        <div
-                          key={f.key}
-                          className={`group flex-none w-[88%] snap-center rounded-2xl p-3.5 sm:w-full sm:p-5 transition-all duration-300 ${
-                            isLevels
-                              ? 'border border-[#C9A961]/35 bg-[#C9A961]/[0.05] hover:border-[#D4B46A]/55 hover:bg-[#C9A961]/[0.08] shadow-[0_0_0_1px_rgba(201,169,97,0.05),0_4px_24px_-10px_rgba(201,169,97,0.25)] hover:shadow-[0_0_0_1px_rgba(212,180,106,0.08),0_6px_28px_-8px_rgba(201,169,97,0.35)]'
-                              : 'border border-av-line bg-av-bg-2/40 hover:border-av-green-deep/40 hover:bg-av-surface'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5 sm:gap-3">
-                            <div
-                              className={`grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl transition-all ${
-                                isLevels
-                                  ? 'border border-[#C9A961]/45 bg-[#C9A961]/12 text-[#D4B46A] group-hover:shadow-[0_0_12px_rgba(201,169,97,0.25)]'
-                                  : 'border border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
-                              }`}
-                            >
-                              <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+                  <div className="w-full min-w-0 max-w-full overflow-hidden sm:contents">
+                    <div className="w-full min-w-0 overflow-x-auto scrollbar-hidden snap-x snap-mandatory flex gap-3 pb-2 sm:overflow-visible sm:pb-0 sm:contents">
+                      {ml.features.map((f) => {
+                        const Icon = featureIcons[f.key] ?? Sparkles;
+                        const isLevels = f.key === 'levels';
+                        return (
+                          <div
+                            key={f.key}
+                            className={`group shrink-0 basis-[86%] max-w-[86%] snap-start rounded-2xl p-3.5 sm:basis-auto sm:max-w-none sm:w-full sm:p-5 transition-all duration-300 min-w-0 ${
+                              isLevels
+                                ? 'border border-[#C9A961]/35 bg-[#C9A961]/[0.05] hover:border-[#D4B46A]/55 hover:bg-[#C9A961]/[0.08] shadow-[0_0_0_1px_rgba(201,169,97,0.05),0_4px_24px_-10px_rgba(201,169,97,0.25)] hover:shadow-[0_0_0_1px_rgba(212,180,106,0.08),0_6px_28px_-8px_rgba(201,169,97,0.35)]'
+                                : 'border border-av-line bg-av-bg-2/40 hover:border-av-green-deep/40 hover:bg-av-surface'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                              <div
+                                className={`grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl transition-all shrink-0 ${
+                                  isLevels
+                                    ? 'border border-[#C9A961]/45 bg-[#C9A961]/12 text-[#D4B46A] group-hover:shadow-[0_0_12px_rgba(201,169,97,0.25)]'
+                                    : 'border border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
+                                }`}
+                              >
+                                <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+                              </div>
+                              <h3
+                                className={`font-display text-sm sm:text-lg font-semibold min-w-0 max-w-full break-words whitespace-normal ${
+                                  isLevels ? 'text-[#D4B46A]' : 'text-white'
+                                }`}
+                              >
+                                {f.title}
+                              </h3>
                             </div>
-                            <h3
-                              className={`font-display text-sm sm:text-lg font-semibold ${
-                                isLevels ? 'text-[#D4B46A]' : 'text-white'
-                              }`}
-                            >
-                              {f.title}
-                            </h3>
+                            <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-relaxed text-av-muted/95 break-words">
+                              {f.text}
+                            </p>
                           </div>
-                          <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-relaxed text-av-muted/95">
-                            {f.text}
-                          </p>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6">
-                  <span className="text-xs font-medium text-av-muted sm:text-sm">
+                <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6 w-full min-w-0">
+                  <span className="text-xs font-medium text-av-muted sm:text-sm shrink-0">
                     Cosa ricevi dopo il pagamento:
                   </span>
                   <span className="chip !py-1 border border-av-green-deep/40 bg-av-green/10 text-av-green">

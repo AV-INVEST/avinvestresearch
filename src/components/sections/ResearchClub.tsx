@@ -42,8 +42,8 @@ export default async function ResearchClub() {
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(201,169,97,0.08),transparent_58%),radial-gradient(ellipse_at_bottom_right,rgba(0,255,106,0.05),transparent_55%)]"
       />
       <div className="container-page">
-        <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+        <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-12 min-w-0">
+          <div className="lg:col-span-5 min-w-0">
             <span
               className={`inline-flex items-center gap-2 rounded-full border ${GOLD.border} ${GOLD.bgSoft} px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${GOLD.text}`}
             >
@@ -100,9 +100,9 @@ export default async function ResearchClub() {
             </div>
           </div>
 
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 min-w-0 w-full">
             <GlassCard
-              className="relative overflow-hidden p-4 sm:p-8 border border-white/5"
+              className="relative overflow-hidden p-4 sm:p-8 border border-white/5 w-full min-w-0"
               style={{
                 backgroundImage:
                   'radial-gradient(1200px 500px at 100% 0%, rgba(201,169,97,0.06), transparent 60%)',
@@ -112,50 +112,52 @@ export default async function ResearchClub() {
                 aria-hidden="true"
                 className={`absolute -right-24 -top-24 h-64 w-64 rounded-full ${GOLD.bgSoft} blur-3xl`}
               />
-              <div className="-mx-4 flex overflow-x-auto scroll-snap scrollbar-hidden gap-3 px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0 sm:grid sm:gap-4 sm:grid-cols-2">
-                {rc.features.map((feature, i) => {
-                  const Icon = icons[i] ?? Radar;
-                  const isGold = i === 0 || i === 3;
-                  return (
-                    <div
-                      key={feature}
-                      className={`group flex-none w-[88%] snap-center rounded-2xl border sm:w-full sm:flex-none p-4 sm:p-5 transition-all duration-300 ${
-                        isGold
-                          ? `${GOLD.border} ${GOLD.bgSoft} hover:border-white/20 hover:bg-av-surface`
-                          : 'border-av-line bg-av-bg-2/50 hover:border-white/20 hover:bg-av-surface'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 sm:gap-3">
-                        <div
-                          className={`grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl border transition-all ${
-                            isGold
-                              ? `${GOLD.border} ${GOLD.bg} ${GOLD.text} group-hover:shadow-[0_0_24px_-6px_rgba(201,169,97,0.5)]`
-                              : 'border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
-                          }`}
-                        >
-                          <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
-                        </div>
-                        <h3
-                          className={`font-display text-base sm:text-lg font-semibold ${
-                            isGold ? GOLD.heading : 'text-white'
-                          }`}
-                        >
-                          {feature}
-                        </h3>
-                      </div>
+              <div className="w-full min-w-0 max-w-full overflow-hidden sm:contents">
+                <div className="w-full min-w-0 overflow-x-auto scrollbar-hidden snap-x snap-mandatory flex gap-3 pb-2 sm:overflow-visible sm:pb-0 sm:contents">
+                  {rc.features.map((feature, i) => {
+                    const Icon = icons[i] ?? Radar;
+                    const isGold = i === 0 || i === 3;
+                    return (
                       <div
-                        className={`mt-3 sm:mt-4 h-px w-full bg-gradient-to-r ${
+                        key={feature}
+                        className={`group shrink-0 basis-[86%] max-w-[86%] snap-start rounded-2xl border sm:basis-auto sm:max-w-none sm:w-full p-4 sm:p-5 transition-all duration-300 min-w-0 ${
                           isGold
-                            ? 'from-[#C9A961]/40 via-av-line to-transparent'
-                            : 'from-av-green-deep/40 via-av-line to-transparent'
+                            ? `${GOLD.border} ${GOLD.bgSoft} hover:border-white/20 hover:bg-av-surface`
+                            : 'border-av-line bg-av-bg-2/50 hover:border-white/20 hover:bg-av-surface'
                         }`}
-                      />
-                    </div>
-                  );
-                })}
+                      >
+                        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                          <div
+                            className={`grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl border transition-all shrink-0 ${
+                              isGold
+                                ? `${GOLD.border} ${GOLD.bg} ${GOLD.text} group-hover:shadow-[0_0_24px_-6px_rgba(201,169,97,0.5)]`
+                                : 'border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
+                            }`}
+                          >
+                            <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+                          </div>
+                          <h3
+                            className={`font-display text-base sm:text-lg font-semibold min-w-0 max-w-full break-words whitespace-normal ${
+                              isGold ? GOLD.heading : 'text-white'
+                            }`}
+                          >
+                            {feature}
+                          </h3>
+                        </div>
+                        <div
+                          className={`mt-3 sm:mt-4 h-px w-full bg-gradient-to-r ${
+                            isGold
+                              ? 'from-[#C9A961]/40 via-av-line to-transparent'
+                              : 'from-av-green-deep/40 via-av-line to-transparent'
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6">
-                <span className="text-xs font-medium text-av-muted sm:text-sm">
+              <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6 w-full min-w-0">
+                <span className="text-xs font-medium text-av-muted sm:text-sm shrink-0">
                   Materiali riservati ai membri:
                 </span>
                 <span className={`chip !py-1 border ${GOLD.border} ${GOLD.bgSoft} ${GOLD.text}`}>
