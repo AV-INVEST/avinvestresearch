@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {
-  BookOpen,
+  CirclePlay,
   Eye,
   FileText,
   ArrowRight,
@@ -36,6 +36,7 @@ const items = [
     currency: siteConfig.tradingStarter.currency,
     decimals: 2,
     ctaScrollTo: '#trading-starter',
+    premium: false,
   },
   {
     key: 'market-lens' as const,
@@ -49,19 +50,21 @@ const items = [
     currency: siteConfig.marketLens.currency,
     decimals: 2,
     ctaScrollTo: '#market-lens',
+    premium: false,
   },
   {
     key: 'foundations' as const,
-    icon: BookOpen,
-    iconColor: 'text-av-green',
-    iconBg: 'bg-av-green/10 border-av-green-deep/40',
+    icon: CirclePlay,
+    iconColor: 'text-[#D4B46A]',
+    iconBg: 'border-[#C9A961]/45 bg-[#C9A961]/10',
     category: 'VIDEOCORSO · COMPLETO',
     title: siteConfig.courses.foundations.title,
-    description: `Analisi tecnica strutturata, ${siteConfig.courses.foundations.durationLabel}.`,
+    description: '~6 ore di videocorso per imparare analisi tecnica, metodo e gestione del rischio.',
     price: siteConfig.courses.foundations.price,
     currency: siteConfig.courses.foundations.currency,
     decimals: 2,
     ctaScrollTo: '#percorsi',
+    premium: true,
   },
 ];
 
@@ -83,7 +86,7 @@ export default function OfferOverview({
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow">
-            <BookOpen className="h-3.5 w-3.5" />
+            <CirclePlay className="h-3.5 w-3.5" />
             Offerta formativa
           </span>
           <h2
@@ -103,35 +106,77 @@ export default function OfferOverview({
         <div className="mt-9 sm:mt-12 grid w-full min-w-0 max-w-full gap-5 sm:gap-6 lg:grid-cols-3">
           {items.map((it) => {
             const Icon = it.icon;
+            const isPremium = it.premium === true;
             return (
               <GlassCard
                 key={it.key}
                 hover
-                className="relative flex h-full w-full min-w-0 max-w-full flex-col p-5 sm:p-6"
+                className={[
+                  'relative flex h-full w-full min-w-0 max-w-full flex-col p-5 sm:p-6',
+                  isPremium
+                    ? 'border-[#C9A961]/40 shadow-[0_0_0_1px_rgba(201,169,97,0.10),0_8px_40px_-12px_rgba(201,169,97,0.28)] hover:border-[#D4B46A]/70 hover:shadow-glow-gold'
+                    : '',
+                ].filter(Boolean).join(' ')}
+                style={
+                  isPremium
+                    ? {
+                        backgroundImage:
+                          'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(201,169,97,0.06) 100%)',
+                      }
+                    : undefined
+                }
               >
+                {isPremium ? (
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-[radial-gradient(ellipse_at_top,rgba(201,169,97,0.16),transparent_70%)]"
+                  />
+                ) : null}
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <span
-                    className={`grid h-11 w-11 flex-none place-items-center rounded-xl border ${it.iconBg} ${it.iconColor}`}
+                    className={[
+                      'grid h-11 w-11 flex-none place-items-center rounded-xl border',
+                      it.iconBg,
+                      it.iconColor,
+                      isPremium ? 'shadow-[0_0_14px_rgba(201,169,97,0.22)]' : '',
+                    ].filter(Boolean).join(' ')}
                   >
                     <Icon className="h-5.5 w-5.5" />
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-av-line bg-av-bg-2/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-av-muted">
+                  <span
+                    className={[
+                      'inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]',
+                      isPremium
+                        ? 'border-[#C9A961]/40 bg-[#C9A961]/10 text-[#D4B46A]'
+                        : 'border-av-line bg-av-bg-2/70 text-av-muted',
+                    ].filter(Boolean).join(' ')}
+                  >
                     {it.category}
                   </span>
                 </div>
 
                 <div className="mt-5 min-w-0">
-                  <h3 className="font-display text-xl sm:text-2xl font-semibold leading-tight text-white break-words">
+                  <h3
+                    className={[
+                      'font-display text-xl sm:text-2xl font-semibold leading-tight break-words',
+                      isPremium ? 'text-white' : 'text-white',
+                    ].join(' ')}
+                  >
                     {it.title}
                   </h3>
                 </div>
 
-                <p className="mt-2 text-sm leading-relaxed text-av-muted sm:text-base min-w-0 max-w-full break-words line-clamp-2">
+                <p className="mt-2 text-sm leading-relaxed sm:text-base min-w-0 max-w-full break-words line-clamp-2 text-av-muted">
                   {it.description}
                 </p>
 
                 <div className="mt-5 flex items-baseline gap-1.5 min-w-0">
-                  <span className="font-display text-2xl sm:text-3xl font-semibold text-white">
+                  <span
+                    className={[
+                      'font-display text-2xl sm:text-3xl font-semibold',
+                      isPremium ? 'text-[#F4E2B0]' : 'text-white',
+                    ].filter(Boolean).join(' ')}
+                  >
                     {formatPrice(it.price, it.currency, it.decimals)}
                   </span>
                 </div>
@@ -160,3 +205,4 @@ export default function OfferOverview({
     </section>
   );
 }
+
