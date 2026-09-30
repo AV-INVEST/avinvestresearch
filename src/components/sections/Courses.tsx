@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { Check, Sparkles, Clock, ArrowRight, RefreshCw, Infinity, BookOpen, CreditCard, Shield } from 'lucide-react';
+import { Check, Sparkles, Clock, ArrowRight, Infinity, BookOpen, CreditCard, Shield } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
+import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import type { ComponentType } from 'react';
 import type { CourseEntitlement, EntitlementsState, CourseStatus } from '@/lib/entitlements';
 
@@ -241,14 +242,7 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                           Ricarica la pagina o usa il pulsante &quot;Riprendi pagamento&quot; per
                           aggiornare lo stato.
                         </p>
-                        <button
-                          type="button"
-                          onClick={() => window.location.reload()}
-                          className="mt-2.5 inline-flex items-center gap-1.5 rounded-lg border border-av-yellow-deep/50 bg-av-yellow/10 px-3 py-1.5 text-xs font-semibold text-av-yellow hover:bg-av-yellow/20"
-                        >
-                          <RefreshCw className="h-3.5 w-3.5" />
-                          Ricarica stato
-                        </button>
+                        <PendingPaymentRefresher initialAnyPending />
                       </div>
                     </div>
                   </div>

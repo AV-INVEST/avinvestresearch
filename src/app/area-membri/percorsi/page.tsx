@@ -286,16 +286,7 @@ export default async function PercorsiPage() {
                       <Lock className="h-4 w-4 text-av-muted" />
                       Scopri i videocorsi
                     </Link>
-                  ) : isPending ? (
-                    <button
-                      type="button"
-                      onClick={() => window.location.reload()}
-                      className="btn-ghost !py-2.5 !px-4 text-sm items-center justify-center gap-2 border-av-yellow-deep/40 text-av-yellow hover:bg-av-yellow/10"
-                    >
-                      <Clock className="h-4 w-4" />
-                      Ricarica per aggiornare
-                    </button>
-                  ) : isOwned && ownedHref ? (
+                  ) : isPending ? null : isOwned && ownedHref ? (
                     <Link
                       href={ownedHref}
                       prefetch={false}
