@@ -31,7 +31,7 @@ const items = [
     iconBg: 'bg-av-green/10 border-av-green-deep/40',
     category: 'GUIDA PDF · ENTRY-LEVEL',
     title: siteConfig.tradingStarter.title,
-    description: 'Capire i mercati da zero, con basi chiare.',
+    description: 'Una guida pratica per capire grafici, trend, livelli e gestione del rischio partendo da zero.',
     price: siteConfig.tradingStarter.price,
     currency: siteConfig.tradingStarter.currency,
     decimals: 2,
@@ -112,7 +112,7 @@ export default function OfferOverview({
                 key={it.key}
                 hover
                 className={[
-                  'relative flex h-full w-full min-w-0 max-w-full flex-col p-5 sm:p-6',
+                  'relative flex h-full w-full min-w-0 max-w-full p-0 sm:p-0 [&>*:last-child]:h-full [&>*:last-child]:flex [&>*:last-child]:flex-col [&>*:last-child]:w-full [&>*:last-child]:min-w-0 [&>*:last-child]:p-5 [&>*:last-child]:sm:p-6',
                   isPremium
                     ? 'border-[#C9A961]/40 shadow-[0_0_0_1px_rgba(201,169,97,0.10),0_8px_40px_-12px_rgba(201,169,97,0.28)] hover:border-[#D4B46A]/70 hover:shadow-glow-gold'
                     : '',
@@ -166,7 +166,7 @@ export default function OfferOverview({
                   </h3>
                 </div>
 
-                <p className="mt-2 text-sm leading-relaxed sm:text-base min-w-0 max-w-full break-words line-clamp-2 text-av-muted">
+                <p className="mt-2 min-h-[3.5rem] lg:min-h-[4.25rem] text-sm leading-relaxed sm:text-base min-w-0 max-w-full break-words text-av-muted">
                   {it.description}
                 </p>
 
