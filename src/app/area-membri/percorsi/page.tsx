@@ -5,7 +5,6 @@ import { auth } from '@/auth';
 import { siteConfig } from '@/config/siteConfig';
 import { getEntitlements, type CourseStatus, type CourseEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
-import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import {
   ArrowLeft,
   ArrowRight,
@@ -244,25 +243,6 @@ export default async function PercorsiPage() {
                         className="h-full rounded-full bg-av-green transition-[width] duration-500"
                         style={{ width: `${progress}%` }}
                       />
-                    </div>
-                  </div>
-                ) : null}
-
-                {isPending ? (
-                  <div
-                    role="status"
-                    aria-live="polite"
-                    className="mt-5 rounded-xl border border-av-yellow-deep/40 bg-av-yellow/5 px-4 py-3 text-sm text-av-yellow"
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold break-words">Stiamo confermando il pagamento</p>
-                        <p className="mt-0.5 text-xs text-av-yellow/80 break-words">
-                          La conferma richiede di solito meno di 30 secondi.
-                        </p>
-                        <PendingPaymentRefresher initialAnyPending />
-                      </div>
                     </div>
                   </div>
                 ) : null}

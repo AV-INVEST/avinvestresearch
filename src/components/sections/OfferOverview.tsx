@@ -60,7 +60,7 @@ const items = [
     description: `Analisi tecnica strutturata, ${siteConfig.courses.foundations.durationLabel}.`,
     price: siteConfig.courses.foundations.price,
     currency: siteConfig.courses.foundations.currency,
-    decimals: 0,
+    decimals: 2,
     ctaScrollTo: '#percorsi',
   },
 ];

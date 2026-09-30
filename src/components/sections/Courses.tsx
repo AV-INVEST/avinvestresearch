@@ -3,7 +3,6 @@ import { Check, Sparkles, Clock, ArrowRight, Infinity, BookOpen, CreditCard, Shi
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
-import PendingPaymentRefresher from '@/components/payment/PendingPaymentRefresher';
 import type { ComponentType } from 'react';
 import type { CourseEntitlement, EntitlementsState, CourseStatus } from '@/lib/entitlements';
 
@@ -11,7 +10,8 @@ function formatPrice(value: number, currency: string) {
   return new Intl.NumberFormat('it-IT', {
     style: 'currency',
     currency,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
   }).format(value);
 }
 
@@ -227,27 +227,7 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
               {entitlements === undefined || isLocked ? (
                 <CourseCheckoutButton slug={course.slug} />
               ) : isPending ? (
-                <div className="mt-6 space-y-3 w-full min-w-0 max-w-full">
-                  <div
-                    role="status"
-                    aria-live="polite"
-                    className="rounded-xl border border-av-yellow-deep/40 bg-av-yellow/5 px-4 py-3 text-sm text-av-yellow"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Clock className="mt-0.5 h-4 w-4 flex-none animate-pulse" />
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold">Pagamento in fase di conferma</p>
-                        <p className="mt-0.5 text-xs text-av-yellow/80 break-words">
-                          La conferma da parte di Stripe richiede di solito meno di 30 secondi.
-                          Ricarica la pagina o usa il pulsante &quot;Riprendi pagamento&quot; per
-                          aggiornare lo stato.
-                        </p>
-                        <PendingPaymentRefresher initialAnyPending />
-                      </div>
-                    </div>
-                  </div>
-                  <CourseCheckoutButton slug={course.slug} />
-                </div>
+                <CourseCheckoutButton slug={course.slug} />
               ) : isOwned && ownedHref ? (
                 <Link
                   href={ownedHref}
