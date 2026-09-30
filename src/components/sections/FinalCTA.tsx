@@ -40,10 +40,10 @@ export default function FinalCTA() {
           </p>
           <div className="mt-7 sm:mt-10 flex flex-col items-center justify-center gap-2.5 sm:gap-3 sm:flex-row sm:flex-wrap">
             <Link
-              href="/#percorsi"
+              href="/#offerta"
               className="btn-primary-lg inline-flex items-center justify-center gap-2 shadow-glow-green-sm"
             >
-              ESPLORA I PERCORSI
+              SCOPRI L'OFFERTA
               <ArrowRight className="h-5 w-5" />
             </Link>
             <a

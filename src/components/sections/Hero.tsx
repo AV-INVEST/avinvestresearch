@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { ArrowRight, Phone } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GridBackground from '@/components/visuals/GridBackground';
@@ -51,10 +51,10 @@ export default function Hero() {
               className="mt-8 flex flex-col gap-3 animate-fade-in-up [animation-delay:360ms] sm:flex-row sm:flex-wrap"
             >
               <Link
-                href="/#percorsi"
+                href="/#offerta"
                 className="btn-ghost-lg inline-flex items-center justify-center gap-2"
               >
-                SCOPRI I PERCORSI
+                SCOPRI L'OFFERTA
                 <ArrowRight className="h-5 w-5" />
               </Link>
               <a

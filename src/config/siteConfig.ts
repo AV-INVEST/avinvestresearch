@@ -68,7 +68,9 @@ export const siteConfig = {
       price: 297,
       currency: 'EUR',
       available: true,
-      purchasable: false,
+      purchasable: true,
+      publicVisible: true,
+      durationLabel: '~6 ore',
     },
     tradingLab: {
       slug: 'trading-lab',
@@ -88,6 +90,7 @@ export const siteConfig = {
       currency: 'EUR',
       available: true,
       purchasable: false,
+      publicVisible: false,
     },
   },
 
@@ -233,7 +236,7 @@ export const siteConfig = {
 
   navigation: [
     { label: 'AV Market Lens', href: '/#market-lens' },
-    { label: 'Percorsi', href: '/#percorsi' },
+    { label: 'Offerta', href: '/#offerta' },
     { label: 'Research Club', href: '/#research-club' },
     { label: 'Metodo', href: '/#metodo' },
     { label: 'Chi sono', href: '/#chi-sono' },

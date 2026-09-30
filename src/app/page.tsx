@@ -2,6 +2,7 @@ import { auth } from '@/auth';
 import { getEntitlements } from '@/lib/entitlements';
 import Hero from '@/components/sections/Hero';
 import Positioning from '@/components/sections/Positioning';
+import OfferOverview from '@/components/sections/OfferOverview';
 import TradingStarter from '@/components/sections/TradingStarter';
 import MarketLens from '@/components/sections/MarketLens';
 import Courses from '@/components/sections/Courses';
@@ -31,6 +32,7 @@ export default async function HomePage() {
         <MarketLine className="opacity-70" />
       </div>
       <Positioning />
+      <OfferOverview entitlements={entitlements ?? undefined} />
       <TradingStarter entitlement={entitlements?.tradingStarter} />
       <MarketLens entitlement={entitlements?.marketLens} />
       <Courses entitlements={entitlements ?? undefined} />

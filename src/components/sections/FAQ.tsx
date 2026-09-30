@@ -5,7 +5,7 @@ import Accordion, { type FAQItem } from '@/components/ui/Accordion';
 
 type CategoryKey =
   | 'generali'
-  | 'percorsi'
+  | 'videocorso'
   | 'research-club'
   | 'market-lens'
   | 'trading-starter';
@@ -17,7 +17,7 @@ interface Category {
 
 const categories: Category[] = [
   { key: 'generali', label: 'Generali' },
-  { key: 'percorsi', label: 'Percorsi' },
+  { key: 'videocorso', label: 'Videocorso' },
   { key: 'research-club', label: 'Research Club' },
   { key: 'market-lens', label: 'Market Lens' },
   { key: 'trading-starter', label: 'Trading Starter' },
@@ -41,21 +41,26 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
         'Puoi pagare con le principali carte di credito e debito tramite Stripe. Gli eventuali altri metodi disponibili vengono mostrati direttamente durante il checkout. I pagamenti sono gestiti tramite una connessione sicura.',
     },
   ],
-  percorsi: [
+  videocorso: [
     {
-      question: 'A chi sono rivolti i percorsi?',
+      question: 'A chi è rivolto AV Foundations?',
       answer:
-        "A chiunque voglia approcciare l'analisi dei mercati con metodo: principianti che vogliono costruire basi solide, e persone già attive sui mercati che cercano struttura, disciplina e processo decisionale più chiaro. Non sono richieste conoscenze pregresse per il percorso base.",
+        "AV Foundations è adatto a chiunque voglia approcciare l'analisi dei mercati con un metodo strutturato: ideale per chi parte da zero e vuole costruire basi solide, ma utile anche a chi ha già qualche esperienza e cerca una panoramica più ordinata su grafici, livelli, volumi, indicatori e gestione del rischio. Nessuna conoscenza pregressa è obbligatoria.",
     },
     {
-      question: 'Da quale corso dovrei iniziare?',
+      question: 'Cosa include esattamente il videocorso?',
       answer:
-        'Se sei alle prime armi o vuoi consolidare le basi, parti da AV Foundations: copre struttura di mercato, trend, livelli, volumi, indicatori e gestione del rischio. Se invece hai già basi solide e vuoi approfondire strategia, contesto, conferme, invalidazione e dimensionamento, AV Trading Lab è il passo successivo.',
+        "Circa 6 ore di formazione video organizzate in moduli e lezioni, accesso illimitato senza scadenza, area membri con progresso personale salvato e materiale didattico di supporto. Il pagamento è unico e non ricorrente.",
     },
     {
-      question: 'Posso seguire i corsi da smartphone?',
+      question: 'Posso seguire il videocorso da smartphone?',
       answer:
         'Sì: il sito e i contenuti sono progettati per essere fruibili anche da mobile. Video, dispense e materiale sono consultabili da smartphone, tablet e desktop con lo stesso account. Alcuni esercizi e grafici sono più comodi su schermo più ampio, ma non obbligatori.',
+    },
+    {
+      question: 'Il videocorso promette rendimenti o fornisce segnali?',
+      answer:
+        'No. Assolutamente no. AV Foundations ha esclusivamente finalità formative e educative. Non contiene promesse di risultato, non fornisce segnali operativi, non menziona strumenti finanziari specifici e non sostituisce la tua valutazione autonoma. Ogni decisione di investimento o operativa resta sotto la tua esclusiva responsabilità.',
     },
   ],
   'research-club': [

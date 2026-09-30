@@ -46,9 +46,9 @@ export default function TerminiPage() {
           </li>
           <li>
             <strong className="text-white">Acquisto di corsi digitali</strong>:
-            la conclusione dell&apos;ordine e il pagamento a tantum di AV
-            Foundations o AV Trading Lab, tramite Stripe, comportano
-            l&apos;accettazione integrale dei presenti Termini.
+            la conclusione dell&apos;ordine e il pagamento a tantum dei corsi
+            digitali offerti sul Sito, incluso AV Foundations, tramite Stripe,
+            comportano l&apos;accettazione integrale dei presenti Termini.
           </li>
           <li>
             <strong className="text-white">Acquisto one-time AV Market Lens</strong>:
@@ -109,9 +109,10 @@ export default function TerminiPage() {
           <li>
             <strong className="text-white">Corsi digitali educativi</strong>
             {' '}
-            (AV Foundations e AV Trading Lab): forniti in modalit&agrave;
-            one-time con pagamento a tantum e accesso all&apos;area
-            membri per il contenuto del corso acquistato.
+            (corsi digitali acquistati sul Sito, incluso AV Foundations):
+            forniti in modalit&agrave; one-time con pagamento a tantum e
+            accesso all&apos;area membri per il contenuto del corso
+            acquistato.
           </li>
           <li>
             <strong className="text-white">AV Research Club</strong>
@@ -296,7 +297,7 @@ export default function TerminiPage() {
           9. Corsi digitali: licenza one-time
         </h2>
         <p>
-          I corsi AV Foundations e AV Trading Lab sono venduti con formula a
+          I corsi digitali offerti sul Sito sono venduti con formula a
           tantum (pagamento unico una tantum). Dopo l&apos;acquisto completato
           e la conferma del pagamento da parte di Stripe, viene concesso
           all&apos;utente il diritto di accesso personale e non

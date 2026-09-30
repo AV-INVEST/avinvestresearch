@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { isAdminSession } from '@/lib/auth/admin';
+import { siteConfig } from '@/config/siteConfig';
 import { getEntitlements, getResearchClubEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
 import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
@@ -30,12 +31,28 @@ import {
   Clock,
   Download,
 } from 'lucide-react';
+import type { CourseEntitlement, CourseStatus } from '@/lib/entitlements';
 
 export const metadata: Metadata = {
   title: 'Panoramica - Area membri',
   description: 'Panoramica personale dell\'area membri di AV-INVEST Research.',
   alternates: { canonical: '/area-membri' },
 };
+
+function isCourseVisible(
+  cfg: { slug: string; publicVisible?: boolean },
+  ent?: CourseEntitlement,
+): boolean {
+  if (cfg.publicVisible === true) return true;
+  if (!ent) return false;
+  const status = ent.status;
+  return (
+    status === 'owned_not_started' ||
+    status === 'owned_in_progress' ||
+    status === 'owned_completed' ||
+    status === 'payment_pending'
+  );
+}
 
 export default async function PanoramicaPage() {
   const session = await auth().catch(() => null);
@@ -49,16 +66,27 @@ export default async function PanoramicaPage() {
   const isAdmin = isAdminSession(session);
   const rcEntitlement = await getResearchClubEntitlement(session.user.id, session.user.email);
 
-  const courses = Object.values(entitlements.courses);
-  const availableCourses = courses.filter((c) => c.status !== 'locked');
-  const availableCount = availableCourses.length;
+  const allCourses = Object.entries(siteConfig.courses).map(([, cfg]) => {
+    const ent = entitlements.courses[cfg.slug];
+    return { cfg, ent, visible: isCourseVisible(cfg as { slug: string; publicVisible?: boolean }, ent) };
+  });
+
+  const visibleCourses = allCourses.filter((c) => c.visible);
+  const visibleCourseEntitlements = visibleCourses.map((c) => c.ent).filter(Boolean) as CourseEntitlement[];
+  const availableCount = visibleCourseEntitlements.filter(
+    (c) => c.status !== 'locked',
+  ).length;
   const overallProgress =
-    courses.length === 0
+    visibleCourseEntitlements.length === 0
       ? 0
       : Math.round(
-          courses.reduce((acc, c) => acc + (c.progressPct || 0), 0) /
-            courses.length,
+          visibleCourseEntitlements.reduce((acc, c) => acc + (c.progressPct || 0), 0) /
+            visibleCourseEntitlements.length,
         );
+
+  const visibleTitles = visibleCourseEntitlements
+    .filter((c) => c.status !== 'locked')
+    .map((c) => c.title);
 
   return (
     <div className="space-y-6">
@@ -92,7 +120,7 @@ export default async function PanoramicaPage() {
               <p className="mt-2 font-display text-3xl font-semibold text-white">
                 {availableCount}
                 <span className="ml-1 text-base text-av-muted">
-                  / {courses.length}
+                  / {visibleCourses.length}
                 </span>
               </p>
             </div>
@@ -522,18 +550,20 @@ export default async function PanoramicaPage() {
                     <h2 className="font-display text-xl font-semibold text-white">
                       Videocorsi attivi: {availableCount}
                     </h2>
-                    <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base">
+                    <p className="mt-1 text-sm leading-relaxed text-av-muted sm:text-base min-w-0 max-w-full break-words">
                       Hai accesso a:{' '}
-                      {availableCourses
-                        .map((c) => c.title)
-                        .join(', ')}
-                      . Vai ai videocorsi per iniziare o continuare.
+                      {visibleTitles.length > 0 ? (
+                        <span>{visibleTitles.join(', ')}.</span>
+                      ) : (
+                        'nessun videocorso attivo.'
+                      )}{' '}
+                      Vai ai videocorsi per iniziare o continuare.
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-3">
-                {availableCount < courses.length ? (
+                {availableCount < visibleCourses.length ? (
                   <Link
                     href="/#percorsi"
                     className="btn-ghost !py-2.5 !px-4 text-sm items-center justify-center gap-2"

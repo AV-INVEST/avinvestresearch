@@ -57,8 +57,8 @@ export default function PrivacyPage() {
             riservata.
           </li>
           <li>
-            Acquisto dei corsi digitali AV Foundations e AV Trading Lab con
-            pagamento a tantum.
+            Acquisto dei corsi digitali offerti sul Sito, incluso AV
+            Foundations, con pagamento a tantum.
           </li>
           <li>
             Sottoscrizione e gestione dell&apos;abbonamento mensile ad
