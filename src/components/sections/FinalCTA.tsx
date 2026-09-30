@@ -43,7 +43,7 @@ export default function FinalCTA() {
               href="/#offerta"
               className="btn-primary-lg inline-flex items-center justify-center gap-2 shadow-glow-green-sm"
             >
-              SCOPRI L'OFFERTA
+              SCOPRI L&apos;OFFERTA
               <ArrowRight className="h-5 w-5" />
             </Link>
             <a

@@ -54,7 +54,7 @@ export default function Hero() {
                 href="/#offerta"
                 className="btn-ghost-lg inline-flex items-center justify-center gap-2"
               >
-                SCOPRI L'OFFERTA
+                SCOPRI L&apos;OFFERTA
                 <ArrowRight className="h-5 w-5" />
               </Link>
               <a
