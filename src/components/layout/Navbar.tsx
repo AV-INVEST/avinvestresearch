@@ -32,6 +32,31 @@ export default function Navbar() {
     };
   }, [open]);
 
+  function handleAnchorNavigation(
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) {
+    if (!href.startsWith('/#')) return;
+    if (typeof window === 'undefined') return;
+
+    if (window.location.pathname !== '/') return;
+
+    e.preventDefault();
+    const id = href.slice(2);
+
+    setOpen(false);
+
+    const scrollToId = () => {
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      window.history.replaceState(null, '', '/#' + id);
+    };
+
+    requestAnimationFrame(() => requestAnimationFrame(scrollToId));
+  }
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
@@ -68,6 +93,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={(e) => handleAnchorNavigation(e, item.href)}
               className="link-underline text-sm font-medium whitespace-nowrap"
             >
               {item.label}
@@ -148,7 +174,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setOpen(false)}
+                onClick={(e) => handleAnchorNavigation(e, item.href)}
                 className="rounded-xl px-3 py-2.5 text-sm font-medium text-white/90 transition-colors hover:bg-av-surface hover:text-white"
               >
                 {item.label}

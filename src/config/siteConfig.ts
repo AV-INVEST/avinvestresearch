@@ -235,7 +235,7 @@ export const siteConfig = {
   ],
 
   navigation: [
-    { label: 'Percorsi', href: '/#percorsi' },
+    { label: 'Percorsi', href: '/#offerta' },
     { label: 'Indicatore', href: '/#market-lens' },
     { label: 'Guida', href: '/#trading-starter' },
     { label: 'Metodo', href: '/#metodo' },
