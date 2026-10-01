@@ -235,9 +235,9 @@ export const siteConfig = {
   ],
 
   navigation: [
-    { label: 'AV Market Lens', href: '/#market-lens' },
-    { label: 'Offerta', href: '/#offerta' },
-    { label: 'Research Club', href: '/#research-club' },
+    { label: 'Percorsi', href: '/#percorsi' },
+    { label: 'Indicatore', href: '/#market-lens' },
+    { label: 'Guida', href: '/#trading-starter' },
     { label: 'Metodo', href: '/#metodo' },
     { label: 'Chi sono', href: '/#chi-sono' },
     { label: 'FAQ', href: '/#faq' },

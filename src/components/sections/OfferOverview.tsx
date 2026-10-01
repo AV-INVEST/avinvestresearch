@@ -87,14 +87,14 @@ export default function OfferOverview({
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow">
             <CirclePlay className="h-3.5 w-3.5" />
-            Offerta formativa
+            Strumenti e formazione
           </span>
           <h2
             id="offerta-heading"
             className="mt-5 heading-lg"
           >
-            Scopri l&apos;offerta.{' '}
-            <span className="text-av-green">Scegli il tuo punto di partenza.</span>
+            Scegli da dove iniziare.{' '}
+            <span className="text-av-green">Strumenti adatti al tuo livello.</span>
           </h2>
           <p className="mt-4 sm:mt-5 body-lg max-w-2xl mx-auto">
             Tre prodotti pensati per livelli diversi: dalla guida entry-level al

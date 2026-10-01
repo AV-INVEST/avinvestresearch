@@ -1,6 +1,4 @@
-import Link from 'next/link';
-import { ArrowRight, Phone, TrendingUp } from 'lucide-react';
-import { siteConfig } from '@/config/siteConfig';
+import { TrendingUp } from 'lucide-react';
 import MarketLine from '@/components/visuals/MarketLine';
 
 export default function FinalCTA() {
@@ -38,25 +36,6 @@ export default function FinalCTA() {
             Scegli se guardare i prezzi salire e scendere senza metodo, oppure costruire
             competenze, processo e criteri. Il resto è conseguenza.
           </p>
-          <div className="mt-7 sm:mt-10 flex flex-col items-center justify-center gap-2.5 sm:gap-3 sm:flex-row sm:flex-wrap">
-            <Link
-              href="/#offerta"
-              className="btn-primary-lg inline-flex items-center justify-center gap-2 shadow-glow-green-sm"
-            >
-              SCOPRI L&apos;OFFERTA
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-            <a
-              href={siteConfig.calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost-lg inline-flex items-center justify-center gap-2"
-              aria-label="Prenota una call (link esterno)"
-            >
-              <Phone className="h-5 w-5 text-av-green" />
-              PRENOTA UNA CALL
-            </a>
-          </div>
         </div>
       </div>
     </section>
