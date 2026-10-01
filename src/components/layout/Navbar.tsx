@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Menu, X, Phone, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { siteConfig } from '@/config/siteConfig';
@@ -13,6 +13,7 @@ export default function Navbar() {
   const authLoading = status === 'loading';
   const authenticated = !authLoading && !!session?.user;
   const showMember = siteConfig.featureFlags.memberAreaEnabled;
+  const mobileRafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -32,6 +33,15 @@ export default function Navbar() {
     };
   }, [open]);
 
+  useEffect(() => {
+    return () => {
+      if (mobileRafRef.current !== null) {
+        cancelAnimationFrame(mobileRafRef.current);
+        mobileRafRef.current = null;
+      }
+    };
+  }, []);
+
   function handleAnchorNavigation(
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -44,17 +54,30 @@ export default function Navbar() {
     e.preventDefault();
     const id = href.slice(2);
 
-    setOpen(false);
+    const target = document.getElementById(id);
+    if (!target) return;
 
-    const scrollToId = () => {
-      const target = document.getElementById(id);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.history.replaceState(null, '', '/#' + id);
+
+    if (open) {
+      if (mobileRafRef.current !== null) {
+        cancelAnimationFrame(mobileRafRef.current);
       }
-      window.history.replaceState(null, '', '/#' + id);
-    };
 
-    requestAnimationFrame(() => requestAnimationFrame(scrollToId));
+      setOpen(false);
+
+      mobileRafRef.current = requestAnimationFrame(() => {
+        mobileRafRef.current = null;
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    } else {
+      const prev = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      target.scrollIntoView({ block: 'start' });
+      requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior = prev;
+      });
+    }
   }
 
   return (
