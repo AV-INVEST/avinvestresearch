@@ -11,9 +11,11 @@
     "prisma:studio": "prisma studio",
     "seed:courses": "node scripts/seed-courses.mjs",
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "test:manual-grants": "node --import ./scripts/lib/register-ts-alias.mjs scripts/test-manual-grants-unit.mjs",
+    "test:staging": "node --import ./scripts/lib/register-ts-alias.mjs scripts/test-manual-grants-staging.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

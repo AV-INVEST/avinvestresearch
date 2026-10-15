@@ -3,6 +3,7 @@ import { siteConfig } from '@/config/siteConfig';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { repairSubscriptionStateFromStripe } from '@/lib/stripe/subscription-sync';
+import { loadActiveManualGrants, type ActiveManualGrant } from '@/lib/entitlements-grants';
 import {
   buildLessonHref,
   fetchProgressSummary,
@@ -399,6 +400,39 @@ function buildResolvedPurchaseMap(purchases: PurchaseRow[]): ResolvedPurchaseMap
   return map;
 }
 
+/**
+ * Unisce i grant manuali attivi alla mappa degli acquisti.
+ * Un acquisto riuscito ha sempre precedenza: il grant non declassa mai un
+ * diritto esistente e non introduce alcuna distinzione visibile al cliente.
+ */
+function mergeManualGrants(
+  resolvedBySlug: ResolvedPurchaseMap,
+  grants: ActiveManualGrant[],
+): ResolvedPurchaseMap {
+  if (grants.length === 0) return resolvedBySlug;
+  const merged = new Map(resolvedBySlug);
+  for (const grant of grants) {
+    const existing = merged.get(grant.productSlug);
+    if (existing && existing.type === 'succeeded') continue;
+    merged.set(grant.productSlug, {
+      type: 'succeeded',
+      purchasedAt: grant.grantedAt,
+      createdAt: grant.grantedAt,
+    });
+  }
+  return merged;
+}
+
+async function resolvePurchaseMapWithGrants(
+  userEmail: string | null,
+): Promise<ResolvedPurchaseMap> {
+  const purchased = userEmail ? await loadPurchases(userEmail) : [];
+  const resolved = buildResolvedPurchaseMap(purchased);
+  if (!userEmail) return resolved;
+  const grants = await loadActiveManualGrants(userEmail);
+  return mergeManualGrants(resolved, grants);
+}
+
 function resolveOneTimeProducts(
   resolvedBySlug: ResolvedPurchaseMap,
 ): { marketLens: MarketLensEntitlement; tradingStarter: TradingStarterEntitlement; anyPending: boolean } {
@@ -453,9 +487,7 @@ export async function getOneTimeProductEntitlements(
     return DEFAULT_ONE_TIME_ENTITLEMENTS;
   }
   const userEmail = await resolveUserEmail(userId, email);
-  const purchased = userEmail ? await loadPurchases(userEmail) : [];
-
-  const resolvedBySlug = buildResolvedPurchaseMap(purchased);
+  const resolvedBySlug = await resolvePurchaseMapWithGrants(userEmail);
 
   return resolveOneTimeProducts(resolvedBySlug);
 }
@@ -468,9 +500,7 @@ export async function getEntitlements(
     return buildLockedEntitlements();
   }
   const userEmail = await resolveUserEmail(userId, email);
-  const purchased = userEmail ? await loadPurchases(userEmail) : [];
-
-  const resolvedBySlug = buildResolvedPurchaseMap(purchased);
+  const resolvedBySlug = await resolvePurchaseMapWithGrants(userEmail);
   const ownedSlugs: string[] = [];
   for (const [slug, entry] of resolvedBySlug) {
     if (entry.type === 'succeeded') {

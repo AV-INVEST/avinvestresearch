@@ -46,6 +46,36 @@ enum SubscriptionStatus {
   ENDED
 }
 
+enum ManualGrantKind {
+  PAID_VERIFIED
+  COMPLIMENTARY
+}
+
+enum ManualGrantStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum ManualGrantEvidenceType {
+  STRIPE_CHECKOUT_SESSION
+  STRIPE_PAYMENT_INTENT
+  STRIPE_INVOICE
+  OFF_PLATFORM
+}
+
+enum ManualGrantConsentSource {
+  STRIPE_METADATA
+  ADMIN_ATTESTATION
+  NONE
+}
+
+enum ManualGrantAuditAction {
+  CREATED
+  REVOKED
+  REACTIVATED
+  EVIDENCE_RECHECKED
+}
+
 model User {
   id             String           @id @default(cuid())
   email          String           @unique @db.VarChar(255)
@@ -226,4 +256,72 @@ model DownloadRateLimitBucket {
   @@unique([userEmail, scope, resourceKey, windowStart, windowSizeMinutes], name: "RateLimitBucket_unique_key")
   @@index([userEmail, scope])
   @@index([windowStart])
+}
+
+/// Accesso attribuito manualmente da un amministratore.
+/// Indipendente da Purchase: nessuna relazione Prisma, riferimenti "by value".
+/// Nessuna FK su User: il grant può precedere il primo accesso del destinatario.
+model ManualGrant {
+  id          String            @id @default(cuid())
+  userEmail   String            @db.VarChar(255)
+  productSlug String            @db.VarChar(64)
+  kind        ManualGrantKind
+  status      ManualGrantStatus @default(ACTIVE)
+  /// "email:slug" quando lo stato è ACTIVE, NULL quando revocato. Garantisce un solo grant attivo per utente+prodotto.
+  activeKey   String?           @unique @db.VarChar(400)
+  /// "tipo:riferimento" o "PI:<id>" quando il pagamento è verificato. Permane anche dopo la revoca per impedire il riuso della stessa evidenza.
+  evidenceKey String?           @unique @db.VarChar(400)
+
+  evidenceType          ManualGrantEvidenceType?
+  evidenceReference     String?                 @db.VarChar(255)
+  linkedPurchaseId      String?                 @db.VarChar(255)
+  evidenceAmountTotal   Int?
+  evidenceCurrency      String?                 @db.VarChar(8)
+  evidencePaidAt        DateTime?
+  evidenceCustomerEmail String?                 @db.VarChar(255)
+  evidenceSnapshot      Json?
+  evidenceWarnings      Json?
+  verifiedAt            DateTime?
+  verifiedBy            String?                 @db.VarChar(255)
+
+  consentSource                   ManualGrantConsentSource @default(NONE)
+  consentTermsVersion             String?                 @db.VarChar(32)
+  consentDigitalWithdrawalVersion String?                 @db.VarChar(32)
+  consentAcceptedAt               DateTime?
+
+  grantedBy    String   @db.VarChar(255)
+  grantedAt    DateTime @default(now())
+  reason       String?  @db.VarChar(64)
+  reasonNote   String?  @db.Text
+  adminNote    String?  @db.Text
+  revokedAt    DateTime?
+  revokedBy    String?  @db.VarChar(255)
+  revokeReason String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  events       ManualGrantEvent[]
+
+  @@index([userEmail, productSlug, status])
+  @@index([productSlug, status])
+  @@index([kind, status])
+  @@index([status, grantedAt])
+}
+
+/// Registro di audit append-only delle azioni sugli accessi manuali.
+model ManualGrantEvent {
+  id          String                 @id @default(cuid())
+  grantId     String?
+  action      ManualGrantAuditAction
+  actorEmail  String                 @db.VarChar(255)
+  targetEmail String                 @db.VarChar(255)
+  productSlug String                 @db.VarChar(64)
+  kind        ManualGrantKind?
+  detail      Json?
+  createdAt   DateTime               @default(now())
+  grant       ManualGrant?           @relation(fields: [grantId], references: [id], onDelete: SetNull)
+
+  @@index([grantId, createdAt])
+  @@index([actorEmail, createdAt])
+  @@index([targetEmail, createdAt])
+  @@index([action, createdAt])
 }

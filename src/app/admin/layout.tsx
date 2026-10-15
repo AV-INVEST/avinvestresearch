@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   Eye,
   BookOpen,
+  KeyRound,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,7 @@ const NAV: Array<{ href: string; label: string; Icon: typeof Home }> = [
   { href: '/admin/research', label: 'Research Club', Icon: FileSearch },
   { href: '/admin/market-lens', label: 'AV Market Lens', Icon: Eye },
   { href: '/admin/trading-starter', label: 'AV Trading Starter', Icon: BookOpen },
+  { href: '/admin/accessi', label: 'Accessi manuali', Icon: KeyRound },
 ];
 
 export default async function AdminLayout({

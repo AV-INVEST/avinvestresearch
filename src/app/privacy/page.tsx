@@ -77,6 +77,13 @@ export default function PrivacyPage() {
             al timestamp di accettazione).
           </li>
           <li>
+            Abilitazione manuale dell&apos;accesso ai prodotti una tantum
+            (corsi digitali, AV Market Lens, AV Trading Starter) disposta
+            dall&apos;amministratore, previa verifica del pagamento oppure a
+            titolo gratuito (omaggio), con registrazione di un log di audit
+            contenente amministratore, destinatario, prodotto, motivazione e data.
+          </li>
+          <li>
             Tracciamento del progresso personale nell&apos;area membri.
           </li>
           <li>
@@ -138,6 +145,18 @@ export default function PrivacyPage() {
             altres&igrave; riportate nei metadata della sessione di checkout
             Stripe al fine di garantire tracciabilit&agrave; e allineamento tra
             sistema interno e registro del fornitore di pagamento.
+          </li>
+          <li>
+            <strong className="text-white">Dati degli accessi manuali</strong>:
+            quando l&apos;accesso a un prodotto una tantum viene abilitato
+            manualmente dall&apos;amministratore, vengono memorizzati nel
+            database del Titolare l&apos;email del destinatario, il prodotto
+            abilitato, la tipologia di accesso (verifica del pagamento oppure
+            omaggio), la motivazione dell&apos;omaggio ove prevista, i
+            riferimenti di verifica del pagamento (quali identificativo Stripe,
+            importo, valuta e data) e il registro delle azioni di audit. Tali
+            informazioni sono conservate separatamente dalle transazioni di
+            vendita.
           </li>
           <li>
             <strong className="text-white">Dati Calendly</strong>: quando
@@ -229,6 +248,8 @@ export default function PrivacyPage() {
             - Tracciamento del progresso personale nei corsi all&apos;interno dell&apos;area membri.
             <br />
             - Gestione delle prenotazioni di call informative ricevute tramite Calendly.
+            <br />
+            - Abilitazione manuale dell&apos;accesso ai prodotti una tantum da parte dell&apos;amministratore, previa verifica del pagamento oppure a titolo gratuito (omaggio), e relativa registrazione di audit.
             <br />
             - Supporto tecnico e rispondenza a richieste strettamente connesse al servizio acquistato o sottoscritto.
           </li>

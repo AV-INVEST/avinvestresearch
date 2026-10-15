@@ -75,6 +75,13 @@ export default function TerminiPage() {
             tramite Stripe, comporta l&apos;accettazione integrale dei
             presenti Termini.
           </li>
+          <li>
+            <strong className="text-white">Accesso abilitato manualmente</strong>:
+            l&apos;abilitazione di un prodotto una tantum disposta
+            dall&apos;amministratore, previa verifica del pagamento oppure a
+            titolo gratuito (omaggio), comporta l&apos;accettazione integrale
+            dei presenti Termini limitatamente ai contenuti resi accessibili.
+          </li>
         </ul>
         <p className="mt-2">
           Il Titolare si riserva il diritto di modificare i Termini in
@@ -290,6 +297,31 @@ export default function TerminiPage() {
           il diritto di sospendere o revocare l&apos;accesso ai servizi fino
           alla risoluzione della controversia, nei limiti consentiti dalla legge.
         </p>
+        {/* NOTA INTERNA: la formulazione sul bonifico bancario tramite Stripe richiede verifica legale prima della pubblicazione. */}
+        <p className="mt-2">
+          I pagamenti online sono gestiti tramite Stripe. Potranno essere
+          accettati anche bonifici bancari tramite Stripe, una volta attivati e
+          disponibili: la relativa modalit&agrave; sar&agrave; resa disponibile
+          sul Sito soltanto dopo l&apos;effettiva attivazione. Fino a quel
+          momento il bonifico bancario non costituisce un metodo di pagamento
+          disponibile.
+        </p>
+        <p className="mt-2">
+          I prodotti possono inoltre essere abilitati manualmente
+          dall&apos;amministratore dopo la verifica del pagamento (anche tramite
+          fatturazione Stripe), oppure concessi gratuitamente come omaggio. Gli
+          accessi abilitati manualmente non generano transazioni di vendita e
+          sono registrati separatamente rispetto agli acquisti; i contenuti
+          resi accessibili restano soggetti ai presenti Termini, in particolare
+          all&apos;uso personale e non trasferibile.
+        </p>
+        <p className="mt-2">
+          I dati relativi agli accessi abilitati manualmente (quali
+          l&apos;email del destinatario, il prodotto abilitato, la motivazione e
+          i riferimenti di verifica del pagamento) sono trattati secondo le
+          regole di protezione dei dati personali descritte nella Privacy
+          Policy.
+        </p>
       </section>
 
       <section>
@@ -351,7 +383,9 @@ export default function TerminiPage() {
           <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
             market-lens
           </code>
-          , l&apos;utente acquisisce il diritto personale, non esclusivo e non
+          , oppure a seguito di un&apos;abilitazione manuale disposta
+          dall&apos;amministratore (verifica del pagamento o accesso omaggio),
+          l&apos;utente acquisisce il diritto personale, non esclusivo e non
           trasferibile di scaricare dal proprio account: (a) il file indicatore
           per la piattaforma TradingView in formato Pine Script, e (b) la guida
           PDF di utilizzo. Entrambi i file sono conservati su storage privato
@@ -413,7 +447,9 @@ export default function TerminiPage() {
           <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
             trading-starter
           </code>
-          , l&apos;utente acquisisce il diritto personale, non esclusivo e non
+          , oppure a seguito di un&apos;abilitazione manuale disposta
+          dall&apos;amministratore (verifica del pagamento o accesso omaggio),
+          l&apos;utente acquisisce il diritto personale, non esclusivo e non
           trasferibile di scaricare dal proprio account la guida PDF. Il file
           &egrave; conservato su storage privato Vercel Blob ed &egrave;
           scaricabile esclusivamente tramite rotta server protetta. Nessun
@@ -521,6 +557,9 @@ export default function TerminiPage() {
           esclusivamente nei limiti e nei modi previsti dalla legge applicabile,
           con particolare riferimento al Codice del Consumo (D.Lgs. 206/2005)
           e alle disposizioni inderogabili di diritto comunitario e nazionale.
+          Ai contenuti digitali abilitati manualmente dopo la verifica del
+          pagamento si applicano le medesime regole previste per i
+          corrispondenti acquisti.
         </p>
         <p className="mt-2">
           Non sono previsti rimborsi discrezionali al di l&agrave; di quanto
@@ -542,6 +581,13 @@ export default function TerminiPage() {
           immediata e il riconoscimento della perdita del diritto di recesso
           sono oggetto di consenso esplicito e documentato prima dell&apos;avvio
           del checkout.
+        </p>
+        {/* NOTA INTERNA: la disciplina del recesso per i contenuti concessi gratuitamente (omaggio) richiede verifica legale prima della pubblicazione. */}
+        <p className="mt-2">
+          Per i contenuti digitali concessi gratuitamente come omaggio non
+          &egrave; dovuto alcun corrispettivo e non trova applicazione la
+          disciplina del diritto di recesso prevista per i contratti a titolo
+          oneroso.
         </p>
       </section>
 

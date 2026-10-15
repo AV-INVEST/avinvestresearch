@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { isAdminSession } from '@/lib/auth/admin';
 import { normalizeEmail } from '@/lib/stripe/normalize';
-import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
+import { isDatabaseConfigured } from '@/lib/db/prisma';
+import { hasOneTimeProductAccess } from '@/lib/entitlements-grants';
 import { getTradingStarterStream } from '@/lib/storage';
 import { checkAndConsumeDownload } from '@/lib/security/download-rate-limit';
 
@@ -58,15 +59,8 @@ export async function GET(req: NextRequest) {
   }
 
   if (!isAdmin) {
-    const purchase = await prisma.purchase.findFirst({
-      where: {
-        userEmail,
-        productSlug: 'trading-starter',
-        status: 'succeeded',
-      },
-      select: { id: true, status: true },
-    });
-    if (!purchase) {
+    const hasAccess = await hasOneTimeProductAccess(userEmail, 'trading-starter');
+    if (!hasAccess) {
       return new NextResponse(
         'Nessun acquisto AV Trading Starter riuscito associato a questo account.',
         { status: 403 },
