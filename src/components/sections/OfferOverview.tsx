@@ -6,6 +6,8 @@ import {
   Eye,
   FileText,
   ArrowRight,
+  CheckCircle2,
+  Package,
 } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
@@ -36,6 +38,7 @@ const items = [
     currency: siteConfig.tradingStarter.currency,
     decimals: 2,
     ctaScrollTo: '#trading-starter',
+    ownedHref: '/area-membri/prodotti#trading-starter',
     premium: false,
   },
   {
@@ -50,6 +53,7 @@ const items = [
     currency: siteConfig.marketLens.currency,
     decimals: 2,
     ctaScrollTo: '#market-lens',
+    ownedHref: '/area-membri/prodotti',
     premium: false,
   },
   {
@@ -64,9 +68,25 @@ const items = [
     currency: siteConfig.courses.foundations.currency,
     decimals: 2,
     ctaScrollTo: '#percorsi',
+    ownedHref: '/area-membri/percorsi',
     premium: true,
   },
 ];
+
+function isOwned(
+  key: (typeof items)[number]['key'],
+  entitlements: EntitlementsState | undefined,
+): boolean {
+  if (!entitlements) return false;
+  if (key === 'trading-starter') return entitlements.tradingStarter.status === 'owned';
+  if (key === 'market-lens') return entitlements.marketLens.status === 'owned';
+  const status = entitlements.courses[siteConfig.courses.foundations.slug]?.status;
+  return (
+    status === 'owned_not_started' ||
+    status === 'owned_in_progress' ||
+    status === 'owned_completed'
+  );
+}
 
 export default function OfferOverview({
   entitlements,
@@ -107,6 +127,7 @@ export default function OfferOverview({
           {items.map((it) => {
             const Icon = it.icon;
             const isPremium = it.premium === true;
+            const owned = isOwned(it.key, entitlements);
             return (
               <GlassCard
                 key={it.key}
@@ -171,18 +192,35 @@ export default function OfferOverview({
                 </p>
 
                 <div className="mt-5 flex items-baseline gap-1.5 min-w-0">
-                  <span
-                    className={[
-                      'font-display text-2xl sm:text-3xl font-semibold',
-                      isPremium ? 'text-[#F4E2B0]' : 'text-white',
-                    ].filter(Boolean).join(' ')}
-                  >
-                    {formatPrice(it.price, it.currency, it.decimals)}
-                  </span>
+                  {owned ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green-deep/40 bg-av-green/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-green">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Già in tuo possesso
+                    </span>
+                  ) : (
+                    <span
+                      className={[
+                        'font-display text-2xl sm:text-3xl font-semibold',
+                        isPremium ? 'text-[#F4E2B0]' : 'text-white',
+                      ].filter(Boolean).join(' ')}
+                    >
+                      {formatPrice(it.price, it.currency, it.decimals)}
+                    </span>
+                  )}
                 </div>
 
                 <div className="mt-auto pt-5 space-y-2.5 w-full min-w-0 max-w-full">
-                  {it.key === 'trading-starter' ? (
+                  {owned ? (
+                    <Link
+                      href={it.ownedHref}
+                      prefetch={false}
+                      className="btn-primary w-full items-center justify-center gap-2 shadow-glow-green-sm"
+                    >
+                      <Package className="h-4 w-4" />
+                      Vai al prodotto
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  ) : it.key === 'trading-starter' ? (
                     <TradingStarterCheckoutButton label="buy" className="w-full !justify-center" />
                   ) : it.key === 'market-lens' ? (
                     <MarketLensCheckoutButton label="buy" className="w-full !justify-center" />
