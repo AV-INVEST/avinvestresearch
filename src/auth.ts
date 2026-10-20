@@ -1,6 +1,7 @@
 import NextAuth, { type DefaultSession, type NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { normalizeEmail } from '@/lib/stripe/normalize';
+import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
@@ -26,6 +27,30 @@ export function getAuthEnvGuardMessage(): string | null {
   return null;
 }
 
+// Registra/aggiorna l'account al login Google, anche senza acquisti.
+// Errori di database non bloccano il login.
+async function recordGoogleAccount(
+  user: { email?: string | null; name?: string | null; image?: string | null } | undefined,
+  account?: { providerAccountId?: string } | null,
+): Promise<void> {
+  const email = normalizeEmail(user?.email);
+  if (!email || !isDatabaseConfigured()) return;
+  try {
+    const profile = {
+      name: user?.name ?? undefined,
+      image: user?.image ?? undefined,
+      googleId: account?.providerAccountId ?? undefined,
+    };
+    await prisma.user.upsert({
+      where: { email },
+      create: { email, ...profile },
+      update: profile,
+    });
+  } catch (error) {
+    console.error('[auth] Salvataggio account Google non riuscito:', error);
+  }
+}
+
 const authConfig = {
   trustHost: true,
   providers: [
@@ -47,6 +72,10 @@ const authConfig = {
     error: '/login',
   },
   callbacks: {
+    async signIn({ user, account }) {
+      await recordGoogleAccount(user, account);
+      return true;
+    },
     async jwt({ token, user }) {
       if (user?.id) token.id = user.id;
       const normalized = normalizeEmail(user?.email ?? token.email);

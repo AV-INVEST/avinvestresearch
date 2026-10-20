@@ -116,7 +116,13 @@ export default function PrivacyPage() {
             l&apos;identificazione dell&apos;utente, quali in genere nome
             visualizzato, indirizzo email associato all&apos;account Google,
             identificativo univoco dell&apos;utente e, se reso disponibile
-            dall&apos;utente stesso, l&apos;immagine del profilo.
+            dall&apos;utente stesso, l&apos;immagine del profilo. Tali dati
+            (nome, email normalizzata, immagine ove disponibile) sono
+            memorizzati nel database del Titolare gi&agrave; al primo accesso
+            con account Google, anche se l&apos;utente non ha ancora effettuato
+            alcun acquisto, al solo fine di gestione dell&apos;account e
+            dell&apos;assistenza; ci&ograve; non comporta alcuna iscrizione a
+            comunicazioni promozionali o marketing.
           </li>
           <li>
             <strong className="text-white">Dati di acquisto e transazione</strong>:
@@ -302,9 +308,13 @@ export default function PrivacyPage() {
         <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
           <li>
             <strong className="text-white">Account e dati area membri</strong>:
-            conservati per il tempo necessario alle finalit&agrave; indicate
-            e successivamente per il periodo richiesto da obblighi di legge o
-            tutela dei diritti del Titolare.
+            l&apos;account viene creato al primo accesso con account Google
+            anche in assenza di acquisti; i dati dell&apos;account sono
+            conservati per il tempo necessario alle finalit&agrave; indicate,
+            per la gestione dell&apos;account e dell&apos;assistenza, e fino a
+            richiesta di cancellazione, fatti salvi i successivi periodi
+            richiesti da obblighi di legge o per la tutela dei diritti del
+            Titolare.
           </li>
           <li>
             <strong className="text-white">Dati di acquisto e abbonamento</strong>:
