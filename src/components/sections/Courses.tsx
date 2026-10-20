@@ -138,13 +138,24 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-av-muted">
                   Cosa imparerai
                 </p>
-                <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                <p className="mt-2 text-xs leading-relaxed text-av-muted sm:text-sm">
+                  Non solo concetti teorici: impara a collegare gli elementi del grafico per sviluppare
+                  un metodo di analisi più strutturato.
+                </p>
+                <ul className="mt-4 grid gap-3 sm:grid-cols-2 sm:gap-x-5">
                   {course.topics.map((t) => (
-                    <li key={t} className="flex items-start gap-3 text-sm text-white sm:text-base min-w-0">
-                      <span className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full bg-av-green/10 text-av-green">
+                    <li key={t.title} className="flex items-start gap-3 min-w-0">
+                      <span className="mt-0.5 grid h-5 w-5 flex-none place-items-center rounded-full bg-av-green/10 text-av-green">
                         <Check className="h-3 w-3" />
                       </span>
-                      <span className="break-words">{t}</span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-semibold leading-snug text-white break-words">
+                          {t.title}
+                        </span>
+                        <span className="mt-0.5 block text-xs leading-relaxed text-av-muted break-words">
+                          {t.text}
+                        </span>
+                      </span>
                     </li>
                   ))}
                 </ul>

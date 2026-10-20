@@ -58,12 +58,30 @@ export const siteConfig = {
       description:
         'Un percorso chiaro e progressivo per comprendere grafici, trend, livelli, volumi, indicatori e gestione del rischio.',
       topics: [
-        'Struttura del mercato',
-        'Trend',
-        'Supporti e resistenze',
-        'Volumi',
-        'Indicatori',
-        'Gestione del rischio',
+        {
+          title: 'Comprendere il comportamento dei prezzi',
+          text: 'Interpretare candele, timeframe e struttura del mercato.',
+        },
+        {
+          title: 'Riconoscere trend e cambiamenti di mercato',
+          text: 'Analizzare fasi rialziste, ribassiste e laterali.',
+        },
+        {
+          title: 'Individuare livelli e segnali chiave',
+          text: 'Supporti, resistenze, breakout, retest e false rotture.',
+        },
+        {
+          title: 'Interpretare volumi e contesto',
+          text: 'Comprendere il ruolo dei volumi nell\'analisi del mercato.',
+        },
+        {
+          title: 'Utilizzare gli indicatori con criterio',
+          text: 'Selezionare strumenti utili senza sovraccaricare i grafici.',
+        },
+        {
+          title: 'Costruire un\'analisi completa e consapevole',
+          text: 'Collegare analisi tecnica e gestione del rischio in un processo strutturato.',
+        },
       ],
       price: 297,
       currency: 'EUR',
