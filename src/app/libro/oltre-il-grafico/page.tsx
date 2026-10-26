@@ -21,7 +21,7 @@ import {
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Oltre il Grafico — romanzo di Andrea Vivace | AV-INVEST Research',
+  title: 'Oltre il Grafico - Romanzo di Andrea Vivace | AV-INVEST Research',
   description:
     'Oltre il Grafico, romanzo di Andrea Vivace: 184 pagine su trading, disciplina e ciò che si muove davvero dietro il prezzo. PDF digitale a 14,90 € su avinvestresearch.com e versione cartacea su Amazon.it.',
   alternates: { canonical: 'https://avinvestresearch.com/libro/oltre-il-grafico' },

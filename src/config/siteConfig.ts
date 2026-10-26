@@ -307,7 +307,7 @@ export const siteConfig = {
     { label: 'Percorsi', href: '/#offerta' },
     { label: 'Indicatore', href: '/#market-lens' },
     { label: 'Guida', href: '/#trading-starter' },
-    { label: 'Metodo', href: '/#metodo' },
+    { label: 'Libro', href: '/libro/oltre-il-grafico' },
     { label: 'Chi sono', href: '/#chi-sono' },
     { label: 'FAQ', href: '/#faq' },
   ],

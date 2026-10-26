@@ -59,6 +59,35 @@ export default function DisclaimerPage() {
           consulenza finanziaria o di investimento ex art. 1 TUF e non rientra
           nelle attivit&agrave; riservate a intermediari finanziari abilitati.
         </p>
+        <p className="mt-2">
+          Le opere di narrativa eventualmente pubblicate sul Sito, come il
+          romanzo Oltre il Grafico, non rientrano tra i materiali didattici,
+          educativi o informativi e non devono essere considerate contenuto
+          formativo, guida operativa o strumento di studio dei mercati.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          Oltre il Grafico: opera di narrativa
+        </h2>
+        <p>
+          Il romanzo Oltre il Grafico, di Andrea Vivace, &egrave; un&apos;opera
+          letteraria destinata alla lettura e all&apos;intrattenimento. Le
+          vicende, i personaggi, i dialoghi e le situazioni rappresentate non
+          costituiscono consulenza finanziaria, segnali operativi,
+          raccomandazioni d&apos;investimento o promesse di risultati economici.
+        </p>
+        <p className="mt-2">
+          Le eventuali attivit&agrave; di trading descritte hanno esclusivamente
+          funzione narrativa e non devono essere interpretate come un invito a
+          replicare le decisioni dei personaggi.
+        </p>
+        <p className="mt-2">
+          La versione digitale PDF &egrave; acquistabile su AV-INVEST RESEARCH,
+          mentre la versione cartacea &egrave; acquistabile separatamente su
+          Amazon, secondo le condizioni applicabili alla relativa vendita.
+        </p>
       </section>
 
       <section>
@@ -340,7 +369,9 @@ export default function DisclaimerPage() {
           Il presente disclaimer trova applicazione in relazione a qualsiasi
           utilizzo dei contenuti pubblicati sul Sito. In particolare: la
           registrazione e il primo accesso all&apos;account Google per l&apos;area
-          membri, l&apos;acquisto dei corsi digitali, l&apos;acquisto one-time di
+          membri, l&apos;acquisto dei corsi digitali, l&apos;acquisto del
+          romanzo Oltre il Grafico in versione digitale PDF, l&apos;acquisto
+          one-time di
           AV Market Lens (indicatore Pine Script e guida PDF) e la
           sottoscrizione dell&apos;abbonamento al Research Club, cos&igrave; come
           l&apos;utilizzo dei servizi riservati, comportano la presa visione e
