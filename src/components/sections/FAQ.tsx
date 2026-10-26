@@ -8,7 +8,8 @@ type CategoryKey =
   | 'videocorso'
   | 'research-club'
   | 'market-lens'
-  | 'trading-starter';
+  | 'trading-starter'
+  | 'romanzo';
 
 interface Category {
   key: CategoryKey;
@@ -21,6 +22,7 @@ const categories: Category[] = [
   { key: 'research-club', label: 'Research Club' },
   { key: 'market-lens', label: 'Market Lens' },
   { key: 'trading-starter', label: 'Trading Starter' },
+  { key: 'romanzo', label: 'Il romanzo' },
 ];
 
 const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
@@ -112,6 +114,28 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
       question: 'AV Trading Starter è un segnale operativo o una consulenza finanziaria?',
       answer:
         'No. Assolutamente no. AV Trading Starter è esclusivamente materiale formativo introduttivo: non contiene consigli personalizzati, raccomandazioni di acquisto o vendita, target di prezzo, indicazioni di timing o segnali operativi di qualsiasi genere. Non menziona strumenti finanziari specifici e non costituisce consulenza finanziaria, legale o fiscale. Ogni decisione di investimento o operativa resta sotto la tua esclusiva responsabilità. Consulta il Disclaimer e i Termini pubblicati sul sito per i dettagli completi.',
+    },
+  ],
+  romanzo: [
+    {
+      question: 'Oltre il Grafico è un romanzo o un manuale di trading?',
+      answer:
+        'Oltre il Grafico è un romanzo di Andrea Vivace che racconta una storia di ambizione, difficoltà e rinascita nel mondo del trading. Non è un manuale, un videocorso o una guida agli investimenti, ma un\'opera narrativa incentrata anche sulle emozioni e sulle scelte personali.',
+    },
+    {
+      question: 'Qual è la differenza tra il PDF e il libro cartaceo?',
+      answer:
+        'Il PDF digitale costa 14,90 € ed è acquistabile direttamente su AV-INVEST RESEARCH. Il libro cartaceo costa 16,90 € su Amazon.it, dove vengono gestiti ordine, pagamento e spedizione. Il prezzo e la disponibilità effettivi del cartaceo sono quelli indicati da Amazon.',
+    },
+    {
+      question: "Come ricevo il PDF dopo l'acquisto?",
+      answer:
+        'Dopo la conferma del pagamento, accedi alla tua area membri con lo stesso account utilizzato per acquistare. Nella sezione "I miei prodotti" troverai Oltre il Grafico e il pulsante per scaricare il PDF. L\'acquisto è una tantum, senza abbonamento.',
+    },
+    {
+      question: 'Posso acquistare il libro cartaceo direttamente sul sito?',
+      answer:
+        'No. Su AV-INVEST RESEARCH puoi acquistare la versione digitale PDF. Per il libro fisico trovi il collegamento alla pagina Amazon.it, dove potrai completare l\'acquisto quando sarà disponibile.',
     },
   ],
 };

@@ -72,17 +72,26 @@ export default function OltreIlGrafico({
 
             <div className="mt-6">
               {owned ? (
-                <div className="flex flex-wrap items-center gap-3 w-full max-w-md">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9A961]/40 bg-[#C9A961]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#E4CE96]">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    Nel tuo account
-                  </span>
+                <div className="w-full max-w-md space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9A961]/40 bg-[#C9A961]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#E4CE96]">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Nel tuo account
+                    </span>
+                    <Link
+                      href="/area-membri/prodotti#oltre-il-grafico"
+                      className="btn-rc-primary items-center gap-2 shadow-glow-gold-sm"
+                    >
+                      <Package className="h-4 w-4" />
+                      Scarica il PDF
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
                   <Link
-                    href="/area-membri/prodotti#oltre-il-grafico"
-                    className="btn-rc-primary items-center gap-2 shadow-glow-gold-sm"
+                    href="/libro/oltre-il-grafico"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#E4CE96] transition-colors hover:text-white"
                   >
-                    <Package className="h-4 w-4" />
-                    Scarica il PDF
+                    Scopri il romanzo
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -102,6 +111,13 @@ export default function OltreIlGrafico({
                     </Link>
                   </div>
                   <OltreIlGraficoCheckoutButton label="resume" />
+                  <Link
+                    href="/libro/oltre-il-grafico"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#E4CE96] transition-colors hover:text-white"
+                  >
+                    Scopri il romanzo
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               ) : (
                 <div className="w-full max-w-md space-y-3">
@@ -110,7 +126,7 @@ export default function OltreIlGrafico({
                     href="/libro/oltre-il-grafico"
                     className="inline-flex items-center gap-2 text-sm font-semibold text-[#E4CE96] transition-colors hover:text-white"
                   >
-                    Scopri di più sul romanzo
+                    Scopri il romanzo
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -132,7 +148,7 @@ export default function OltreIlGrafico({
                     aria-hidden="true"
                     className="pointer-events-none absolute -inset-5 -z-10 rounded-[2rem] bg-[radial-gradient(circle_at_50%_20%,rgba(201,169,97,0.22),transparent_65%)] blur-lg"
                   />
-                  <div className="relative aspect-[2/3] overflow-hidden rounded-xl border border-[#C9A961]/30 bg-av-bg-2/60 shadow-glow-gold">
+                  <div className="relative aspect-[2/3]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={og.coverFront}
@@ -141,7 +157,7 @@ export default function OltreIlGrafico({
                       height={1020}
                       loading="lazy"
                       decoding="async"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover drop-shadow-[0_0_30px_rgba(201,169,97,0.38)]"
                     />
                   </div>
                 </div>

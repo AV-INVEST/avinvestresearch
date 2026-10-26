@@ -32,7 +32,7 @@ export default function OltreIlGraficoCoverSwitch({
           aria-hidden="true"
           className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-[radial-gradient(circle_at_50%_20%,rgba(201,169,97,0.22),transparent_65%)] blur-xl"
         />
-        <div className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-[#C9A961]/30 bg-av-bg-2/60 shadow-glow-gold">
+        <div className="relative aspect-[2/3]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={frontSrc}
@@ -41,7 +41,7 @@ export default function OltreIlGraficoCoverSwitch({
             height={1020}
             loading="eager"
             decoding="async"
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${
+            className={`absolute inset-0 h-full w-full object-cover drop-shadow-[0_0_30px_rgba(201,169,97,0.42)] transition-opacity duration-200 ${
               side === 'front' ? 'opacity-100' : 'opacity-0'
             }`}
           />
@@ -53,7 +53,7 @@ export default function OltreIlGraficoCoverSwitch({
             height={1020}
             loading="lazy"
             decoding="async"
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${
+            className={`absolute inset-0 h-full w-full object-cover drop-shadow-[0_0_30px_rgba(201,169,97,0.42)] transition-opacity duration-200 ${
               side === 'back' ? 'opacity-100' : 'opacity-0'
             }`}
           />

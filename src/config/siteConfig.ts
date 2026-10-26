@@ -223,9 +223,9 @@ export const siteConfig = {
     logline:
       'Quando il grafico smette di raccontare la verità, resta solo una cosa da imparare a leggere: se stessi.',
     synopsis: [
-      'Marco ha passato anni con la testa china sullo schermo: livelli, medie, segnali, orari. Ogni candela era una promessa, ogni stop una lezione pagata a caro prezzo. Poi, una notte qualunque, il grafico smette di raccontargli la verità che credeva di conoscere.',
-      'Tra la scrivania di un piccolo fondo di provincia, i corridoi opachi di una società di consulenza e i silenzi di chi muove capitali senza lasciare traccia, Marco scopre che dietro i numeri ci sono persone, ambiguità e decisioni prese molto prima che il prezzo si muova. Per capire dove sta andando il mercato, dovrà prima capire chi ha davanti.',
-      'Oltre il Grafico è una storia di formazione, tensione e consapevolezza: un viaggio dentro il mestiere del trader e dentro se stesso, dove il vero indicatore da imparare a leggere non è sul grafico, ma nella propria disciplina.',
+      'Andrea crede di aver trovato nei grafici una strada per cambiare il proprio futuro. Ogni movimento del mercato sembra un\'opportunità. Ogni guadagno, una conferma di essere sulla strada giusta.',
+      'Poi arrivano le prime sconfitte. E mentre cerca disperatamente di recuperare ciò che ha perso, qualcosa nella sua vita comincia a cambiare: il rapporto con Irene, le sue certezze, il modo in cui guarda sé stesso.',
+      'Quello che era iniziato come un sogno di libertà rischia di diventare una prigione. Tra decisioni difficili e incontri inattesi, Andrea scoprirà che alcune delle battaglie più importanti non si combattono davanti a uno schermo.',
     ],
     pricePdf: 14.9,
     pricePaperback: 16.9,
