@@ -6,6 +6,7 @@ import OfferOverview from '@/components/sections/OfferOverview';
 import TradingStarter from '@/components/sections/TradingStarter';
 import MarketLens from '@/components/sections/MarketLens';
 import Courses from '@/components/sections/Courses';
+import OltreIlGrafico from '@/components/sections/OltreIlGrafico';
 import Method from '@/components/sections/Method';
 import ResearchClub from '@/components/sections/ResearchClub';
 import About from '@/components/sections/About';
@@ -36,6 +37,7 @@ export default async function HomePage() {
       <TradingStarter entitlement={entitlements?.tradingStarter} />
       <MarketLens entitlement={entitlements?.marketLens} />
       <Courses entitlements={entitlements ?? undefined} />
+      <OltreIlGrafico entitlement={entitlements?.oltreIlGrafico} />
       <Method />
       <section
         aria-label="Candlestick showcase: scenari educativi"

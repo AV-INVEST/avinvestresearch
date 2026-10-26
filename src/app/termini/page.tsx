@@ -70,6 +70,18 @@ export default function TerminiPage() {
             ai sensi dell&apos;art. 59 del Codice del Consumo, ove applicabile.
           </li>
           <li>
+            <strong className="text-white">Acquisto one-time Oltre il Grafico (PDF)</strong>:
+            la conclusione dell&apos;ordine e il pagamento a tantum del romanzo
+            in formato PDF digitale &quot;Oltre il Grafico&quot;, tramite Stripe,
+            comportano l&apos;accettazione integrale dei presenti Termini, del
+            Disclaimer e la dichiarazione di consenso alla fornitura immediata
+            del contenuto digitale con perdita del diritto di recesso ai sensi
+            dell&apos;art. 59 del Codice del Consumo, ove applicabile. La
+            versione cartacea non &egrave; acquistabile sul Sito: viene ordinata
+            su Amazon.it, che gestisce autonomamente ordine, pagamento e
+            spedizione.
+          </li>
+          <li>
             <strong className="text-white">Sottoscrizione abbonamento</strong>:
             l&apos;attivazione dell&apos;abbonamento mensile al Research Club,
             tramite Stripe, comporta l&apos;accettazione integrale dei
@@ -140,6 +152,13 @@ export default function TerminiPage() {
             include il download di una guida PDF educativa entry-level su
             grafici, trend, livelli chiave e gestione del rischio, riservata
             al solo account che ha completato l&apos;acquisto.
+          </li>
+          <li>
+            <strong className="text-white">Oltre il Grafico (PDF)</strong>
+            : romanzo di narrativa venduto in formato PDF con pagamento unico e
+            una tantum, scaricabile dall&apos;area membri e riservato al solo
+            account che ha completato l&apos;acquisto. La versione cartacea
+            &egrave; distribuita su Amazon.it e non &egrave; gestita dal Sito.
           </li>
           <li>
             <strong className="text-white">Area membri</strong>
@@ -493,7 +512,66 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          13. Rinnovo automatico del Research Club
+          13. Oltre il Grafico: romanzo PDF one-time
+        </h2>
+        <p>
+          Oltre il Grafico &egrave; un romanzo di narrativa di Andrea Vivace
+          (184 pagine) distribuito in formato PDF con pagamento unico e una
+          tantum. Dopo la conferma del pagamento da parte di Stripe e la
+          registrazione di un <em>Purchase</em> con stato{' '}
+          <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
+            succeeded
+          </code>{' '}
+          e <em>productSlug</em> uguale a{' '}
+          <code className="font-mono bg-av-bg-2/60 px-1.5 py-0.5 rounded border border-av-line text-av-green/90 text-[12px]">
+            oltre-il-grafico-pdf
+          </code>
+          , oppure a seguito di un&apos;abilitazione manuale disposta
+          dall&apos;amministratore (verifica del pagamento o accesso omaggio),
+          l&apos;utente acquisisce il diritto personale, non esclusivo e non
+          trasferibile di scaricare dal proprio account il PDF del romanzo. Il
+          file &egrave; conservato su storage privato Vercel Blob ed &egrave;
+          scaricabile esclusivamente tramite rotta server protetta. Nessun URL
+          pubblico o permanente viene generato o esposto.
+        </p>
+        <p className="mt-2">
+          La licenza d&apos;uso &egrave; concessa esclusivamente per finalit&agrave;
+          di lettura personale dell&apos;utente. &Egrave; espressamente vietato,
+          senza autorizzazione scritta e preventiva del Titolare: condividere,
+          distribuire o trasmettere a terzi il PDF o estratti di esso;
+          pubblicare il file o parti di esso su qualsiasi piattaforma pubblica
+          o privata (forum, social network, gruppi di messaggistica, repository,
+          siti web, drive condivisi, ecc.); rivendere, sublicenziare, noleggiare
+          o concedere in uso a terzi l&apos;opera, in tutto o in parte;
+          utilizzare il contenuto per creare opere derivate o prodotti
+          concorrenti.
+        </p>
+        <p className="mt-2">
+          La versione cartacea di Oltre il Grafico non &egrave; venduta n&eacute;
+          distribuita dal Titolare tramite il Sito: viene ordinata su Amazon.it
+          (o sull&apos;eventuale piattaforma di vendita indicata sul Sito), che
+          gestisce autonomamente l&apos;ordine, il pagamento, la spedizione, gli
+          eventuali resi e l&apos;assistenza post-vendita. I relativi rapporti
+          intercorrono esclusivamente tra l&apos;utente e il venditore terzo,
+          secondo le condizioni di quest&apos;ultimo; il Titolare non &egrave;
+          parte di tali rapporti e non &egrave; responsabile per essi.
+        </p>
+        <p className="mt-2">
+          In ragione della natura di contenuto digitale fornito su supporto
+          immateriale, l&apos;utente, con l&apos;apposito consenso espresso
+          reso prima del checkout (registrato nel Purchase e nei metadata di
+          Stripe), richiede la fornitura immediata del contenuto all&apos;atto
+          del pagamento andato a buon fine e riconosce che, in conseguenza di
+          tale fornitura, il diritto di recesso di cui agli articoli 52 e seg.
+          del Codice del Consumo si considera escluso ai sensi dell&apos;art.
+          59, comma 1, lett. o), D.Lgs. 206/2005, nonch&eacute; delle altre
+          norme imperative di diritto UE e nazionale applicabili al caso.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          14. Rinnovo automatico del Research Club
         </h2>
         <p>
           L&apos;abbonamento al Research Club si rinnova automaticamente alla
@@ -515,7 +593,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          14. Disdetta e fine accesso
+          15. Disdetta e fine accesso
         </h2>
         <p>
           L&apos;utente pu&ograve; disattivare il rinnovo automatico
@@ -535,7 +613,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          15. Customer Portal e gestione autonoma
+          16. Customer Portal e gestione autonoma
         </h2>
         <p>
           La gestione autonoma dell&apos;abbonamento (aggiornamento dei dati di
@@ -548,12 +626,13 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          16. Rimborsi e diritto di recesso
+          17. Rimborsi e diritto di recesso
         </h2>
         <p>
           In relazione ai servizi digitali forniti dal Sito (corsi digitali,
-          prodotti one-time AV Market Lens e AV Trading Starter, e abbonamento
-          Research Club), i rimborsi e il diritto di recesso sono regolati
+          prodotti one-time AV Market Lens, AV Trading Starter e Oltre il
+          Grafico in formato PDF, e abbonamento Research Club), i rimborsi e il
+          diritto di recesso sono regolati
           esclusivamente nei limiti e nei modi previsti dalla legge applicabile,
           con particolare riferimento al Codice del Consumo (D.Lgs. 206/2005)
           e alle disposizioni inderogabili di diritto comunitario e nazionale.
@@ -576,11 +655,11 @@ export default function TerminiPage() {
           dell&apos;utente all&apos;inizio della prestazione, riconoscimento
           della conseguente perdita del diritto di recesso e conferma prevista
           dalla normativa). In assenza di tali condizioni, il diritto di
-          recesso si applica secondo la regola generale. Per AV Market Lens
-          e per AV Trading Starter, l&apos;espressa richiesta di fornitura
-          immediata e il riconoscimento della perdita del diritto di recesso
-          sono oggetto di consenso esplicito e documentato prima dell&apos;avvio
-          del checkout.
+          recesso si applica secondo la regola generale. Per AV Market Lens,
+          per AV Trading Starter e per Oltre il Grafico (PDF), l&apos;espressa
+          richiesta di fornitura immediata e il riconoscimento della perdita del
+          diritto di recesso sono oggetto di consenso esplicito e documentato
+          prima dell&apos;avvio del checkout.
         </p>
         {/* NOTA INTERNA: la disciplina del recesso per i contenuti concessi gratuitamente (omaggio) richiede verifica legale prima della pubblicazione. */}
         <p className="mt-2">
@@ -593,7 +672,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          17. Sospensione e revoca dell&apos;accesso per abuso
+          18. Sospensione e revoca dell&apos;accesso per abuso
         </h2>
         <p>
           Il Titolare si riserva il diritto, a propria esclusiva discrezione
@@ -632,7 +711,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          18. Disponibilit&agrave; del servizio e manutenzioni
+          19. Disponibilit&agrave; del servizio e manutenzioni
         </h2>
         <p>
           Il Titolare adopera ogni ragionevole sforzo per garantire la
@@ -654,7 +733,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          19. Servizi di terze parti
+          20. Servizi di terze parti
         </h2>
         <p>
           Il Sito si avvale di fornitori terzi per l&apos;erogazione dei servizi.
@@ -689,7 +768,8 @@ export default function TerminiPage() {
             <strong className="text-white">Vercel Blob</strong>: per lo
             storage privato e la distribuzione dei PDF e dei documenti del
             Research Club, nonch&eacute; dei file Pine Script e PDF del
-            prodotto AV Market Lens e della guida PDF di AV Trading Starter.
+            prodotto AV Market Lens, della guida PDF di AV Trading Starter e
+            del romanzo Oltre il Grafico in formato PDF.
           </li>
           <li>
             <strong className="text-white">TradingView</strong>: piattaforma
@@ -711,7 +791,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          20. Responsabilit&agrave; dell&apos;utente e decisioni autonome
+          21. Responsabilit&agrave; dell&apos;utente e decisioni autonome
         </h2>
         <p>
           Qualsiasi decisione di investimento, finanziaria, patrimoniale,
@@ -730,7 +810,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          21. Limitazione di responsabilit&agrave;
+          22. Limitazione di responsabilit&agrave;
         </h2>
         <p>
           Nei limiti massimi consentiti dalla normativa applicabile e fatti
@@ -751,7 +831,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          22. Forza maggiore e cause esterne
+          23. Forza maggiore e cause esterne
         </h2>
         <p>
           Il Titolare non sar&agrave; ritenuto responsabile per inadempimenti
@@ -768,7 +848,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          23. Modifiche ai servizi e ai prezzi
+          24. Modifiche ai servizi e ai prezzi
         </h2>
         <p>
           Il Titolare si riserva il diritto di modificare, aggiornare, ampliare,
@@ -786,7 +866,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          24. Legge applicabile e foro competente
+          25. Legge applicabile e foro competente
         </h2>
         <p>
           I presenti Termini sono regolati dalla legge italiana. Per ogni
@@ -806,7 +886,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          25. Contatti e dati del venditore
+          26. Contatti e dati del venditore
         </h2>
         <p>
           I servizi offerti sul Sito sono forniti da:

@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/analisi-tecnica`, lastModified: lastMod, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/gestione-del-rischio`, lastModified: lastMod, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/psicologia-del-trading`, lastModified: lastMod, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/libro/oltre-il-grafico`, lastModified: lastMod, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/disclaimer`, lastModified: lastMod, changeFrequency: 'yearly', priority: 0.5 },
     { url: `${base}/privacy`, lastModified: lastMod, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/cookie`, lastModified: lastMod, changeFrequency: 'yearly', priority: 0.3 },

@@ -13,6 +13,7 @@ import {
   Clock,
   Download,
   Eye,
+  Feather,
   Info,
   Lock,
   Package,
@@ -21,6 +22,7 @@ import {
 import DownloadButton from '@/components/products/DownloadButton';
 import MarketLensCheckoutButton from '@/components/sections/MarketLensCheckoutButton';
 import TradingStarterCheckoutButton from '@/components/sections/TradingStarterCheckoutButton';
+import OltreIlGraficoCheckoutButton from '@/components/sections/OltreIlGraficoCheckoutButton';
 
 export const metadata: Metadata = {
   title: 'I miei prodotti',
@@ -53,6 +55,8 @@ export default async function MyProductsPage({
   const ts = siteConfig.tradingStarter;
   const marketLens = entitlements.marketLens;
   const ml = siteConfig.marketLens;
+  const oltreIlGrafico = entitlements.oltreIlGrafico;
+  const og = siteConfig.oltreIlGrafico;
 
   const checkoutSuccess = checkoutParam === 'success';
   const checkoutCancelled = checkoutParam === 'cancelled';
@@ -75,7 +79,7 @@ export default async function MyProductsPage({
         </div>
       </div>
 
-      {checkoutSuccess && (marketLens.status === 'payment_pending' || tradingStarter.status === 'payment_pending') ? (
+      {checkoutSuccess && (marketLens.status === 'payment_pending' || tradingStarter.status === 'payment_pending' || oltreIlGrafico.status === 'payment_pending') ? (
         <div className="flex items-start gap-2 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] px-4 py-3 text-sm">
           <Sparkles className="mt-0.5 h-4 w-4 flex-none text-yellow-300" />
           <div className="min-w-0">
@@ -430,6 +434,162 @@ export default async function MyProductsPage({
                       className="btn-primary shadow-glow-green-sm whitespace-nowrap"
                     >
                       Scopri AV Market Lens
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </GlassCard>
+
+        <GlassCard
+          id="oltre-il-grafico"
+          className="lg:col-span-8 overflow-hidden border border-white/5"
+          style={{
+            backgroundImage:
+              'radial-gradient(900px 360px at 100% 0%, rgba(201,169,97,0.08), transparent 60%)',
+          }}
+        >
+          <div className="relative p-5 sm:p-7">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-[#C9A961]/50 bg-[#C9A961]/10 text-[#E4CE96]">
+                    <Feather className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#E4CE96]">
+                      ROMANZO · ONE-TIME
+                    </p>
+                    <h2 className="mt-1 font-display text-xl font-semibold text-white">
+                      {og.title}
+                    </h2>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-av-muted/95 sm:text-base max-w-2xl">
+                  {og.tagline}
+                </p>
+              </div>
+
+              {oltreIlGrafico.status === 'owned' ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9A961]/40 bg-[#C9A961]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#E4CE96]">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Posseduto
+                </span>
+              ) : oltreIlGrafico.status === 'payment_pending' ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-300">
+                  <Clock className="h-3.5 w-3.5 animate-pulse" />
+                  In conferma
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-av-line bg-av-bg-2/60 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-av-muted">
+                  <Lock className="h-3.5 w-3.5" />
+                  Non disponibile
+                </span>
+              )}
+            </div>
+
+            {oltreIlGrafico.status === 'owned' ? (
+              <div className="mt-6 rounded-2xl border border-[#C9A961]/40 bg-[#C9A961]/[0.04] p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white">
+                      Acquisto completato
+                    </p>
+                    {oltreIlGrafico.purchasedAt ? (
+                      <p className="mt-1 text-xs text-av-muted/90">
+                        Data:{' '}
+                        {new Date(oltreIlGrafico.purchasedAt).toLocaleDateString('it-IT', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-1">
+                  <DownloadButton
+                    kind="oltre-il-grafico-pdf"
+                    label="Scarica il romanzo in PDF"
+                    subLabel="Formato PDF · licenza personale"
+                    variant="primary"
+                  />
+                </div>
+
+                <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-av-muted/90">
+                  <Info className="mt-0.5 h-3.5 w-3.5 flex-none text-[#C9A961]" />
+                  <span>
+                    Questo PDF è riservato al tuo account personale. Non
+                    condividere, pubblicare, vendere o rivendere il file.
+                    Opera di narrativa: nessun contenuto è consulenza finanziaria.
+                  </span>
+                </p>
+              </div>
+            ) : oltreIlGrafico.status === 'payment_pending' ? (
+              <div className="mt-6 rounded-2xl border border-yellow-400/40 bg-yellow-400/[0.04] p-4 sm:p-5 space-y-4">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-yellow-400/40 bg-yellow-400/10 text-yellow-300">
+                    <Clock className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    {checkoutSuccess ? (
+                      <>
+                        <p className="text-sm font-semibold text-yellow-200">
+                          Acquisto completato
+                        </p>
+                        <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                          Il checkout è stato completato. Aggiorna lo stato per
+                          verificare l&apos;attivazione del prodotto.
+                        </p>
+                        <div className="mt-4">
+                          <RefreshPageButton label="AGGIORNA STATO" variant="yellow" compact />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm font-semibold text-yellow-200">
+                          Pagamento in fase di elaborazione
+                        </p>
+                        <p className="mt-1 leading-relaxed text-yellow-100/85 text-sm sm:text-base">
+                          Il pagamento non è ancora stato confermato. Se hai
+                          abbandonato il checkout, puoi riprenderlo qui sotto.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                {!checkoutSuccess ? (
+                  <OltreIlGraficoCheckoutButton label="resume" />
+                ) : null}
+              </div>
+            ) : (
+              <div className="mt-6 rounded-2xl border border-av-line bg-av-bg-2/60 p-4 sm:p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-line bg-av-bg-2/80 text-av-muted">
+                      <Lock className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white">
+                        Non hai ancora acquistato {og.title}
+                      </p>
+                      <p className="mt-1 leading-relaxed text-av-muted/90 text-sm sm:text-base">
+                        Acquista il PDF digitale direttamente dal Sito per
+                        riceverlo subito nell&apos;area membri.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href="/libro/oltre-il-grafico"
+                      className="btn-rc-primary shadow-glow-gold-sm whitespace-nowrap"
+                    >
+                      Scopri Oltre il Grafico
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>

@@ -29,6 +29,7 @@ export const ONE_TIME_PRODUCTS = [
   { slug: 'trading-lab', title: 'AV Trading Lab' },
   { slug: 'market-lens', title: 'AV Market Lens' },
   { slug: 'trading-starter', title: 'AV Trading Starter' },
+  { slug: 'oltre-il-grafico-pdf', title: 'Oltre il Grafico' },
 ] as const;
 
 export interface ManualGrantRow {

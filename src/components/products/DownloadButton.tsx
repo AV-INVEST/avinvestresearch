@@ -10,24 +10,27 @@ import {
   Loader2,
 } from 'lucide-react';
 
-type Kind = 'indicator' | 'guide' | 'trading-starter-pdf';
+type Kind = 'indicator' | 'guide' | 'trading-starter-pdf' | 'oltre-il-grafico-pdf';
 
 const KIND_ENDPOINT: Record<Kind, string> = {
   indicator: '/api/products/market-lens/download/indicator',
   guide: '/api/products/market-lens/download/guide',
   'trading-starter-pdf': '/api/products/trading-starter/download',
+  'oltre-il-grafico-pdf': '/api/products/oltre-il-grafico/download',
 };
 
 const KIND_FILENAME_HINT: Record<Kind, string> = {
   indicator: 'AV-Market-Lens.pine',
   guide: 'AV-Market-Lens-Guida.pdf',
   'trading-starter-pdf': 'AV-Trading-Starter.pdf',
+  'oltre-il-grafico-pdf': 'Oltre-Il-Grafico.pdf',
 };
 
 const KIND_ICON: Record<Kind, typeof FileCode> = {
   indicator: FileCode,
   guide: FileText,
   'trading-starter-pdf': FileText,
+  'oltre-il-grafico-pdf': FileText,
 };
 
 const COOLDOWN_SECONDS = 30;

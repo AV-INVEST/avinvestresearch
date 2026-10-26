@@ -75,6 +75,25 @@ const TRADING_STARTER_DEFAULT: TradingStarterEntitlement = {
   message: 'AV Trading Starter non ancora acquistato.',
 };
 
+export type OltreIlGraficoStatus =
+  | 'locked'
+  | 'payment_pending'
+  | 'owned';
+
+export interface OltreIlGraficoEntitlement {
+  status: OltreIlGraficoStatus;
+  purchasedAt: Date | null;
+  createdAt: Date | null;
+  message: string;
+}
+
+const OLTRE_IL_GRAFICO_DEFAULT: OltreIlGraficoEntitlement = {
+  status: 'locked',
+  purchasedAt: null,
+  createdAt: null,
+  message: 'Oltre il Grafico (PDF) non ancora acquistato.',
+};
+
 export type CourseStatus =
   | 'locked'
   | 'payment_pending'
@@ -102,6 +121,7 @@ export interface EntitlementsState {
   researchClub: ResearchClubEntitlement;
   marketLens: MarketLensEntitlement;
   tradingStarter: TradingStarterEntitlement;
+  oltreIlGrafico: OltreIlGraficoEntitlement;
 }
 
 export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
@@ -111,17 +131,20 @@ export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
   researchClub: RESEARCH_CLUB_DEFAULT,
   marketLens: MARKET_LENS_DEFAULT,
   tradingStarter: TRADING_STARTER_DEFAULT,
+  oltreIlGrafico: OLTRE_IL_GRAFICO_DEFAULT,
 };
 
 export interface OneTimeProductEntitlements {
   marketLens: MarketLensEntitlement;
   tradingStarter: TradingStarterEntitlement;
+  oltreIlGrafico: OltreIlGraficoEntitlement;
   anyPending: boolean;
 }
 
 export const DEFAULT_ONE_TIME_ENTITLEMENTS: OneTimeProductEntitlements = {
   marketLens: MARKET_LENS_DEFAULT,
   tradingStarter: TRADING_STARTER_DEFAULT,
+  oltreIlGrafico: OLTRE_IL_GRAFICO_DEFAULT,
   anyPending: false,
 };
 
@@ -155,6 +178,7 @@ export function buildLockedEntitlements(): EntitlementsState {
     researchClub: RESEARCH_CLUB_DEFAULT,
     marketLens: MARKET_LENS_DEFAULT,
     tradingStarter: TRADING_STARTER_DEFAULT,
+    oltreIlGrafico: OLTRE_IL_GRAFICO_DEFAULT,
   };
 }
 
@@ -435,7 +459,12 @@ async function resolvePurchaseMapWithGrants(
 
 function resolveOneTimeProducts(
   resolvedBySlug: ResolvedPurchaseMap,
-): { marketLens: MarketLensEntitlement; tradingStarter: TradingStarterEntitlement; anyPending: boolean } {
+): {
+  marketLens: MarketLensEntitlement;
+  tradingStarter: TradingStarterEntitlement;
+  oltreIlGrafico: OltreIlGraficoEntitlement;
+  anyPending: boolean;
+} {
   let anyPending = false;
 
   const mlResolved = resolvedBySlug.get('market-lens');
@@ -476,7 +505,26 @@ function resolveOneTimeProducts(
     anyPending = true;
   }
 
-  return { marketLens, tradingStarter, anyPending };
+  const ogResolved = resolvedBySlug.get('oltre-il-grafico-pdf');
+  let oltreIlGrafico: OltreIlGraficoEntitlement = OLTRE_IL_GRAFICO_DEFAULT;
+  if (ogResolved && ogResolved.type === 'succeeded') {
+    oltreIlGrafico = {
+      status: 'owned',
+      purchasedAt: ogResolved.purchasedAt,
+      createdAt: ogResolved.createdAt,
+      message: 'Hai acquistato Oltre il Grafico. Puoi scaricare il PDF dall\'area membri.',
+    };
+  } else if (ogResolved && ogResolved.type === 'pending') {
+    oltreIlGrafico = {
+      status: 'payment_pending',
+      purchasedAt: null,
+      createdAt: ogResolved.createdAt,
+      message: 'Pagamento di Oltre il Grafico in corso. Completa la conferma da parte di Stripe.',
+    };
+    anyPending = true;
+  }
+
+  return { marketLens, tradingStarter, oltreIlGrafico, anyPending };
 }
 
 export async function getOneTimeProductEntitlements(
@@ -591,14 +639,27 @@ export async function getEntitlements(
   const oneTime = resolveOneTimeProducts(resolvedBySlug);
   const marketLens = oneTime.marketLens;
   const tradingStarter = oneTime.tradingStarter;
-  if (marketLens.status === 'owned' || tradingStarter.status === 'owned') {
+  const oltreIlGrafico = oneTime.oltreIlGrafico;
+  if (
+    marketLens.status === 'owned' ||
+    tradingStarter.status === 'owned' ||
+    oltreIlGrafico.status === 'owned'
+  ) {
     anyAvailable = true;
   }
   if (oneTime.anyPending) {
     anyPending = true;
   }
 
-  return { courses, anyAvailable, anyPending, researchClub, marketLens, tradingStarter };
+  return {
+    courses,
+    anyAvailable,
+    anyPending,
+    researchClub,
+    marketLens,
+    tradingStarter,
+    oltreIlGrafico,
+  };
 }
 
 export function getCourseEntitlement(

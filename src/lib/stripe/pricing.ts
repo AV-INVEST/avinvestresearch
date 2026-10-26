@@ -1,5 +1,11 @@
 export interface ResolvedProduct {
-  slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens' | 'trading-starter';
+  slug:
+    | 'foundations'
+    | 'trading-lab'
+    | 'research-club'
+    | 'market-lens'
+    | 'trading-starter'
+    | 'oltre-il-grafico-pdf';
   priceId: string;
   title: string;
   amountInCents: number;
@@ -54,6 +60,14 @@ const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
     slug: 'trading-starter',
     title: 'AV Trading Starter',
     amountInCents: 990,
+    currency: 'EUR',
+    billingMode: 'one_time',
+  },
+  'oltre-il-grafico-pdf': {
+    envKey: 'STRIPE_PRICE_AV_OLTRE_IL_GRAFICO_PDF',
+    slug: 'oltre-il-grafico-pdf',
+    title: 'Oltre il Grafico',
+    amountInCents: 1490,
     currency: 'EUR',
     billingMode: 'one_time',
   },

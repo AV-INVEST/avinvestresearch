@@ -23,6 +23,25 @@ export function computeCalendlyUrl(): string | undefined {
 
 export const calendlyUrl = computeCalendlyUrl();
 
+/**
+ * URL Amazon.it del libro cartaceo "Oltre il Grafico".
+ * Configurabile tramite NEXT_PUBLIC_AMAZON_OLTRE_IL_GRAFICO_URL.
+ * Finché la variabile non è impostata, la CTA cartacea resta disattivata
+ * con la nota "Disponibile a breve su Amazon": nessun URL viene inventato.
+ */
+export function computeAmazonUrl(): string | undefined {
+  const raw = process.env.NEXT_PUBLIC_AMAZON_OLTRE_IL_GRAFICO_URL;
+  if (!raw || typeof raw !== 'string') return undefined;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return undefined;
+  if (!/^https?:\/\//i.test(trimmed)) return undefined;
+  const forbidden = ['replace', 'REPLACE', '---', 'xxx', 'XXX', 'esempio', 'example'];
+  if (forbidden.some((f) => trimmed.toLowerCase().includes(f.toLowerCase()))) return undefined;
+  return trimmed;
+}
+
+export const amazonOltreIlGraficoUrl = computeAmazonUrl();
+
 export const siteConfig = {
   name: 'AV-INVEST RESEARCH',
   shortName: 'AV-INVEST',
@@ -193,6 +212,38 @@ export const siteConfig = {
     ],
   },
 
+  oltreIlGrafico: {
+    slug: 'oltre-il-grafico',
+    productSlug: 'oltre-il-grafico-pdf',
+    title: 'Oltre il Grafico',
+    author: 'Andrea Vivace',
+    pages: 184,
+    tagline:
+      'Un romanzo sul trading, sulla disciplina e su quello che si muove davvero dietro il prezzo.',
+    logline:
+      'Quando il grafico smette di raccontare la verità, resta solo una cosa da imparare a leggere: se stessi.',
+    synopsis: [
+      'Marco ha passato anni con la testa china sullo schermo: livelli, medie, segnali, orari. Ogni candela era una promessa, ogni stop una lezione pagata a caro prezzo. Poi, una notte qualunque, il grafico smette di raccontargli la verità che credeva di conoscere.',
+      'Tra la scrivania di un piccolo fondo di provincia, i corridoi opachi di una società di consulenza e i silenzi di chi muove capitali senza lasciare traccia, Marco scopre che dietro i numeri ci sono persone, ambiguità e decisioni prese molto prima che il prezzo si muova. Per capire dove sta andando il mercato, dovrà prima capire chi ha davanti.',
+      'Oltre il Grafico è una storia di formazione, tensione e consapevolezza: un viaggio dentro il mestiere del trader e dentro se stesso, dove il vero indicatore da imparare a leggere non è sul grafico, ma nella propria disciplina.',
+    ],
+    pricePdf: 14.9,
+    pricePaperback: 16.9,
+    currency: 'EUR',
+    pagesLabel: '184 pagine',
+    coverFront:
+      'https://cdn.jsdelivr.net/gh/AV-INVEST/avinvestresearch@main/assets/oltre_il_grafico.webp',
+    coverBack:
+      'https://cdn.jsdelivr.net/gh/AV-INVEST/avinvestresearch@main/assets/retro_oltre_il_grafico.webp',
+    amazonUrl: amazonOltreIlGraficoUrl,
+    notes: [
+      'PDF: pagamento unico, IVA inclusa. Nessun abbonamento ricorrente.',
+      'PDF riservato all\'account che ha completato l\'acquisto. Vietata la condivisione o la rivendita.',
+      'Il cartaceo si acquista su Amazon.it, che gestisce ordine, pagamento e spedizione.',
+      'Opera di narrativa: nessun contenuto costituisce consulenza finanziaria o segnale operativo.',
+    ],
+  },
+
   performance: {
     entries: [
       {
@@ -212,17 +263,17 @@ export const siteConfig = {
       {
         id: 'copiers',
         label: 'Investitori in copia attuali',
-        value: 138,
-        suffix: '',
+        value: 100,
+        suffix: '+',
         positive: true,
       },
       {
         id: 'aum',
-        label: 'Capitale in copia: fascia $300K-$1M',
+        label: 'Capitale in copia',
         value: 0,
         suffix: '',
         positive: false,
-        displayValue: '$300K - $1M',
+        displayValue: '>$200K',
       },
     ],
     disclaimer:
