@@ -36,7 +36,10 @@ export default async function HomePage() {
       <OfferOverview entitlements={entitlements ?? undefined} />
       <TradingStarter entitlement={entitlements?.tradingStarter} />
       <MarketLens entitlement={entitlements?.marketLens} />
-      <Courses entitlements={entitlements ?? undefined} />
+      <Courses
+        entitlements={entitlements ?? undefined}
+        isAuthenticated={Boolean(session?.user)}
+      />
       <OltreIlGrafico entitlement={entitlements?.oltreIlGrafico} />
       <Method />
       <section

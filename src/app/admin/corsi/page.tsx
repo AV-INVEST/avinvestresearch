@@ -180,7 +180,7 @@ export default async function AdminCoursesIndexPage() {
                   <ChevronRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href={`/area-membri/corsi/${course.slug}`}
+                  href={`/area-membri/corsi/${course.slug}?preview=1`}
                   className="btn-ghost !py-2.5 !px-4 text-sm items-center justify-center gap-2"
                   prefetch={false}
                 >
