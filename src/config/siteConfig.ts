@@ -107,6 +107,7 @@ export const siteConfig = {
       available: true,
       purchasable: true,
       publicVisible: true,
+      level: 'BASE / INTERMEDIO',
       durationLabel: '~6 ore',
     },
     tradingLab: {
@@ -123,12 +124,34 @@ export const siteConfig = {
         'Position sizing',
         'Gestione dell\'operazione',
       ],
-      price: 497,
+      price: 897,
       currency: 'EUR',
       available: true,
-      purchasable: false,
-      publicVisible: false,
+      purchasable: true,
+      publicVisible: true,
+      level: 'AVANZATO',
     },
+  },
+
+  /**
+   * Bundle commerciale "AV Complete Academy".
+   * Non è un corso: è una singola transazione che sblocca entrambi i
+   * videocorsi (foundations + trading-lab). Non va inserito in `courses`
+   * per non alterare i contatori e il tracciamento del progresso.
+   */
+  courseBundle: {
+    slug: 'complete-academy',
+    title: 'AV Complete Academy',
+    subtitle: 'Foundations + Trading Lab',
+    description:
+      'Entrambi i videocorsi in un unico acquisto: le basi di AV Foundations e il metodo operativo avanzato di AV Trading Lab.',
+    includes: ['foundations', 'trading-lab'],
+    price: 997,
+    currency: 'EUR',
+    available: true,
+    purchasable: true,
+    savings: 197,
+    compareAtPrice: 1194,
   },
 
   researchClub: {
@@ -342,14 +365,21 @@ export const siteConfig = {
 export type SiteConfig = typeof siteConfig;
 
 export function computeCheckoutEnabled(cfg: typeof siteConfig): boolean {
-  if (!cfg.courses.foundations.available || !cfg.courses.tradingLab.available) return false;
+  if (
+    !cfg.courses.foundations.available ||
+    !cfg.courses.tradingLab.available ||
+    !cfg.courseBundle.available
+  ) {
+    return false;
+  }
   const sk = process.env.STRIPE_SECRET_KEY;
   const wsec = process.env.STRIPE_WEBHOOK_SECRET;
   const p1 = process.env.STRIPE_PRICE_AV_FOUNDATIONS;
   const p2 = process.env.STRIPE_PRICE_AV_TRADING_LAB;
-  if (!sk || !wsec || !p1 || !p2) return false;
+  const p3 = process.env.STRIPE_PRICE_AV_COMPLETE_ACADEMY;
+  if (!sk || !wsec || !p1 || !p2 || !p3) return false;
   const forbidden = ['replace', 'REPLACE', '---', 'xxx', 'XXX'];
-  for (const v of [sk, wsec, p1, p2]) {
+  for (const v of [sk, wsec, p1, p2, p3]) {
     if (forbidden.some((f) => v.includes(f)) || v.trim().length === 0) return false;
   }
   return true;

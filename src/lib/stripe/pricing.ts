@@ -2,6 +2,7 @@ export interface ResolvedProduct {
   slug:
     | 'foundations'
     | 'trading-lab'
+    | 'complete-academy'
     | 'research-club'
     | 'market-lens'
     | 'trading-starter'
@@ -35,7 +36,15 @@ const PRODUCT_ALLOWLIST: Record<string, AllowlistEntry> = {
     envKey: 'STRIPE_PRICE_AV_TRADING_LAB',
     slug: 'trading-lab',
     title: 'AV Trading Lab',
-    amountInCents: 49700,
+    amountInCents: 89700,
+    currency: 'EUR',
+    billingMode: 'one_time',
+  },
+  'complete-academy': {
+    envKey: 'STRIPE_PRICE_AV_COMPLETE_ACADEMY',
+    slug: 'complete-academy',
+    title: 'AV Complete Academy',
+    amountInCents: 99700,
     currency: 'EUR',
     billingMode: 'one_time',
   },

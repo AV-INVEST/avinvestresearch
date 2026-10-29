@@ -27,6 +27,7 @@ export type EvidenceTypeValue = (typeof EVIDENCE_TYPE_OPTIONS)[number]['value'];
 export const ONE_TIME_PRODUCTS = [
   { slug: 'foundations', title: 'AV Foundations' },
   { slug: 'trading-lab', title: 'AV Trading Lab' },
+  { slug: 'complete-academy', title: 'AV Complete Academy (bundle)' },
   { slug: 'market-lens', title: 'AV Market Lens' },
   { slug: 'trading-starter', title: 'AV Trading Starter' },
   { slug: 'oltre-il-grafico-pdf', title: 'Oltre il Grafico' },

@@ -185,6 +185,31 @@ export async function ensureAdminCoursesBootstrap(): Promise<AdminActionResult> 
       });
     }
 
+    const tradingLabCourse = await prisma.course.findUnique({
+      where: { slug: 'trading-lab' },
+      select: { id: true },
+    });
+    if (tradingLabCourse) {
+      await prisma.module.upsert({
+        where: {
+          courseId_slug: {
+            courseId: tradingLabCourse.id,
+            slug: 'sessioni-avanzate',
+          },
+        },
+        create: {
+          courseId: tradingLabCourse.id,
+          slug: 'sessioni-avanzate',
+          title: 'Sessioni avanzate',
+          description:
+            'Il percorso avanzato AV Trading Lab: sessioni operative per metodo, conferme e gestione.',
+          order: 0,
+        },
+        update: {},
+        select: { id: true },
+      });
+    }
+
     return { ok: true, message: 'Corsi e moduli base assicurati.' };
   } catch (err) {
     return {

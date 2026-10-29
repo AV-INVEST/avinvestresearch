@@ -4,6 +4,7 @@ import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { repairSubscriptionStateFromStripe } from '@/lib/stripe/subscription-sync';
 import { loadActiveManualGrants, type ActiveManualGrant } from '@/lib/entitlements-grants';
+import { BUNDLE_INCLUDED_COURSES, COURSE_BUNDLE_SLUG } from '@/lib/stripe/course-bundle';
 import {
   buildLessonHref,
   fetchProgressSummary,
@@ -447,14 +448,43 @@ function mergeManualGrants(
   return merged;
 }
 
+/**
+ * Espande in memoria l'eventuale bundle "AV Complete Academy" sui corsi inclusi.
+ * Non crea acquisti: una sola transazione bundle abilita entrambi i corsi.
+ * Gli accessi derivati restano tali (un rimborso del bundle non tocca i
+ * diritti ottenuti autonomamente, perché quelli restano nel map originale).
+ */
+function expandBundleInMap(map: ResolvedPurchaseMap): ResolvedPurchaseMap {
+  const bundle = map.get(COURSE_BUNDLE_SLUG);
+  if (!bundle) return map;
+  const out = new Map(map);
+  for (const courseSlug of BUNDLE_INCLUDED_COURSES) {
+    const existing = out.get(courseSlug);
+    if (!existing) {
+      out.set(courseSlug, {
+        type: bundle.type,
+        purchasedAt: bundle.purchasedAt,
+        createdAt: bundle.createdAt,
+      });
+    } else if (existing.type === 'pending' && bundle.type === 'succeeded') {
+      out.set(courseSlug, {
+        type: 'succeeded',
+        purchasedAt: bundle.purchasedAt,
+        createdAt: bundle.createdAt,
+      });
+    }
+  }
+  return out;
+}
+
 async function resolvePurchaseMapWithGrants(
   userEmail: string | null,
 ): Promise<ResolvedPurchaseMap> {
   const purchased = userEmail ? await loadPurchases(userEmail) : [];
   const resolved = buildResolvedPurchaseMap(purchased);
-  if (!userEmail) return resolved;
+  if (!userEmail) return expandBundleInMap(resolved);
   const grants = await loadActiveManualGrants(userEmail);
-  return mergeManualGrants(resolved, grants);
+  return expandBundleInMap(mergeManualGrants(resolved, grants));
 }
 
 function resolveOneTimeProducts(

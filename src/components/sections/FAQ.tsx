@@ -18,7 +18,7 @@ interface Category {
 
 const categories: Category[] = [
   { key: 'generali', label: 'Generali' },
-  { key: 'videocorso', label: 'Videocorso' },
+  { key: 'videocorso', label: 'Videocorsi' },
   { key: 'research-club', label: 'Research Club' },
   { key: 'market-lens', label: 'Market Lens' },
   { key: 'trading-starter', label: 'Trading Starter' },
@@ -45,24 +45,39 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
   ],
   videocorso: [
     {
+      question: 'Quali videocorsi sono disponibili?',
+      answer:
+        "Sono disponibili due videocorsi autonomi: AV Foundations (livello base/intermedio, 297 €) e AV Trading Lab (livello avanzato, 897 €). Puoi acquistarli singolarmente oppure insieme nel bundle AV Complete Academy (997 €), che sblocca entrambi i corsi con un risparmio di 197 € rispetto all'acquisto separato. Ogni corso mantiene moduli, lezioni e progresso indipendenti.",
+    },
+    {
       question: 'A chi è rivolto AV Foundations?',
       answer:
         "AV Foundations è adatto a chiunque voglia approcciare l'analisi dei mercati con un metodo strutturato: ideale per chi parte da zero e vuole costruire basi solide, ma utile anche a chi ha già qualche esperienza e cerca una panoramica più ordinata su grafici, livelli, volumi, indicatori e gestione del rischio. Nessuna conoscenza pregressa è obbligatoria.",
     },
     {
-      question: 'Cosa include esattamente il videocorso?',
+      question: 'A chi è rivolto AV Trading Lab?',
       answer:
-        "Circa 6 ore di formazione video organizzate in moduli e lezioni, accesso illimitato senza scadenza, area membri con progresso personale salvato e materiale didattico di supporto. Il pagamento è unico e non ricorrente.",
+        "AV Trading Lab è il videocorso avanzato dedicato a chi vuole strutturare e affinare il metodo operativo: analisi multi-timeframe, qualità del setup, conferme, invalidazione, position sizing e gestione dell'operazione. È pensato per chi ha già basi di analisi tecnica e vuole lavorare in modo più disciplinato e metodico. Resta materiale esclusivamente formativo, senza segnali né promesse di risultato.",
     },
     {
-      question: 'Posso seguire il videocorso da smartphone?',
+      question: 'Cosa include esattamente il videocorso?',
+      answer:
+        "I videocorsi sono organizzati in moduli e lezioni, con accesso illimitato senza scadenza, area membri con progresso personale salvato e materiale didattico di supporto. Il pagamento è unico e non ricorrente. Il bundle AV Complete Academy abilita entrambi i corsi con un solo pagamento.",
+    },
+    {
+      question: 'Posso acquistare il bundle se possiedo già uno dei due corsi?',
+      answer:
+        "No. Il bundle AV Complete Academy è acquistabile solo da chi non possiede ancora nessuno dei due videocorsi. Se possiedi già AV Foundations puoi acquistare AV Trading Lab a 897 €, e viceversa se possiedi AV Trading Lab puoi acquistare AV Foundations a 297 €. Non sono previsti sconti retroattivi per gli acquisti effettuati separatamente.",
+    },
+    {
+      question: 'Posso seguire i videocorsi da smartphone?',
       answer:
         'Sì: il sito e i contenuti sono progettati per essere fruibili anche da mobile. Video, dispense e materiale sono consultabili da smartphone, tablet e desktop con lo stesso account. Alcuni esercizi e grafici sono più comodi su schermo più ampio, ma non obbligatori.',
     },
     {
-      question: 'Il videocorso promette rendimenti o fornisce segnali?',
+      question: 'I videocorsi promettono rendimenti o forniscono segnali?',
       answer:
-        'No. Assolutamente no. AV Foundations ha esclusivamente finalità formative e educative. Non contiene promesse di risultato, non fornisce segnali operativi, non menziona strumenti finanziari specifici e non sostituisce la tua valutazione autonoma. Ogni decisione di investimento o operativa resta sotto la tua esclusiva responsabilità.',
+        'No. Assolutamente no. AV Foundations e AV Trading Lab hanno esclusivamente finalità formative ed educative. Non contengono promesse di risultato, non forniscono segnali operativi e non sostituiscono la tua valutazione autonoma. Ogni decisione di investimento o operativa resta sotto la tua esclusiva responsabilità.',
     },
   ],
   'research-club': [

@@ -2,18 +2,21 @@
 
 import { useCallback, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { AlertCircle, ArrowRight, CreditCard, Loader2, Clock } from 'lucide-react';
+import { AlertCircle, ArrowRight, CreditCard, Loader2 } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 
+type CourseCheckoutSlug = 'foundations' | 'trading-lab' | 'complete-academy';
+
 interface Props {
-  slug: 'foundations' | 'trading-lab';
+  slug: CourseCheckoutSlug;
 }
 
 type ButtonState = 'idle' | 'loading' | 'error';
 
-const SLUG_TO_CONFIG_KEY: Record<Props['slug'], 'foundations' | 'tradingLab'> = {
-  foundations: 'foundations',
-  'trading-lab': 'tradingLab',
+const PURCHASABLE_BY_SLUG: Record<CourseCheckoutSlug, boolean> = {
+  foundations: (siteConfig.courses.foundations.purchasable as boolean) !== false,
+  'trading-lab': (siteConfig.courses.tradingLab.purchasable as boolean) !== false,
+  'complete-academy': (siteConfig.courseBundle.purchasable as boolean) !== false,
 };
 
 export default function CourseCheckoutButton({ slug }: Props) {
@@ -73,24 +76,8 @@ export default function CourseCheckoutButton({ slug }: Props) {
   const isLoading = state === 'loading';
   const hasError = state === 'error';
 
-  const configKey = SLUG_TO_CONFIG_KEY[slug];
-  const purchasable = siteConfig.courses[configKey].purchasable !== false;
-
-  if (!purchasable) {
-    return (
-      <div className="mt-6 w-full space-y-3">
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-av-line bg-av-bg-2/50 px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-av-muted/80 opacity-80 sm:text-base"
-        >
-          <Clock className="h-5 w-5" />
-          IN ARRIVO
-        </button>
-      </div>
-    );
-  }
+  const purchasable = PURCHASABLE_BY_SLUG[slug];
+  if (!purchasable) return null;
 
   return (
     <div className="mt-6 w-full space-y-3">

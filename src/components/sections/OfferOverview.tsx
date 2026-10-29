@@ -61,9 +61,9 @@ const items = [
     icon: CirclePlay,
     iconColor: 'text-[#D4B46A]',
     iconBg: 'border-[#C9A961]/45 bg-[#C9A961]/10',
-    category: 'VIDEOCORSO · COMPLETO',
+    category: 'VIDEOCORSO · BASE / INTERMEDIO',
     title: siteConfig.courses.foundations.title,
-    description: '~6 ore di videocorso per imparare analisi tecnica, metodo e gestione del rischio.',
+    description: 'Il videocorso base/intermedio su analisi tecnica, metodo e gestione del rischio. Disponibile anche con AV Trading Lab nel bundle AV Complete Academy.',
     price: siteConfig.courses.foundations.price,
     currency: siteConfig.courses.foundations.currency,
     decimals: 2,
@@ -117,9 +117,10 @@ export default function OfferOverview({
             <span className="text-av-green">Strumenti adatti al tuo livello.</span>
           </h2>
           <p className="mt-4 sm:mt-5 body-lg max-w-2xl mx-auto">
-            Tre prodotti pensati per livelli diversi: dalla guida entry-level al
-            videocorso completo, fino all&apos;indicatore operativo. Nessun
-            carrello, checkout diretto.
+            Due videocorsi — AV Foundations e AV Trading Lab, acquistabili
+            singolarmente o insieme nel bundle AV Complete Academy — più la
+            guida entry-level e l&apos;indicatore operativo. Nessun carrello,
+            checkout diretto.
           </p>
         </div>
 

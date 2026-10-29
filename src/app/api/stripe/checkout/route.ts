@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { getStripeClient } from '@/lib/stripe/client';
 import { resolveProduct } from '@/lib/stripe/pricing';
+import {
+  COURSE_BUNDLE_SLUG,
+  expandOwnedSlugs,
+  isPurchasableGivenOwnership,
+} from '@/lib/stripe/course-bundle';
+import { loadActiveManualGrants } from '@/lib/entitlements-grants';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { siteConfig } from '@/config/siteConfig';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
@@ -79,17 +85,22 @@ function buildSafeStripeError(err: unknown): SafeStripeErrorLog {
   return out;
 }
 
-function ownedRedirectResponse(slug: 'foundations' | 'trading-lab' | 'research-club' | 'market-lens' | 'trading-starter' | 'oltre-il-grafico-pdf') {
-  const redirectTo = slug === 'market-lens' || slug === 'trading-starter' || slug === 'oltre-il-grafico-pdf'
-    ? '/area-membri/prodotti'
-    : '/area-membri/percorsi';
-  const error = slug === 'market-lens'
-    ? 'Hai gia acquistato AV Market Lens.'
-    : slug === 'trading-starter'
-      ? 'Hai gia acquistato AV Trading Starter.'
-      : slug === 'oltre-il-grafico-pdf'
-        ? 'Hai gia acquistato Oltre il Grafico.'
-        : 'Hai gia acquistato questo percorso.';
+function ownedRedirectResponse(slug: string, owned?: Set<string>) {
+  const redirectTo =
+    slug === 'market-lens' || slug === 'trading-starter' || slug === 'oltre-il-grafico-pdf'
+      ? '/area-membri/prodotti'
+      : '/area-membri/percorsi';
+  let error: string;
+  if (slug === 'market-lens') error = 'Hai gia acquistato AV Market Lens.';
+  else if (slug === 'trading-starter') error = 'Hai gia acquistato AV Trading Starter.';
+  else if (slug === 'oltre-il-grafico-pdf') error = 'Hai gia acquistato Oltre il Grafico.';
+  else if (slug === COURSE_BUNDLE_SLUG) {
+    const ownsIncluded =
+      owned?.has('foundations') === true || owned?.has('trading-lab') === true;
+    error = ownsIncluded
+      ? 'Possiedi gia uno dei corsi inclusi: AV Complete Academy non e acquistabile separatamente.'
+      : 'Hai gia acquistato AV Complete Academy.';
+  } else error = 'Hai gia acquistato questo percorso.';
   return NextResponse.json(
     { error, redirectTo },
     { status: 409 },
@@ -106,17 +117,26 @@ function ownedRedirectSubscription() {
   );
 }
 
-async function checkAlreadySucceeded(userEmail: string, productSlug: string): Promise<boolean> {
-  if (!isDatabaseConfigured()) return false;
+/**
+ * Prodotti gia posseduti (acquisti riusciti + grant manuali attivi), con
+ * espansione del bundle sui corsi inclusi. Usato per applicare le regole
+ * commerciali di acquisto anche lato API.
+ */
+async function loadOwnedProductSlugs(userEmail: string): Promise<Set<string>> {
+  const owned = new Set<string>();
+  if (!isDatabaseConfigured()) return owned;
   try {
-    const row = await prisma.purchase.findFirst({
-      where: { userEmail, productSlug, status: 'succeeded' },
-      select: { id: true },
+    const rows = await prisma.purchase.findMany({
+      where: { userEmail, status: 'succeeded' },
+      select: { productSlug: true },
     });
-    return Boolean(row);
+    for (const row of rows) owned.add(row.productSlug);
   } catch {
-    return false;
+    return owned;
   }
+  const grants = await loadActiveManualGrants(userEmail);
+  for (const grant of grants) owned.add(grant.productSlug);
+  return expandOwnedSlugs(owned);
 }
 
 async function checkActiveResearchClubSubscription(
@@ -327,8 +347,9 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
       }
     }
   } else {
-    if (await checkAlreadySucceeded(userEmail, resolved.slug)) {
-      return ownedRedirectResponse(resolved.slug);
+    const owned = await loadOwnedProductSlugs(userEmail);
+    if (!isPurchasableGivenOwnership(resolved.slug, owned)) {
+      return ownedRedirectResponse(resolved.slug, owned);
     }
   }
 

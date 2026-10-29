@@ -47,8 +47,9 @@ export default function TerminiPage() {
           <li>
             <strong className="text-white">Acquisto di corsi digitali</strong>:
             la conclusione dell&apos;ordine e il pagamento a tantum dei corsi
-            digitali offerti sul Sito, incluso AV Foundations, tramite Stripe,
-            comportano l&apos;accettazione integrale dei presenti Termini.
+            digitali offerti sul Sito (AV Foundations, AV Trading Lab e il
+            bundle AV Complete Academy), tramite Stripe, comportano
+            l&apos;accettazione integrale dei presenti Termini.
           </li>
           <li>
             <strong className="text-white">Acquisto one-time AV Market Lens</strong>:
@@ -128,10 +129,10 @@ export default function TerminiPage() {
           <li>
             <strong className="text-white">Corsi digitali educativi</strong>
             {' '}
-            (corsi digitali acquistati sul Sito, incluso AV Foundations):
+            (AV Foundations, AV Trading Lab e il bundle AV Complete Academy):
             forniti in modalit&agrave; one-time con pagamento a tantum e
-            accesso all&apos;area membri per il contenuto del corso
-            acquistato.
+            accesso all&apos;area membri per i contenuti del corso o dei corsi
+            acquistati.
           </li>
           <li>
             <strong className="text-white">AV Research Club</strong>
@@ -357,6 +358,37 @@ export default function TerminiPage() {
           del progresso nell&apos;area membri. Il prezzo pubblicato nella pagina
           del corso include l&apos;IVA ove applicabile secondo la normativa
           vigente.
+        </p>
+        <p className="mt-2">
+          Sono disponibili due videocorsi autonomi, acquistabili singolarmente
+          o insieme:
+        </p>
+        <ul className="mt-2 space-y-2 pl-5 marker:text-av-green [list-style:disc]">
+          <li>
+            <strong className="text-white">AV Foundations</strong> (livello
+            base/intermedio): videocorso introduttivo su analisi tecnica,
+            metodo e gestione del rischio. Prezzo: <strong className="text-white">297 €</strong>.
+          </li>
+          <li>
+            <strong className="text-white">AV Trading Lab</strong> (livello
+            avanzato): videocorso dedicato a strategia, contesto, conferme,
+            invalidazione, dimensionamento e disciplina operativa. Prezzo:{' '}
+            <strong className="text-white">897 €</strong>.
+          </li>
+        </ul>
+        <p className="mt-2">
+          <strong className="text-white">Bundle AV Complete Academy</strong>{' '}
+          (prezzo: <strong className="text-white">997 €</strong>): un unico
+          acquisto che abilita l&apos;accesso a entrambi i videocorsi (AV
+          Foundations e AV Trading Lab) mantenendo progressi separati per
+          ciascun corso. Il bundle consente un risparmio di{' '}
+          <strong className="text-white">197 €</strong> rispetto
+          all&apos;acquisto separato dei due corsi (297 € + 897 € = 1.194 €).
+          Il bundle non &egrave; acquistabile da chi possiede gi&agrave; almeno
+          uno dei due corsi: in tal caso resta possibile acquistare
+          separatamente soltanto il corso mancante. Non sono previsti sconti
+          automatici, coupon di upgrade, prezzi personalizzati n&eacute; sconti
+          retroattivi per gli acquisti effettuati separatamente.
         </p>
       </section>
 
