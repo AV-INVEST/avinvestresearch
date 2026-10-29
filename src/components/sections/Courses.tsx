@@ -103,6 +103,9 @@ export default function Courses({
     ent?.status === undefined ? false : OWNED_STATUSES.includes(ent.status);
   const isPending = (ent?: CourseEntitlement) => ent?.status === 'payment_pending';
 
+  // Il checkout del bundle ha uno stato proprio, distinto dai corsi inclusi.
+  const bundlePending = entitlements?.bundlePending === true;
+
   const ownsFoundations = isOwned(entFor('foundations'));
   const ownsTradingLab = isOwned(entFor('trading-lab'));
 
@@ -319,7 +322,11 @@ export default function Courses({
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   ) : (
-                    <CourseCheckoutButton slug={card.slug} variant={card.featured ? 'gold' : 'green'} />
+                    <CourseCheckoutButton
+                      slug={card.slug}
+                      variant={card.featured ? 'gold' : 'green'}
+                      pending={pending}
+                    />
                   )}
                   {pending ? (
                     <p className="mt-2 text-xs text-av-yellow">
@@ -397,7 +404,12 @@ export default function Courses({
                   <Sparkles className="h-3.5 w-3.5" />
                   Risparmi {formatPrice(bundle.savings, bundle.currency)}
                 </p>
-                <CourseCheckoutButton slug="complete-academy" variant="gold" />
+                <CourseCheckoutButton slug="complete-academy" variant="gold" pending={bundlePending} />
+                {bundlePending ? (
+                  <p className="mt-2 text-xs text-av-yellow">
+                    Checkout Academy avviato. Pagamento non ancora confermato.
+                  </p>
+                ) : null}
                 <p className="mt-2 flex items-center gap-1.5 text-[11px] text-av-muted">
                   <Shield className="h-3.5 w-3.5 text-[#C9A961]" />
                   Pagamento sicuro · IVA inclusa

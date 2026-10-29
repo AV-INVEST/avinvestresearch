@@ -119,6 +119,11 @@ export interface EntitlementsState {
   courses: Record<string, CourseEntitlement>;
   anyAvailable: boolean;
   anyPending: boolean;
+  /**
+   * Il bundle AV Complete Academy ha un checkout in sospeso. Stato distinto
+   * dai corsi inclusi: il bundle pending non rende pending i videocorsi.
+   */
+  bundlePending: boolean;
   researchClub: ResearchClubEntitlement;
   marketLens: MarketLensEntitlement;
   tradingStarter: TradingStarterEntitlement;
@@ -129,6 +134,7 @@ export const DEFAULT_ENTITLEMENT_STATE: EntitlementsState = {
   courses: {},
   anyAvailable: false,
   anyPending: false,
+  bundlePending: false,
   researchClub: RESEARCH_CLUB_DEFAULT,
   marketLens: MARKET_LENS_DEFAULT,
   tradingStarter: TRADING_STARTER_DEFAULT,
@@ -176,6 +182,7 @@ export function buildLockedEntitlements(): EntitlementsState {
     courses,
     anyAvailable: false,
     anyPending: false,
+    bundlePending: false,
     researchClub: RESEARCH_CLUB_DEFAULT,
     marketLens: MARKET_LENS_DEFAULT,
     tradingStarter: TRADING_STARTER_DEFAULT,
@@ -453,20 +460,18 @@ function mergeManualGrants(
  * Non crea acquisti: una sola transazione bundle abilita entrambi i corsi.
  * Gli accessi derivati restano tali (un rimborso del bundle non tocca i
  * diritti ottenuti autonomamente, perché quelli restano nel map originale).
+ *
+ * Solo un bundle realmente `succeeded` propaga l'accesso ai corsi inclusi:
+ * un checkout bundle `pending` resta uno stato proprio del bundle e non
+ * rende "in pagamento" i videocorsi, che vengono venduti anche singolarmente.
  */
 function expandBundleInMap(map: ResolvedPurchaseMap): ResolvedPurchaseMap {
   const bundle = map.get(COURSE_BUNDLE_SLUG);
-  if (!bundle) return map;
+  if (!bundle || bundle.type !== 'succeeded') return map;
   const out = new Map(map);
   for (const courseSlug of BUNDLE_INCLUDED_COURSES) {
     const existing = out.get(courseSlug);
-    if (!existing) {
-      out.set(courseSlug, {
-        type: bundle.type,
-        purchasedAt: bundle.purchasedAt,
-        createdAt: bundle.createdAt,
-      });
-    } else if (existing.type === 'pending' && bundle.type === 'succeeded') {
+    if (!existing || existing.type === 'pending') {
       out.set(courseSlug, {
         type: 'succeeded',
         purchasedAt: bundle.purchasedAt,
@@ -663,6 +668,12 @@ export async function getEntitlements(
     };
   }
 
+  // Il bundle ha uno stato proprio: se il checkout è solo avviato (pending)
+  // lo segnaliamo separatamente senza toccare lo stato dei corsi inclusi.
+  const bundleEntry = resolvedBySlug.get(COURSE_BUNDLE_SLUG);
+  const bundlePending = bundleEntry?.type === 'pending';
+  if (bundlePending) anyPending = true;
+
   const researchClubSub = userEmail ? await loadResearchClubSubscription(userEmail) : null;
   const researchClub = researchClubEntitlementFromSubscription(researchClubSub);
 
@@ -685,6 +696,7 @@ export async function getEntitlements(
     courses,
     anyAvailable,
     anyPending,
+    bundlePending,
     researchClub,
     marketLens,
     tradingStarter,

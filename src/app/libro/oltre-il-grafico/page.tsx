@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     locale: 'it_IT',
     url: 'https://avinvestresearch.com/libro/oltre-il-grafico',
     siteName: 'AV-INVEST RESEARCH',
-    title: 'Oltre il Grafico — romanzo di Andrea Vivace',
+    title: 'Oltre il Grafico - Romanzo di Andrea Vivace',
     description:
       'Un romanzo sul trading, sulla disciplina e su quello che si muove davvero dietro il prezzo.',
   },

@@ -10,6 +10,12 @@ type CourseCheckoutSlug = 'foundations' | 'trading-lab' | 'complete-academy';
 interface Props {
   slug: CourseCheckoutSlug;
   variant?: 'green' | 'gold';
+  /**
+   * Il prodotto ha un checkout già avviato: la CTA riprende la stessa
+   * sessione Stripe valida (o ne crea una nuova se scaduta), senza
+   * presumere che sia ancora aperta.
+   */
+  pending?: boolean;
 }
 
 type ButtonState = 'idle' | 'loading' | 'error';
@@ -20,7 +26,7 @@ const PURCHASABLE_BY_SLUG: Record<CourseCheckoutSlug, boolean> = {
   'complete-academy': (siteConfig.courseBundle.purchasable as boolean) !== false,
 };
 
-export default function CourseCheckoutButton({ slug, variant = 'green' }: Props) {
+export default function CourseCheckoutButton({ slug, variant = 'green', pending = false }: Props) {
   const { data: session, status: sessionStatus } = useSession();
   const [state, setState] = useState<ButtonState>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -93,6 +99,11 @@ export default function CourseCheckoutButton({ slug, variant = 'green' }: Props)
           <>
             <Loader2 className="h-5 w-5 animate-spin" />
             Preparazione del pagamento in corso...
+          </>
+        ) : pending ? (
+          <>
+            <ArrowRight className="h-4 w-4" />
+            Continua al checkout
           </>
         ) : (
           <>

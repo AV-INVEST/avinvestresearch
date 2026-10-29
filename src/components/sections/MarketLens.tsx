@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   TrendingUp,
   Target,
@@ -40,7 +39,7 @@ export default function MarketLens({
   return (
     <section
       id="market-lens"
-      className="relative py-14 sm:py-32 scroll-mt-28"
+      className="relative py-12 sm:py-20 scroll-mt-28"
       aria-labelledby="market-lens-heading"
     >
       <div
@@ -137,104 +136,34 @@ export default function MarketLens({
             >
               <div
                 aria-hidden="true"
-                className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-av-green/10 blur-3xl"
+                className="absolute -right-24 -top-24 h-52 w-52 rounded-full bg-av-green/10 blur-3xl"
               />
-              <div className="relative p-4 sm:p-7 w-full min-w-0">
-                <div className="space-y-4 w-full min-w-0 sm:grid sm:gap-4 sm:grid-cols-2">
-                  <div className="sm:col-span-2 w-full min-w-0">
-                    <div className="relative overflow-hidden rounded-2xl border border-av-line bg-av-bg-2/60 aspect-[16/9] w-full min-w-0">
+              <div className="relative p-3.5 sm:p-5 w-full min-w-0">
+                <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5 sm:gap-3 w-full min-w-0">
+                  {ml.features.map((f) => {
+                    const Icon = featureIcons[f.key] ?? Sparkles;
+                    return (
                       <div
-                        aria-hidden="true"
-                        className="absolute inset-0 opacity-30"
-                        style={{
-                          backgroundImage:
-                            'repeating-linear-gradient(0deg, rgba(0,255,106,0.12) 0px, transparent 1px, transparent 24px), repeating-linear-gradient(90deg, rgba(0,255,106,0.08) 0px, transparent 1px, transparent 24px)',
-                        }}
-                      />
-                      <div className="absolute inset-0 p-3 sm:p-6 flex items-center justify-center">
-                        <div className="w-full max-w-md min-w-0">
-                          <div className="flex items-center justify-between border-b border-av-line py-2 sm:py-3">
-                            <p className="font-display text-base sm:text-lg font-semibold text-white leading-none min-w-0 max-w-full break-words whitespace-normal">
-                              {ml.title}
-                            </p>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="h-2 w-2 rounded-full bg-av-green animate-pulse" />
-                              <span className="font-mono text-[11px] uppercase tracking-widest text-av-green leading-none whitespace-nowrap">
-                                LIVE
-                              </span>
-                            </div>
+                        key={f.key}
+                        className="group rounded-xl border border-av-line bg-av-bg-2/40 p-2.5 sm:p-3.5 transition-all duration-300 hover:border-av-green-deep/40 hover:bg-av-surface min-w-0"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-av-green-deep/50 bg-av-green/10 text-av-green transition-all group-hover:shadow-glow-green-sm">
+                            <Icon className="h-4 w-4" />
                           </div>
-                          <div className="mt-3 sm:mt-4 grid gap-2.5 sm:gap-3">
-                            <div className="h-2 rounded-full bg-av-bg-2/80 overflow-hidden w-full min-w-0">
-                              <div
-                                className="h-full w-3/4 bg-gradient-to-r from-av-green-deep via-av-green to-emerald-300"
-                                aria-hidden="true"
-                              />
-                            </div>
-                            <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full min-w-0">
-                              {['Trend', 'Livelli', 'Alert'].map((label) => (
-                                <div
-                                  key={label}
-                                  className="rounded-xl border border-av-line bg-av-bg-2/50 p-2.5 sm:p-3 min-w-0"
-                                >
-                                  <p className="text-[10px] uppercase tracking-widest text-av-muted min-w-0 max-w-full break-words whitespace-normal">
-                                    {label}
-                                  </p>
-                                  <p className="mt-0.5 sm:mt-1 font-mono text-xs sm:text-sm text-white whitespace-nowrap">
-                                    Attivi
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+                          <h3 className="font-display text-[13px] sm:text-sm font-semibold text-white leading-tight break-words">
+                            {f.title}
+                          </h3>
                         </div>
+                        <p className="mt-1.5 text-[11px] sm:text-xs leading-snug text-av-muted/95 break-words">
+                          {f.text}
+                        </p>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full min-w-0 max-w-full overflow-hidden sm:contents">
-                    <div className="w-full min-w-0 overflow-x-auto scrollbar-hidden snap-x snap-mandatory flex gap-3 pb-2 sm:overflow-visible sm:pb-0 sm:contents">
-                      {ml.features.map((f) => {
-                        const Icon = featureIcons[f.key] ?? Sparkles;
-                        const isLevels = f.key === 'levels';
-                        return (
-                          <div
-                            key={f.key}
-                            className={`group shrink-0 basis-[86%] max-w-[86%] snap-start rounded-2xl p-3.5 sm:basis-auto sm:max-w-none sm:w-full sm:p-5 transition-all duration-300 min-w-0 ${
-                              isLevels
-                                ? 'border border-[#C9A961]/35 bg-[#C9A961]/[0.05] hover:border-[#D4B46A]/55 hover:bg-[#C9A961]/[0.08] shadow-[0_0_0_1px_rgba(201,169,97,0.05),0_4px_24px_-10px_rgba(201,169,97,0.25)] hover:shadow-[0_0_0_1px_rgba(212,180,106,0.08),0_6px_28px_-8px_rgba(201,169,97,0.35)]'
-                                : 'border border-av-line bg-av-bg-2/40 hover:border-av-green-deep/40 hover:bg-av-surface'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                              <div
-                                className={`grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl transition-all shrink-0 ${
-                                  isLevels
-                                    ? 'border border-[#C9A961]/45 bg-[#C9A961]/12 text-[#D4B46A] group-hover:shadow-[0_0_12px_rgba(201,169,97,0.25)]'
-                                    : 'border border-av-green-deep/50 bg-av-green/10 text-av-green group-hover:shadow-glow-green-sm'
-                                }`}
-                              >
-                                <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
-                              </div>
-                              <h3
-                                className={`font-display text-sm sm:text-lg font-semibold min-w-0 max-w-full break-words whitespace-normal ${
-                                  isLevels ? 'text-[#D4B46A]' : 'text-white'
-                                }`}
-                              >
-                                {f.title}
-                              </h3>
-                            </div>
-                            <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-relaxed text-av-muted/95 break-words">
-                              {f.text}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                    );
+                  })}
                 </div>
 
-                <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6 w-full min-w-0">
+                <div className="relative mt-3.5 sm:mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-3.5 sm:pt-4 w-full min-w-0">
                   <span className="text-xs font-medium text-av-muted sm:text-sm shrink-0">
                     Cosa ricevi dopo il pagamento:
                   </span>
