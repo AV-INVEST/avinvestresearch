@@ -17,6 +17,16 @@ export interface ActiveManualGrant {
   grantedAt: Date;
 }
 
+async function readActiveManualGrants(
+  userEmail: string,
+): Promise<ActiveManualGrant[]> {
+  return prisma.manualGrant.findMany({
+    where: { userEmail, status: 'ACTIVE' },
+    select: { productSlug: true, kind: true, grantedAt: true },
+    orderBy: { grantedAt: 'desc' },
+  });
+}
+
 /**
  * Grant ATTIVI per l'email indicata.
  * Ritorna un array vuoto se il kill-switch è disattivato o il DB non è configurato.
@@ -29,15 +39,29 @@ export async function loadActiveManualGrants(
   const userEmail = normalizeEmail(email);
   if (!userEmail) return [];
   try {
-    const rows = await prisma.manualGrant.findMany({
-      where: { userEmail, status: 'ACTIVE' },
-      select: { productSlug: true, kind: true, grantedAt: true },
-      orderBy: { grantedAt: 'desc' },
-    });
-    return rows;
+    return await readActiveManualGrants(userEmail);
   } catch {
     return [];
   }
+}
+
+/**
+ * Variante "strict" per la fase di verifica preliminare del checkout.
+ * Propaga gli errori di lettura (il chiamante applica fail-closed) invece di
+ * degradarli a "nessun grant", che renderebbe indistinguibile un errore DB
+ * dall'assenza di grant. Ritorna [] solo quando i grant manuali sono
+ * disattivati intenzionalmente (kill-switch OFF): non è un errore.
+ */
+export async function loadActiveManualGrantsStrict(
+  email: string | null | undefined,
+): Promise<ActiveManualGrant[]> {
+  if (!isManualGrantsEnabled()) return [];
+  if (!isDatabaseConfigured()) {
+    throw new Error('manual grants: database not configured');
+  }
+  const userEmail = normalizeEmail(email);
+  if (!userEmail) return [];
+  return readActiveManualGrants(userEmail);
 }
 
 /**

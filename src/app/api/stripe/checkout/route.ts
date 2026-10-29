@@ -7,7 +7,7 @@ import {
   expandOwnedSlugs,
   isPurchasableGivenOwnership,
 } from '@/lib/stripe/course-bundle';
-import { loadActiveManualGrants } from '@/lib/entitlements-grants';
+import { loadActiveManualGrantsStrict } from '@/lib/entitlements-grants';
 import { normalizeEmail } from '@/lib/stripe/normalize';
 import { siteConfig } from '@/config/siteConfig';
 import { prisma, isDatabaseConfigured } from '@/lib/db/prisma';
@@ -117,26 +117,40 @@ function ownedRedirectSubscription() {
   );
 }
 
+type OwnershipLookup =
+  | { ok: true; owned: Set<string> }
+  | { ok: false };
+
 /**
  * Prodotti gia posseduti (acquisti riusciti + grant manuali attivi), con
  * espansione del bundle sui corsi inclusi. Usato per applicare le regole
  * commerciali di acquisto anche lato API.
+ *
+ * Fail-closed: se il DB non e configurato o una delle letture fallisce,
+ * restituisce `{ ok: false }` per non confondere un errore di verifica con
+ * l'assenza di acquisti (che permetterebbe checkout duplicati).
  */
-async function loadOwnedProductSlugs(userEmail: string): Promise<Set<string>> {
+async function loadOwnedProductSlugs(userEmail: string): Promise<OwnershipLookup> {
+  if (!isDatabaseConfigured()) return { ok: false };
   const owned = new Set<string>();
-  if (!isDatabaseConfigured()) return owned;
   try {
     const rows = await prisma.purchase.findMany({
       where: { userEmail, status: 'succeeded' },
       select: { productSlug: true },
     });
     for (const row of rows) owned.add(row.productSlug);
-  } catch {
-    return owned;
+  } catch (err) {
+    console.error('[stripe:checkout] ownership lookup failed', buildSafeStripeError(err));
+    return { ok: false };
   }
-  const grants = await loadActiveManualGrants(userEmail);
-  for (const grant of grants) owned.add(grant.productSlug);
-  return expandOwnedSlugs(owned);
+  try {
+    const grants = await loadActiveManualGrantsStrict(userEmail);
+    for (const grant of grants) owned.add(grant.productSlug);
+  } catch (err) {
+    console.error('[stripe:checkout] manual grants lookup failed', buildSafeStripeError(err));
+    return { ok: false };
+  }
+  return { ok: true, owned: expandOwnedSlugs(owned) };
 }
 
 async function checkActiveResearchClubSubscription(
@@ -347,9 +361,15 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
       }
     }
   } else {
-    const owned = await loadOwnedProductSlugs(userEmail);
-    if (!isPurchasableGivenOwnership(resolved.slug, owned)) {
-      return ownedRedirectResponse(resolved.slug, owned);
+    const lookup = await loadOwnedProductSlugs(userEmail);
+    if (!lookup.ok) {
+      return NextResponse.json(
+        { error: 'Impossibile verificare temporaneamente i tuoi acquisti. Riprova tra poco.' },
+        { status: 503 },
+      );
+    }
+    if (!isPurchasableGivenOwnership(resolved.slug, lookup.owned)) {
+      return ownedRedirectResponse(resolved.slug, lookup.owned);
     }
   }
 
