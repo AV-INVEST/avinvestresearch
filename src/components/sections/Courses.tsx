@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Check, Sparkles, ArrowRight, BookOpen, Shield, Zap } from 'lucide-react';
+import { Check, Sparkles, ArrowRight, BookOpen, Shield, Crown } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
 import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
@@ -99,7 +99,6 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
 
   const ownsFoundations = isOwned(entFor('foundations'));
   const ownsTradingLab = isOwned(entFor('trading-lab'));
-  const bundleBlocked = ownsFoundations || ownsTradingLab;
 
   return (
     <section
@@ -148,11 +147,11 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
             return (
               <GlassCard
                 key={card.slug}
-                hover
+                hover={!card.featured}
                 className={[
                   'relative flex h-full flex-col p-6 sm:p-7 w-full min-w-0 max-w-full',
                   card.featured
-                    ? 'border-av-green/40 shadow-[0_0_0_1px_rgba(0,255,106,0.12),0_8px_44px_-12px_rgba(0,255,106,0.36)] hover:border-av-green/70 hover:shadow-glow-green'
+                    ? 'border-transparent transition-all duration-300 ease-out hover:-translate-y-1 shadow-[0_0_14px_-4px_rgba(201,169,97,0.35),0_14px_50px_-16px_rgba(201,169,97,0.42),0_0_44px_-12px_rgba(0,255,106,0.3)] hover:shadow-[0_0_18px_-4px_rgba(201,169,97,0.5),0_18px_62px_-16px_rgba(201,169,97,0.52),0_0_60px_-10px_rgba(0,255,106,0.42)] [background:linear-gradient(150deg,rgba(18,22,18,0.72)_0%,rgba(201,169,97,0.07)_45%,rgba(0,255,106,0.05)_100%)_padding-box,linear-gradient(140deg,rgba(201,169,97,0.8)_0%,rgba(201,169,97,0.14)_48%,rgba(0,255,106,0.62)_100%)_border-box]'
                     : '',
                 ]
                   .filter(Boolean)
@@ -161,7 +160,7 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                 {card.featured ? (
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-[radial-gradient(ellipse_at_top,rgba(0,255,106,0.16),transparent_70%)]"
+                    className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 animate-pulse-glow bg-[radial-gradient(ellipse_at_top,rgba(201,169,97,0.2),rgba(0,255,106,0.1)_55%,transparent_72%)]"
                   />
                 ) : null}
 
@@ -170,11 +169,11 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                     className={[
                       'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em]',
                       card.featured
-                        ? 'border-av-green/50 bg-av-green/10 text-av-green'
+                        ? 'border-[rgba(201,169,97,0.55)] bg-gradient-to-r from-[rgba(201,169,97,0.2)] to-transparent text-[#EBD9A8] shadow-[0_0_14px_rgba(201,169,97,0.2)]'
                         : 'border-av-line bg-av-bg-2/70 text-av-muted',
                     ].join(' ')}
                   >
-                    {card.featured ? <Zap className="h-3.5 w-3.5" /> : <BookOpen className="h-3.5 w-3.5" />}
+                    {card.featured ? <Crown className="h-3.5 w-3.5" /> : <BookOpen className="h-3.5 w-3.5" />}
                     {card.badge}
                   </span>
                   {owned ? (
@@ -186,10 +185,30 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                 </div>
 
                 <div className="mt-5 min-w-0">
-                  <h3 className="font-display text-2xl font-semibold leading-tight text-white break-words">
+                  <h3
+                    className={[
+                      'font-display leading-tight text-white break-words',
+                      card.featured
+                        ? 'text-[1.7rem] font-bold tracking-tight sm:text-[1.85rem]'
+                        : 'text-2xl font-semibold',
+                    ].join(' ')}
+                  >
                     {card.title}
                   </h3>
-                  <p className="mt-1.5 font-medium text-av-green">{card.subtitle}</p>
+                  <p
+                    className={[
+                      'mt-1.5 font-medium',
+                      card.featured ? 'text-[#EBD9A8]' : 'text-av-green',
+                    ].join(' ')}
+                  >
+                    {card.subtitle}
+                  </p>
+                  {card.featured ? (
+                    <span
+                      aria-hidden="true"
+                      className="mt-3 block h-px w-16 bg-gradient-to-r from-[#C9A961] to-transparent"
+                    />
+                  ) : null}
                 </div>
 
                 <p className="mt-4 text-sm leading-relaxed text-av-muted min-w-0 max-w-full break-words">
@@ -255,7 +274,7 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   ) : (
-                    <CourseCheckoutButton slug={card.slug} />
+                    <CourseCheckoutButton slug={card.slug} variant={card.featured ? 'gold' : 'green'} />
                   )}
                   {pending ? (
                     <p className="mt-2 text-xs text-av-yellow">
@@ -268,66 +287,113 @@ export default function Courses({ entitlements }: { entitlements?: EntitlementsS
           })}
         </div>
 
-        <GlassCard
-          hover
-          className="mt-5 sm:mt-6 relative overflow-hidden p-6 sm:p-7 w-full min-w-0 max-w-full border-av-green-deep/40"
-        >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-72 bg-[radial-gradient(ellipse_at_right,rgba(0,255,106,0.12),transparent_70%)]"
-          />
-          <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-center">
-            <div className="min-w-0">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-av-green/50 bg-av-green/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-av-green">
-                <Sparkles className="h-3.5 w-3.5" />
-                Bundle
-              </span>
-              <h3 className="mt-3 font-display text-xl font-semibold text-white sm:text-2xl break-words">
-                {bundle.title}
-              </h3>
-              <p className="mt-1.5 text-sm text-av-muted break-words">
-                Include <span className="text-white/90">{siteConfig.courses.foundations.title}</span> e{' '}
-                <span className="text-white/90">{siteConfig.courses.tradingLab.title}</span>. Due percorsi, progressi separati.
-              </p>
-              <p className="mt-2 inline-flex flex-wrap items-center gap-2 text-sm font-semibold text-av-green">
-                Risparmi {formatPrice(bundle.savings, bundle.currency)}
-                <span className="font-normal text-av-muted">
-                  (invece di {formatPrice(bundle.compareAtPrice, bundle.currency)})
+        {!(ownsFoundations && ownsTradingLab) ? (
+          <GlassCard
+            className="mt-5 sm:mt-6 relative overflow-hidden p-6 sm:p-7 w-full min-w-0 max-w-full border-transparent shadow-[0_0_16px_-6px_rgba(201,169,97,0.35),0_16px_56px_-18px_rgba(201,169,97,0.4),0_0_48px_-14px_rgba(0,255,106,0.26)] [background:linear-gradient(135deg,rgba(18,22,18,0.72)_0%,rgba(201,169,97,0.07)_50%,rgba(0,255,106,0.05)_100%)_padding-box,linear-gradient(135deg,rgba(201,169,97,0.72)_0%,rgba(201,169,97,0.14)_50%,rgba(0,255,106,0.55)_100%)_border-box]"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-80 bg-[radial-gradient(ellipse_at_right,rgba(201,169,97,0.16),rgba(0,255,106,0.08)_55%,transparent_72%)]"
+            />
+            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div className="min-w-0">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(201,169,97,0.55)] bg-gradient-to-r from-[rgba(201,169,97,0.2)] to-transparent px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#EBD9A8] shadow-[0_0_14px_rgba(201,169,97,0.18)]">
+                  <Crown className="h-3.5 w-3.5" />
+                  Bundle
                 </span>
-              </p>
-            </div>
+                <h3 className="mt-3 bg-gradient-to-r from-[#F3E7C4] via-white to-[#EBD9A8] bg-clip-text font-display text-2xl font-bold tracking-tight text-transparent break-words sm:text-3xl">
+                  {bundle.title}
+                </h3>
+                <p className="mt-1.5 text-sm text-av-muted break-words">
+                  {bundle.subtitle} · due percorsi, progressi separati e accesso illimitato.
+                </p>
 
-            <div className="sm:min-w-[240px]">
-              {bundleBlocked ? (
-                <div className="rounded-xl border border-av-line bg-av-bg-2/50 p-4">
-                  <p className="text-sm font-semibold text-white/90">
-                    Bundle non disponibile
-                  </p>
-                  <p className="mt-1 text-xs leading-relaxed text-av-muted">
-                    Possiedi già uno dei corsi inclusi: puoi acquistare l&apos;altro
-                    singolarmente a prezzo pieno. Nessuno sconto retroattivo.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-display text-3xl font-semibold text-white">
-                      {formatPrice(bundle.price, bundle.currency)}
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  <li className="inline-flex items-center gap-2 rounded-lg border border-av-green-deep/30 bg-av-bg-2/50 px-2.5 py-1.5">
+                    <span className="grid h-6 w-6 flex-none place-items-center rounded-md border border-av-green-deep/40 bg-av-green/10 text-av-green">
+                      <BookOpen className="h-3.5 w-3.5" />
                     </span>
-                    <span className="text-xs font-medium text-av-muted line-through">
-                      {formatPrice(bundle.compareAtPrice, bundle.currency)}
+                    <span className="min-w-0">
+                      <span className="block truncate text-[12px] font-semibold text-white">
+                        {siteConfig.courses.foundations.title}
+                      </span>
+                      <span className="block text-[10px] uppercase tracking-wider text-av-muted">
+                        Analisi tecnica da zero
+                      </span>
                     </span>
-                  </div>
-                  <CourseCheckoutButton slug="complete-academy" />
-                  <p className="mt-2 flex items-center gap-1.5 text-[11px] text-av-muted">
-                    <Shield className="h-3.5 w-3.5 text-av-green" />
-                    Pagamento sicuro · IVA inclusa
-                  </p>
-                </>
-              )}
+                  </li>
+                  <li className="inline-flex items-center gap-2 rounded-lg border border-[rgba(201,169,97,0.35)] bg-av-bg-2/50 px-2.5 py-1.5">
+                    <span className="grid h-6 w-6 flex-none place-items-center rounded-md border border-[rgba(201,169,97,0.45)] bg-[rgba(201,169,97,0.12)] text-[#EBD9A8]">
+                      <Crown className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[12px] font-semibold text-white">
+                        {siteConfig.courses.tradingLab.title}
+                      </span>
+                      <span className="block text-[10px] uppercase tracking-wider text-av-muted">
+                        Metodo operativo avanzato
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="min-w-0 lg:min-w-[260px]">
+                {!ownsFoundations && !ownsTradingLab ? (
+                  <>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-display text-3xl font-bold text-white sm:text-4xl">
+                        {formatPrice(bundle.price, bundle.currency)}
+                      </span>
+                      <span className="text-xs font-medium text-av-muted line-through">
+                        {formatPrice(bundle.compareAtPrice, bundle.currency)}
+                      </span>
+                    </div>
+                    <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[rgba(201,169,97,0.4)] bg-[rgba(201,169,97,0.12)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#EBD9A8]">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Risparmi {formatPrice(bundle.savings, bundle.currency)}
+                    </p>
+                    <CourseCheckoutButton slug="complete-academy" variant="gold" />
+                    <p className="mt-2 flex items-center gap-1.5 text-[11px] text-av-muted">
+                      <Shield className="h-3.5 w-3.5 text-av-green" />
+                      Pagamento sicuro · IVA inclusa
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-semibold text-white/90">
+                      {ownsFoundations
+                        ? `Completa il tuo percorso con ${siteConfig.courses.tradingLab.title}`
+                        : `Completa il tuo percorso con ${siteConfig.courses.foundations.title}`}
+                    </p>
+                    <div className="mt-2 flex items-baseline gap-2">
+                      <span className="font-display text-2xl font-bold text-white sm:text-3xl">
+                        {formatPrice(
+                          ownsFoundations
+                            ? siteConfig.courses.tradingLab.price
+                            : siteConfig.courses.foundations.price,
+                          bundle.currency,
+                        )}
+                      </span>
+                      <span className="text-xs font-medium text-av-muted">
+                        una tantum · IVA inclusa
+                      </span>
+                    </div>
+                    {ownsFoundations ? (
+                      <CourseCheckoutButton slug="trading-lab" variant="gold" />
+                    ) : (
+                      <CourseCheckoutButton slug="foundations" variant="green" />
+                    )}
+                    <p className="mt-2 flex items-center gap-1.5 text-[11px] text-av-muted">
+                      <Shield className="h-3.5 w-3.5 text-av-green" />
+                      Pagamento sicuro · IVA inclusa
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </GlassCard>
+          </GlassCard>
+        ) : null}
       </div>
 
       {publicCourses.map(([key, c]) => (

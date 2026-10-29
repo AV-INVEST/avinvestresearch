@@ -9,6 +9,7 @@ type CourseCheckoutSlug = 'foundations' | 'trading-lab' | 'complete-academy';
 
 interface Props {
   slug: CourseCheckoutSlug;
+  variant?: 'green' | 'gold';
 }
 
 type ButtonState = 'idle' | 'loading' | 'error';
@@ -19,7 +20,7 @@ const PURCHASABLE_BY_SLUG: Record<CourseCheckoutSlug, boolean> = {
   'complete-academy': (siteConfig.courseBundle.purchasable as boolean) !== false,
 };
 
-export default function CourseCheckoutButton({ slug }: Props) {
+export default function CourseCheckoutButton({ slug, variant = 'green' }: Props) {
   const { data: session, status: sessionStatus } = useSession();
   const [state, setState] = useState<ButtonState>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -86,7 +87,7 @@ export default function CourseCheckoutButton({ slug }: Props) {
         onClick={onCheckout}
         disabled={isLoading}
         aria-busy={isLoading}
-        className="btn-primary w-full items-center justify-center gap-2 shadow-glow-green-sm disabled:opacity-60 disabled:cursor-not-allowed"
+        className={`${variant === 'gold' ? 'btn-rc-primary shadow-glow-gold-sm' : 'btn-primary shadow-glow-green-sm'} w-full items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed`}
       >
         {isLoading ? (
           <>
