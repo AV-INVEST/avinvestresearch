@@ -185,33 +185,33 @@ export const siteConfig = {
     features: [
       {
         key: 'trend',
-        title: 'Trend',
-        text: 'Indicazione visiva della direzione tendenziale, per non partire a occhio chiuso.',
+        title: 'SuperTrend',
+        text: 'Direzione del trend, cambi di regime e contatti con la SuperTrend.',
       },
       {
-        key: 'levels',
-        title: 'Livelli chiave',
-        text: 'Zone di supporto e resistenza evidenziate, dove il mercato ha spesso reagito in passato.',
+        key: 'ema',
+        title: 'EMA 9/21/200',
+        text: 'Medie mobili attivabili per analizzare la dinamica del prezzo su diversi orizzonti.',
       },
       {
-        key: 'volatility',
-        title: 'Volatilità',
-        text: 'Lettura della volatilità contestuale, per capire quando il mercato accelera o rallenta.',
+        key: 'candles',
+        title: 'Candele Daily D1',
+        text: 'Candela giornaliera corrente e fino a 15 precedenti, direttamente sul grafico.',
+      },
+      {
+        key: 'volume-profile',
+        title: 'Volume Profile',
+        text: 'Livelli POC, VAH e VAL della giornata precedente, quando il volume è disponibile.',
       },
       {
         key: 'sessions',
-        title: 'Sessioni',
-        text: 'Separazione visiva delle sessioni Asia, Londra e New York, per contestualizzare i movimenti.',
+        title: 'Sessioni globali',
+        text: 'Sydney, Tokyo, Londra e New York evidenziate sul grafico, con AV Session opzionale.',
       },
       {
-        key: 'daily-context',
-        title: 'Contesto giornaliero',
-        text: 'Riepilogo rapido delle condizioni del giorno, per affinare la tua routine pre-mercato.',
-      },
-      {
-        key: 'setups',
-        title: 'Setup evidenziati',
-        text: 'Marker e alert quando si verificano condizioni tecniche predefinite, per allenare l\'occhio.',
+        key: 'atr',
+        title: 'ATR giornaliero',
+        text: 'ATR del giorno precedente, range attuale e percentuale già utilizzata.',
       },
     ],
     notes: [

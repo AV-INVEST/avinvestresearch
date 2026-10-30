@@ -502,6 +502,13 @@ export default async function ProfiloPage() {
                     statusLabel = 'Fallito';
                     statusClass =
                       'border-amber-500/40 bg-amber-500/10 text-amber-300';
+                  } else if (row.status === 'pending') {
+                    // Uno stato pending non dimostra da solo che il checkout
+                    // sia abbandonato o che il pagamento sia in elaborazione:
+                    // usiamo un messaggio neutro e accurato.
+                    statusLabel = 'Pagamento non confermato';
+                    statusClass =
+                      'border-amber-500/40 bg-amber-500/10 text-amber-300';
                   }
                   const refunded =
                     row.refundedAmount != null && row.refundedAmount > 0 ? row.refundedAmount : 0;
@@ -540,6 +547,13 @@ export default async function ProfiloPage() {
                 }
 
                 const receiptUrl = row.hostedInvoiceUrl || row.invoicePdfUrl || null;
+                // Solo per acquisti/fatture effettivamente completati mostriamo
+                // l'assenza del documento: per gli altri stati non promettiamo
+                // una ricevuta che non esiste.
+                const showDocumentUnavailable =
+                  !receiptUrl &&
+                  ((row.kind === 'purchase' && row.status === 'succeeded') ||
+                    (row.kind === 'subscription' && row.status === 'paid'));
                 return (
                   <div
                     key={row.id}
@@ -608,12 +622,12 @@ export default async function ProfiloPage() {
                             <ExternalLink className="h-4 w-4 text-av-green" />
                             Apri ricevuta
                           </a>
-                        ) : (
+                        ) : showDocumentUnavailable ? (
                           <span className="inline-flex items-center gap-1.5 rounded-xl border border-av-line bg-av-bg-2/50 px-3 py-2 text-[11px] sm:text-xs text-av-muted">
                             <Receipt className="h-3.5 w-3.5" />
-                            Ricevuta in elaborazione
+                            Documento non disponibile
                           </span>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </div>

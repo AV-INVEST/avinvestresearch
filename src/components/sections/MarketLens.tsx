@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import {
   TrendingUp,
-  Target,
-  Gauge,
+  ChartLine,
+  ChartCandlestick,
+  ChartColumn,
   Clock,
-  CalendarDays,
+  Gauge,
   Sparkles,
   ArrowRight,
   CheckCircle2,
@@ -20,11 +21,11 @@ import { DEFAULT_ENTITLEMENT_STATE, type MarketLensEntitlement } from '@/lib/ent
 
 const featureIcons: Record<string, typeof TrendingUp> = {
   trend: TrendingUp,
-  levels: Target,
-  volatility: Gauge,
+  ema: ChartLine,
+  candles: ChartCandlestick,
+  'volume-profile': ChartColumn,
   sessions: Clock,
-  'daily-context': CalendarDays,
-  setups: Sparkles,
+  atr: Gauge,
 };
 
 export default function MarketLens({
