@@ -54,6 +54,16 @@ function isCourseVisible(
   );
 }
 
+const OWNED_COURSE_STATUSES: CourseStatus[] = [
+  'owned_not_started',
+  'owned_in_progress',
+  'owned_completed',
+];
+
+function isOwnedCourseStatus(status: CourseStatus): boolean {
+  return OWNED_COURSE_STATUSES.includes(status);
+}
+
 export default async function PanoramicaPage() {
   const session = await auth().catch(() => null);
   if (!session?.user) {
@@ -72,21 +82,24 @@ export default async function PanoramicaPage() {
   });
 
   const visibleCourses = allCourses.filter((c) => c.visible);
-  const visibleCourseEntitlements = visibleCourses.map((c) => c.ent).filter(Boolean) as CourseEntitlement[];
-  const availableCount = visibleCourseEntitlements.filter(
-    (c) => c.status !== 'locked',
-  ).length;
+  // Solo i corsi realmente posseduti contano per statistiche e progressione.
+  // I corsi in `payment_pending` restano visibili ma non sono considerati attivi.
+  const ownedCourseEntitlements = visibleCourses
+    .map((c) => c.ent)
+    .filter(
+      (ent): ent is CourseEntitlement =>
+        ent !== undefined && isOwnedCourseStatus(ent.status),
+    );
+  const availableCount = ownedCourseEntitlements.length;
   const overallProgress =
-    visibleCourseEntitlements.length === 0
+    ownedCourseEntitlements.length === 0
       ? 0
       : Math.round(
-          visibleCourseEntitlements.reduce((acc, c) => acc + (c.progressPct || 0), 0) /
-            visibleCourseEntitlements.length,
+          ownedCourseEntitlements.reduce((acc, c) => acc + (c.progressPct || 0), 0) /
+            ownedCourseEntitlements.length,
         );
 
-  const visibleTitles = visibleCourseEntitlements
-    .filter((c) => c.status !== 'locked')
-    .map((c) => c.title);
+  const visibleTitles = ownedCourseEntitlements.map((c) => c.title);
 
   return (
     <div className="space-y-6">
