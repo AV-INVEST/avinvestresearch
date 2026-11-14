@@ -49,7 +49,10 @@ export default function TerminiPage() {
             la conclusione dell&apos;ordine e il pagamento a tantum dei corsi
             digitali offerti sul Sito (AV Foundations, AV Trading Lab e il
             bundle AV Complete Academy), tramite Stripe, comportano
-            l&apos;accettazione integrale dei presenti Termini.
+            l&apos;accettazione integrale dei presenti Termini, del Disclaimer
+            e la dichiarazione di consenso alla fornitura immediata del
+            contenuto digitale con perdita del diritto di recesso ai sensi
+            dell&apos;art. 59 del Codice del Consumo, ove applicabile.
           </li>
           <li>
             <strong className="text-white">Acquisto one-time AV Market Lens</strong>:

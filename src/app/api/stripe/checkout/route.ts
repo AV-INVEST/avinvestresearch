@@ -26,6 +26,20 @@ type StripeCheckoutSession = Stripe.Checkout.Session;
 
 const PENDING_REUSE_WINDOW_MS = 24 * 60 * 60 * 1000;
 
+/**
+ * Prodotti digitali che richiedono, lato server, il consenso ai termini e
+ * la dichiarazione di recesso (fornitura immediata): il checkout viene
+ * rifiutato con 400 se i tre campi di consenso non sono presenti/validi.
+ */
+const DIGITAL_CONSENT_SLUGS = new Set<string>([
+  'market-lens',
+  'trading-starter',
+  'oltre-il-grafico-pdf',
+  'foundations',
+  'trading-lab',
+  'complete-academy',
+]);
+
 const inFlightByKey = new Map<string, Promise<Response>>();
 
 function resolveBaseUrl(req: Request): string {
@@ -190,6 +204,7 @@ async function checkActiveResearchClubSubscription(
 async function findReusablePendingSession(
   userEmail: string,
   productSlug: string,
+  requireDigitalConsent = false,
 ): Promise<{ checkoutSessionId: string } | null> {
   if (!isDatabaseConfigured()) return null;
   try {
@@ -200,6 +215,16 @@ async function findReusablePendingSession(
         productSlug,
         status: 'pending',
         createdAt: { gte: cutoff },
+        // Le sessioni pending create prima dell'introduzione dei checkbox non
+        // hanno i campi di consenso: per i prodotti che lo richiedono vanno
+        // ignorate, così non si riutilizza un checkout privo di consenso.
+        ...(requireDigitalConsent
+          ? {
+              consentTermsVersion: { not: null },
+              consentDigitalWithdrawalVersion: { not: null },
+              consentAcceptedAt: { not: null },
+            }
+          : {}),
       },
       orderBy: { createdAt: 'desc' },
       select: { checkoutSessionId: true },
@@ -328,18 +353,13 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     if (!Number.isNaN(t.getTime())) consentAcceptedAt = t;
   }
 
-  if (resolved.slug === 'market-lens' || resolved.slug === 'trading-starter' || resolved.slug === 'oltre-il-grafico-pdf') {
+  if (DIGITAL_CONSENT_SLUGS.has(resolved.slug)) {
     const consentVOk = typeof consentTermsVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentTermsVersion);
     const consentDwOk = typeof consentDigitalWithdrawalVersion === 'string' && /^v[0-9]+(\.[0-9]+)?$/.test(consentDigitalWithdrawalVersion);
     const consentAtOk = consentAcceptedAt instanceof Date && !Number.isNaN(consentAcceptedAt.getTime());
     if (!consentVOk || !consentDwOk || !consentAtOk) {
-      const productLabel = resolved.slug === 'market-lens'
-        ? 'AV Market Lens'
-        : resolved.slug === 'trading-starter'
-          ? 'AV Trading Starter'
-          : 'Oltre il Grafico';
       return NextResponse.json(
-        { error: `Consenso digitale obbligatorio mancante o non valido per ${productLabel}.` },
+        { error: `Consenso digitale obbligatorio mancante o non valido per ${resolved.title}.` },
         { status: 400 },
       );
     }
@@ -383,7 +403,11 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     return NextResponse.json({ error: message }, { status: 503 });
   }
 
-  const reusable = await findReusablePendingSession(userEmail, resolved.slug);
+  const reusable = await findReusablePendingSession(
+    userEmail,
+    resolved.slug,
+    DIGITAL_CONSENT_SLUGS.has(resolved.slug),
+  );
   if (reusable) {
     const openSession = await tryRetrieveOpenSession(stripe, reusable.checkoutSessionId);
     if (openSession && openSession.url) {
@@ -431,7 +455,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
     user_email: userEmail,
     billing_mode: isSubscription ? 'subscription' : 'one_time',
   };
-  if ((resolved.slug === 'market-lens' || resolved.slug === 'trading-starter' || resolved.slug === 'oltre-il-grafico-pdf') && consentTermsVersion && consentDigitalWithdrawalVersion && consentAcceptedAt) {
+  if (DIGITAL_CONSENT_SLUGS.has(resolved.slug) && consentTermsVersion && consentDigitalWithdrawalVersion && consentAcceptedAt) {
     commonMetadata.consent_terms_v = consentTermsVersion;
     commonMetadata.consent_digital_withdrawal_v = consentDigitalWithdrawalVersion;
     commonMetadata.consent_at = consentAcceptedAt.toISOString();
@@ -499,7 +523,7 @@ async function handleCheckoutInternal(req: Request): Promise<Response> {
         checkoutSession.id,
         typeof checkoutSession.amount_total === 'number' ? checkoutSession.amount_total : 0,
         checkoutSession.currency || 'EUR',
-        resolved.slug === 'market-lens' || resolved.slug === 'trading-starter' || resolved.slug === 'oltre-il-grafico-pdf'
+        DIGITAL_CONSENT_SLUGS.has(resolved.slug)
           ? {
               consentTermsVersion,
               consentDigitalWithdrawalVersion,
