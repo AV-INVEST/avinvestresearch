@@ -5,6 +5,7 @@ import { auth } from '@/auth';
 import { siteConfig } from '@/config/siteConfig';
 import { getEntitlements, type CourseStatus, type CourseEntitlement } from '@/lib/entitlements';
 import GlassCard from '@/components/ui/GlassCard';
+import CourseCheckoutButton from '@/components/sections/CourseCheckoutButton';
 import {
   ArrowLeft,
   ArrowRight,
@@ -266,7 +267,13 @@ export default async function PercorsiPage() {
                       <Lock className="h-4 w-4 text-av-muted" />
                       Scopri i videocorsi
                     </Link>
-                  ) : isPending ? null : isOwned && ownedHref ? (
+                  ) : isPending ? (
+                    <CourseCheckoutButton
+                      slug={c.slug as 'foundations' | 'trading-lab'}
+                      variant={c.slug === 'trading-lab' ? 'gold' : 'green'}
+                      pending
+                    />
+                  ) : isOwned && ownedHref ? (
                     <Link
                       href={ownedHref}
                       prefetch={false}
