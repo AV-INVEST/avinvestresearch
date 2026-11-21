@@ -9,8 +9,12 @@ import {
   CheckCircle2,
   CreditCard,
   Loader2,
+  Lock,
   X,
 } from 'lucide-react';
+import SaleAvailabilityBadge from '@/components/sales/SaleAvailabilityBadge';
+import { useSale } from '@/lib/sales/sales-client';
+import { isSalePurchasable } from '@/lib/sales/sales-shared';
 
 type ButtonState = 'idle' | 'loading' | 'error';
 type LabelVariant = 'buy' | 'resume';
@@ -139,13 +143,20 @@ export default function MarketLensCheckoutButton({
   const hasError = state === 'error';
   const bothChecked = acceptTerms && acceptDigital;
 
+  const sale = useSale('market-lens');
+  const isResume = label === 'resume';
+  // Il resume di una sessione Stripe già avviata non è soggetto allo switch.
+  const saleOpen = isResume || isSalePurchasable(sale);
+
   return (
     <div className={`w-full space-y-3 ${className}`}>
+      {!isResume ? <SaleAvailabilityBadge sale={sale} /> : null}
       <button
         type="button"
         onClick={onOpen}
-        disabled={isLoading}
+        disabled={isLoading || !saleOpen}
         aria-busy={isLoading}
+        aria-disabled={!saleOpen}
         className={`btn-primary w-full items-center justify-center gap-2 shadow-glow-green-sm disabled:opacity-60 disabled:cursor-not-allowed ${
           compact ? '!py-2 !px-3.5 text-[12px]' : ''
         }`}
@@ -154,6 +165,11 @@ export default function MarketLensCheckoutButton({
           <>
             <Loader2 className={compact ? 'h-3.5 w-3.5 animate-spin' : 'h-5 w-5 animate-spin'} />
             {loadingLabel}
+          </>
+        ) : !saleOpen ? (
+          <>
+            <Lock className={compact ? 'h-3.5 w-3.5' : 'h-5 w-5'} />
+            Non disponibile
           </>
         ) : (
           <>

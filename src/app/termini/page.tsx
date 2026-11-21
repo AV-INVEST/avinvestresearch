@@ -897,6 +897,18 @@ export default function TerminiPage() {
           dell&apos;apposizione della modifica sul rinnovo. Eventuali modifiche
           non incidono sui servizi gi&agrave; acquistati e pagati.
         </p>
+        <p className="mt-2">
+          Il Titolare pu&ograve; aprire, sospendere e riaprire le vendite dei
+          prodotti digitali e modificare liberamente le quote commerciali
+          (numero di accessi) offerte ai nuovi clienti. Le quote eventualmente
+          mostrate sul Sito sono gestite manualmente dal Titolare e non
+          rappresentano necessariamente un conteggio automatico degli acquisti
+          effettuati. La sospensione delle vendite o la variazione delle quote
+          non incide sugli accessi e sui diritti gi&agrave; acquisiti dagli
+          acquirenti, che restano invariati e continuano ad essere garantiti,
+          e non pregiudica i diritti inderogabili riconosciuti ai consumatori
+          dalla normativa vigente.
+        </p>
       </section>
 
       <section>

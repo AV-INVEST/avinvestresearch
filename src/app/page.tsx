@@ -17,6 +17,9 @@ import PerformanceSection from '@/components/sections/PerformanceSection';
 import Testimonials from '@/components/sections/Testimonials';
 import MarketLine from '@/components/visuals/MarketLine';
 import CandlestickShowcase from '@/components/visuals/CandlestickShowcase';
+import { SalesProvider } from '@/lib/sales/sales-client';
+import { getSalesState } from '@/lib/sales/sales-store';
+import { buildDefaultSalesState } from '@/lib/sales/sales-shared';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +28,7 @@ export default async function HomePage() {
   const entitlements = session?.user
     ? await getEntitlements(session.user.id, session.user.email).catch(() => null)
     : null;
+  const salesState = await getSalesState().catch(() => null);
 
   return (
     <>
@@ -33,16 +37,15 @@ export default async function HomePage() {
         <MarketLine className="opacity-70" />
       </div>
       <Positioning />
-      <OfferOverview
-        entitlements={entitlements ?? undefined}
-        isAuthenticated={Boolean(session?.user)}
-      />
+      <OfferOverview />
       <TradingStarter entitlement={entitlements?.tradingStarter} />
-      <MarketLens entitlement={entitlements?.marketLens} />
-      <Courses
-        entitlements={entitlements ?? undefined}
-        isAuthenticated={Boolean(session?.user)}
-      />
+      <SalesProvider initialState={salesState ?? buildDefaultSalesState()}>
+        <MarketLens entitlement={entitlements?.marketLens} />
+        <Courses
+          entitlements={entitlements ?? undefined}
+          isAuthenticated={Boolean(session?.user)}
+        />
+      </SalesProvider>
       <OltreIlGrafico entitlement={entitlements?.oltreIlGrafico} />
       <Method />
       <section

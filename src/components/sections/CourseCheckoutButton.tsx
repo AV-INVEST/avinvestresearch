@@ -9,9 +9,13 @@ import {
   CheckCircle2,
   CreditCard,
   Loader2,
+  Lock,
   X,
 } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
+import SaleAvailabilityBadge from '@/components/sales/SaleAvailabilityBadge';
+import { useSale } from '@/lib/sales/sales-client';
+import { isSalePurchasable } from '@/lib/sales/sales-shared';
 
 type CourseCheckoutSlug = 'foundations' | 'trading-lab' | 'complete-academy';
 
@@ -177,22 +181,34 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
   const hasError = state === 'error';
   const bothChecked = acceptTerms && acceptDigital;
 
+  const sale = useSale(slug);
+  // Le sessioni Stripe già avviate (pending) continuano normalmente, anche con
+  // switch OFF: la disponibilità commerciale riguarda solo l'avvio di nuovi acquisti.
+  const saleOpen = pending || isSalePurchasable(sale);
+
   const purchasable = PURCHASABLE_BY_SLUG[slug];
   if (!purchasable) return null;
 
   return (
     <div className="mt-6 w-full space-y-3">
+      {!pending ? <SaleAvailabilityBadge sale={sale} tone={variant} /> : null}
       <button
         type="button"
         onClick={onOpen}
-        disabled={isLoading}
+        disabled={isLoading || !saleOpen}
         aria-busy={isLoading}
+        aria-disabled={!saleOpen}
         className={`${variant === 'gold' ? 'btn-rc-primary shadow-glow-gold-sm' : 'btn-primary shadow-glow-green-sm'} w-full items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed`}
       >
         {isLoading ? (
           <>
             <Loader2 className="h-5 w-5 animate-spin" />
             Preparazione del pagamento in corso...
+          </>
+        ) : !saleOpen ? (
+          <>
+            <Lock className="h-5 w-5" />
+            Non disponibile
           </>
         ) : pending ? (
           <>

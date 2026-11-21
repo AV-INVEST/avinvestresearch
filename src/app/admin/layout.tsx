@@ -15,6 +15,7 @@ import {
   BookOpen,
   KeyRound,
   Users,
+  ShoppingBag,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -39,6 +40,7 @@ const NAV: Array<{ href: string; label: string; Icon: typeof Home }> = [
   { href: '/admin/trading-starter', label: 'AV Trading Starter', Icon: BookOpen },
   { href: '/admin/oltre-il-grafico', label: 'Oltre il Grafico', Icon: FileSearch },
   { href: '/admin/accessi', label: 'Accessi manuali', Icon: KeyRound },
+  { href: '/admin/vendite', label: 'Gestione vendite', Icon: ShoppingBag },
   { href: '/admin/utenti', label: 'Utenti', Icon: Users },
 ];
 
