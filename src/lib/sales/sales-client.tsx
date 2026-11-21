@@ -85,3 +85,48 @@ export function useSales(): SalesState {
 export function useSale(key: SaleProductKey): SaleProductState {
   return useSales().products[key];
 }
+
+/**
+ * Disponibilità delle call orientative per i pulsanti pubblici.
+ *
+ * - Dentro il `SalesProvider` (homepage) legge lo stato condiviso: nessuna
+ *   richiesta aggiuntiva e valore sempre definito.
+ * - Fuori dal provider (es. Navbar nel layout globale) esegue UNA sola lettura
+ *   client dell'endpoint `/api/sales`, riusando la stessa logica e la stessa
+ *   cache/throttle del provider: nessun polling, nessuna connessione permanente.
+ *
+ * Ritorna `null` finché lo stato non è stato letto: il consumatore deve trattare
+ * lo stato sconosciuto come NON cliccabile (nessun link attivo temporaneo).
+ *
+ * Retrocompatibilità: a lettura completata, campo `callsAvailable` assente = true.
+ */
+export function useCallsAvailable(): boolean | null {
+  const ctx = useContext(SalesContext);
+  const [remote, setRemote] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (ctx) return;
+    let cancelled = false;
+    const refresh = async () => {
+      const next = await fetchSalesState();
+      if (!cancelled && next) setRemote(next.callsAvailable);
+    };
+
+    void refresh();
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (Date.now() - lastFetchedAt < MIN_REFRESH_MS) return;
+      void refresh();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [ctx]);
+
+  if (ctx) return ctx.callsAvailable;
+  // `null` = prima lettura non ancora completata: stato sconosciuto, non ON.
+  return remote;
+}

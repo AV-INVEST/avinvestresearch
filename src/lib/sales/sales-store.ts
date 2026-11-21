@@ -53,6 +53,7 @@ export async function saveSalesState(state: SalesState): Promise<SaveSalesResult
   }
   const normalized = normalizeSalesState({
     products: state.products,
+    callsAvailable: state.callsAvailable,
     updatedAt: new Date().toISOString(),
   });
   try {

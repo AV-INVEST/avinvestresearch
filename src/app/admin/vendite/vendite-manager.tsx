@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { AlertCircle, CheckCircle2, Info, Loader2, Minus, Plus } from 'lucide-react';
-import { updateSaleProduct } from './actions';
+import { updateCallsAvailability, updateSaleProduct } from './actions';
 import {
   MAX_SALE_QUANTITY,
   SALE_PRODUCT_KEYS,
@@ -32,6 +32,7 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
   const [banner, setBanner] = useState<{ ok: boolean; text: string } | null>(null);
   const [isPending, startTransition] = useTransition();
   const [savingKey, setSavingKey] = useState<SaleProductKey | null>(null);
+  const [savingCalls, setSavingCalls] = useState(false);
 
   useEffect(() => {
     setDrafts(toDrafts(state));
@@ -50,6 +51,25 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
         setBanner({ ok: false, text: res.error ?? 'Salvataggio non riuscito.' });
       }
       setSavingKey(null);
+    });
+  };
+
+  const applyCalls = (available: boolean) => {
+    if (!storageConfigured || isPending) return;
+    setSavingCalls(true);
+    setBanner(null);
+    startTransition(async () => {
+      const res = await updateCallsAvailability(available);
+      if (res.ok && res.state) {
+        setState(res.state);
+        setBanner({
+          ok: true,
+          text: available ? 'Prenotazioni call aperte.' : 'Call impostate al completo.',
+        });
+      } else {
+        setBanner({ ok: false, text: res.error ?? 'Salvataggio non riuscito.' });
+      }
+      setSavingCalls(false);
     });
   };
 
@@ -211,6 +231,60 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
             </div>
           );
         })}
+      </div>
+
+      <div className="rounded-2xl border border-av-line bg-av-surface/60 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+          <div className="min-w-0">
+            <h3 className="font-display text-base font-semibold text-white">Call orientative</h3>
+            <p className="mt-1 text-xs leading-snug text-av-muted">
+              Controlla i pulsanti &laquo;PRENOTA UNA CALL&raquo; del sito. Le prenotazioni
+              Calendly già esistenti non vengono modificate.
+            </p>
+          </div>
+          <div className="flex flex-none items-center gap-3">
+            <span
+              className={[
+                'inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider',
+                state.callsAvailable
+                  ? 'border-av-green-deep/40 bg-av-green/10 text-av-green'
+                  : 'border-av-line bg-av-bg-2/70 text-av-muted',
+              ].join(' ')}
+            >
+              {state.callsAvailable ? 'Prenotazioni aperte' : 'Call al completo'}
+            </span>
+            {savingCalls ? (
+              <span className="inline-flex items-center gap-1 text-[11px] text-av-muted">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Salvataggio...
+              </span>
+            ) : null}
+            <button
+              type="button"
+              role="switch"
+              aria-checked={state.callsAvailable}
+              aria-label="Prenotazioni call orientative"
+              disabled={!storageConfigured || isPending}
+              onClick={() => applyCalls(!state.callsAvailable)}
+              className={[
+                'relative inline-flex h-6 w-11 flex-none items-center rounded-full border transition-colors disabled:opacity-50',
+                state.callsAvailable
+                  ? 'border-av-green-deep/60 bg-av-green/30'
+                  : 'border-av-line bg-av-bg-2',
+              ].join(' ')}
+            >
+              <span
+                aria-hidden="true"
+                className={[
+                  'inline-block h-4 w-4 transform rounded-full transition-transform',
+                  state.callsAvailable
+                    ? 'translate-x-6 bg-av-green'
+                    : 'translate-x-1 bg-av-muted',
+                ].join(' ')}
+              />
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="flex items-start gap-2.5 rounded-xl border border-av-line bg-av-bg-2/40 px-4 py-3 text-xs leading-relaxed text-av-muted">

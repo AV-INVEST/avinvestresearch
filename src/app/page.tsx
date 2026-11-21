@@ -45,22 +45,22 @@ export default async function HomePage() {
           entitlements={entitlements ?? undefined}
           isAuthenticated={Boolean(session?.user)}
         />
+        <OltreIlGrafico entitlement={entitlements?.oltreIlGrafico} />
+        <Method />
+        <section
+          aria-label="Candlestick showcase: scenari educativi"
+          className="relative py-4 sm:py-0 sm:mt-4 scroll-mt-28"
+        >
+          <div className="container-page">
+            <CandlestickShowcase />
+          </div>
+        </section>
+        <PerformanceSection />
+        <ResearchClub />
+        <About />
+        <Testimonials />
+        <CallMe />
       </SalesProvider>
-      <OltreIlGrafico entitlement={entitlements?.oltreIlGrafico} />
-      <Method />
-      <section
-        aria-label="Candlestick showcase: scenari educativi"
-        className="relative py-4 sm:py-0 sm:mt-4 scroll-mt-28"
-      >
-        <div className="container-page">
-          <CandlestickShowcase />
-        </div>
-      </section>
-      <PerformanceSection />
-      <ResearchClub />
-      <About />
-      <Testimonials />
-      <CallMe />
       <FAQ />
       <FinalCTA />
     </>

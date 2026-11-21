@@ -25,6 +25,11 @@ export interface SaleProductState {
 
 export interface SalesState {
   products: Record<SaleProductKey, SaleProductState>;
+  /**
+   * Prenotazioni delle call orientative: controlla i pulsanti pubblici
+   * "PRENOTA UNA CALL". Retrocompatibilità: se assente vale true (aperte).
+   */
+  callsAvailable: boolean;
   updatedAt: string | null;
 }
 
@@ -52,6 +57,7 @@ export function buildDefaultSalesState(): SalesState {
       'trading-lab': { available: true, quantity: null },
       'complete-academy': { available: true, quantity: null },
     },
+    callsAvailable: true,
     updatedAt: null,
   };
 }
@@ -86,6 +92,11 @@ export function normalizeSalesState(raw: unknown): SalesState {
 
   const updatedAt = (raw as { updatedAt?: unknown }).updatedAt;
   base.updatedAt = typeof updatedAt === 'string' ? updatedAt : null;
+
+  // Retrocompatibilità: se il campo non esiste, le call restano aperte (ON).
+  const callsAvailable = (raw as { callsAvailable?: unknown }).callsAvailable;
+  base.callsAvailable = callsAvailable === undefined ? true : Boolean(callsAvailable);
+
   return base;
 }
 

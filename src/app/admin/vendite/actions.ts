@@ -81,3 +81,31 @@ export async function updateSaleProduct(
 
   return { ok: true, message: 'Impostazioni salvate.', state: saved.state };
 }
+
+/**
+ * Attiva/disattiva le prenotazioni delle call orientative. Riusa lo stesso
+ * file JSON su Vercel Blob e non tocca i quattro prodotti.
+ */
+export async function updateCallsAvailability(available: boolean): Promise<SalesActionResult> {
+  const guard = await requireSalesAdmin();
+  if (!guard.ok) return { ok: false, error: guard.error };
+
+  if (!isSalesStorageConfigured()) {
+    return {
+      ok: false,
+      error:
+        'Storage Vercel Blob non configurato. Imposta BLOB_READ_WRITE_TOKEN per salvare le impostazioni.',
+    };
+  }
+
+  const current = await getSalesState();
+  const next: SalesState = { ...current, callsAvailable: Boolean(available) };
+
+  const saved = await saveSalesState(next);
+  if (!saved.ok) return { ok: false, error: saved.error };
+
+  revalidatePath('/admin/vendite');
+  revalidatePath('/');
+
+  return { ok: true, message: 'Impostazioni salvate.', state: saved.state };
+}

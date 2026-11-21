@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { Menu, X, Phone, User } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { siteConfig } from '@/config/siteConfig';
+import CallBookingButton from '@/components/ui/CallBookingButton';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -146,16 +147,13 @@ export default function Navbar() {
               </Link>
             )
           ) : null}
-          <a
-            href={siteConfig.calendlyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <CallBookingButton
+            variant="nav"
             className="btn-primary !py-2.5 !px-3.5 text-sm shadow-glow-green-sm whitespace-nowrap"
-            aria-label="Prenota una call - Link Calendly (si apre in una nuova scheda)"
-          >
-            <Phone className="h-4 w-4 flex-none" />
-            <span className="truncate">PRENOTA UNA CALL</span>
-          </a>
+            ariaLabel="Prenota una call - Link Calendly (si apre in una nuova scheda)"
+            iconClassName="h-4 w-4"
+            truncateLabel
+          />
         </div>
 
         <button

@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { ArrowRight, Phone } from 'lucide-react';
-import { siteConfig } from '@/config/siteConfig';
+import { ArrowRight } from 'lucide-react';
 import GridBackground from '@/components/visuals/GridBackground';
 import NeonBeams from '@/components/visuals/NeonBeams';
 import HeroChartSVG from '@/components/visuals/HeroChartSVG';
 import HeroAvailabilityBar from '@/components/sections/HeroAvailabilityBar';
+import CallBookingButton from '@/components/ui/CallBookingButton';
 
 export default function Hero() {
   return (
@@ -56,16 +56,11 @@ export default function Hero() {
                 SCOPRI I PRODOTTI
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <a
-                href={siteConfig.calendlyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <CallBookingButton
+                variant="lg"
                 className="btn-primary-lg shadow-glow-green inline-flex items-center justify-center gap-2"
-                aria-label="Prenota una call orientativa (link esterno, si apre in nuova scheda)"
-              >
-                <Phone className="h-5 w-5" />
-                PRENOTA UNA CALL
-              </a>
+                ariaLabel="Prenota una call orientativa (link esterno, si apre in nuova scheda)"
+              />
             </div>
 
             <HeroAvailabilityBar />
