@@ -2,24 +2,12 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen, CirclePlay, Eye, GraduationCap } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 
-function formatPrice(value: number, currency: string, decimals = 0) {
-  return new Intl.NumberFormat('it-IT', {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: decimals,
-    minimumFractionDigits: decimals,
-  }).format(value);
-}
-
 const shortcuts = [
   {
     href: '/#trading-starter',
     icon: BookOpen,
     title: siteConfig.tradingStarter.title,
     meta: 'Guida PDF · entry-level',
-    price: siteConfig.tradingStarter.price,
-    currency: siteConfig.tradingStarter.currency,
-    decimals: 2,
     accent: 'text-av-green border-av-green-deep/40 bg-av-green/10',
   },
   {
@@ -27,9 +15,6 @@ const shortcuts = [
     icon: Eye,
     title: siteConfig.marketLens.title,
     meta: 'Indicatore one-time',
-    price: siteConfig.marketLens.price,
-    currency: siteConfig.marketLens.currency,
-    decimals: 2,
     accent: 'text-av-green border-av-green-deep/40 bg-av-green/10',
   },
   {
@@ -37,9 +22,6 @@ const shortcuts = [
     icon: GraduationCap,
     title: 'AV Complete Academy',
     meta: 'Foundations + Trading Lab',
-    price: siteConfig.courseBundle.price,
-    currency: siteConfig.courseBundle.currency,
-    decimals: 0,
     accent: 'text-[#EBD9A8] border-[#C9A961]/45 bg-[#C9A961]/10',
   },
 ];
@@ -91,19 +73,14 @@ export default function OfferOverview() {
                   <Icon className="h-5 w-5" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold text-white">
+                  <span className="block text-sm font-semibold leading-snug text-white">
                     {item.title}
                   </span>
-                  <span className="mt-0.5 block truncate text-[11px] uppercase tracking-wider text-av-muted">
+                  <span className="mt-0.5 block text-[11px] uppercase tracking-wider text-av-muted">
                     {item.meta}
                   </span>
                 </span>
-                <span className="flex flex-none items-center gap-1.5">
-                  <span className="font-display text-sm font-semibold text-white">
-                    {formatPrice(item.price, item.currency, item.decimals)}
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5 text-av-muted transition-transform group-hover:translate-x-0.5 group-hover:text-av-green" />
-                </span>
+                <ArrowRight className="h-3.5 w-3.5 flex-none text-av-muted transition-transform group-hover:translate-x-0.5 group-hover:text-av-green" />
               </Link>
             );
           })}

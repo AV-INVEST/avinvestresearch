@@ -84,8 +84,11 @@ export default function HeroAvailabilityBar() {
         </span>
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hidden pb-1 sm:flex-wrap sm:pb-0">
-        {items.map((it) => {
+      <div className="mt-3 grid grid-cols-1 gap-2 lg:grid-cols-2">
+        {items.map((it, index) => {
+          // Desktop: il primo badge occupa l'intera riga quando il numero di
+          // elementi è dispari (o singolo), così la griglia resta senza buchi.
+          const isWide = items.length === 1 || (items.length % 2 === 1 && index === 0);
           const dotClass = it.closed
             ? 'bg-av-muted/50'
             : it.tone === 'green'
@@ -106,7 +109,7 @@ export default function HeroAvailabilityBar() {
             <Link
               key={it.key}
               href={it.href}
-              className={`group inline-flex shrink-0 items-center gap-2.5 rounded-xl border px-3 py-2 transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-av-green sm:min-w-0 ${boxClass}`}
+              className={`group flex w-full min-w-0 items-center gap-2.5 rounded-xl border px-3 py-2 transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-av-green ${isWide ? 'lg:col-span-2' : ''} ${boxClass}`}
             >
               <span className={`h-1.5 w-1.5 flex-none rounded-full ${dotClass}`} aria-hidden="true" />
               <span className="flex min-w-0 flex-col leading-none">
