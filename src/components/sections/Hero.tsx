@@ -4,8 +4,7 @@ import { siteConfig } from '@/config/siteConfig';
 import GridBackground from '@/components/visuals/GridBackground';
 import NeonBeams from '@/components/visuals/NeonBeams';
 import HeroChartSVG from '@/components/visuals/HeroChartSVG';
-
-const pillars = ['Metodo', 'Dati', 'Disciplina'];
+import HeroAvailabilityBar from '@/components/sections/HeroAvailabilityBar';
 
 export default function Hero() {
   return (
@@ -69,16 +68,7 @@ export default function Hero() {
               </a>
             </div>
 
-            <div
-              className="mt-10 flex flex-wrap items-center gap-2 animate-fade-in-up [animation-delay:500ms]"
-            >
-              {pillars.map((p) => (
-                <span key={p} className="chip">
-                  <span className="h-1.5 w-1.5 rounded-full bg-av-green" />
-                  {p}
-                </span>
-              ))}
-            </div>
+            <HeroAvailabilityBar />
           </div>
 
           <div className="relative lg:col-span-5">

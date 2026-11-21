@@ -150,7 +150,7 @@ export default function MarketLensCheckoutButton({
 
   return (
     <div className={`w-full space-y-3 ${className}`}>
-      {!isResume ? <SaleAvailabilityBadge sale={sale} /> : null}
+      {!isResume ? <SaleAvailabilityBadge sale={sale} kind="download" /> : null}
       <button
         type="button"
         onClick={onOpen}

@@ -1,7 +1,12 @@
 'use client';
 
 import { CheckCircle2, Lock } from 'lucide-react';
-import { isSalePurchasable, type SaleProductState } from '@/lib/sales/sales-shared';
+import {
+  isSalePurchasable,
+  saleAvailabilityLabel,
+  type SaleAvailabilityKind,
+  type SaleProductState,
+} from '@/lib/sales/sales-shared';
 
 type Tone = 'green' | 'gold';
 
@@ -20,13 +25,17 @@ const LOCKED_STYLES =
  *   (non è un conteggio automatico degli acquisti).
  * - Switch OFF oppure quantità a zero: "Vendite chiuse".
  * - Switch ON senza quantità configurata: nessun badge.
+ *
+ * `kind` distingue AV Market Lens (download) dai videocorsi (posti).
  */
 export default function SaleAvailabilityBadge({
   sale,
   tone = 'green',
+  kind = 'seat',
 }: {
   sale: SaleProductState;
   tone?: Tone;
+  kind?: SaleAvailabilityKind;
 }) {
   if (isSalePurchasable(sale)) {
     if (sale.quantity === null || sale.quantity <= 0) return null;
@@ -35,7 +44,7 @@ export default function SaleAvailabilityBadge({
         className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${OPEN_STYLES[tone]}`}
       >
         <CheckCircle2 className="h-3.5 w-3.5" />
-        {sale.quantity} {sale.quantity === 1 ? 'accesso' : 'accessi'} disponibili
+        {saleAvailabilityLabel(kind, sale.quantity)}
       </span>
     );
   }

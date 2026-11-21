@@ -42,6 +42,11 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
       answer:
         'Puoi pagare con le principali carte di credito e debito tramite Stripe. Gli eventuali altri metodi disponibili vengono mostrati direttamente durante il checkout. I pagamenti sono gestiti tramite una connessione sicura.',
     },
+    {
+      question: 'Perché alcuni prodotti hanno disponibilità limitata?',
+      answer:
+        'AV-INVEST Research può rendere disponibili i propri prodotti digitali in quantità e periodi di vendita selezionati. Le disponibilità sono stabilite e aggiornate dal titolare e possono variare nel tempo. Se un prodotto risulta non disponibile, non è possibile avviare un nuovo acquisto tramite il relativo pulsante. Chi ha già acquistato mantiene regolarmente l\'accesso ai propri contenuti e ai download dall\'area membri.',
+    },
   ],
   videocorso: [
     {

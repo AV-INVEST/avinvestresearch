@@ -32,14 +32,14 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
-      <div aria-hidden="true" className="relative -mt-4">
-        <MarketLine className="opacity-70" />
-      </div>
-      <Positioning />
-      <OfferOverview />
-      <TradingStarter entitlement={entitlements?.tradingStarter} />
       <SalesProvider initialState={salesState ?? buildDefaultSalesState()}>
+        <Hero />
+        <div aria-hidden="true" className="relative -mt-4">
+          <MarketLine className="opacity-70" />
+        </div>
+        <Positioning />
+        <OfferOverview />
+        <TradingStarter entitlement={entitlements?.tradingStarter} />
         <MarketLens entitlement={entitlements?.marketLens} />
         <Courses
           entitlements={entitlements ?? undefined}

@@ -97,3 +97,28 @@ export function normalizeSalesState(raw: unknown): SalesState {
 export function isSalePurchasable(product: SaleProductState): boolean {
   return product.available && (product.quantity === null || product.quantity > 0);
 }
+
+/**
+ * Tipo di accesso commerciale mostrato nel badge:
+ * - "download": AV Market Lens (file scaricabili).
+ * - "seat": AV Foundations, AV Trading Lab, AV Complete Academy (posti).
+ */
+export type SaleAvailabilityKind = 'download' | 'seat';
+
+/**
+ * Etichetta del badge per una quantità positiva decisa dall'amministratore.
+ * Singolare e plurale gestiti per tipo di accesso.
+ */
+export function saleAvailabilityLabel(
+  kind: SaleAvailabilityKind,
+  quantity: number,
+): string {
+  if (kind === 'download') {
+    return quantity === 1
+      ? 'ULTIMO DOWNLOAD DISPONIBILE'
+      : `ULTIMI ${quantity} DOWNLOAD DISPONIBILI`;
+  }
+  return quantity === 1
+    ? 'ULTIMO POSTO DISPONIBILE'
+    : `ULTIMI ${quantity} POSTI DISPONIBILI`;
+}
