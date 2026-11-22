@@ -345,6 +345,20 @@ export default function TerminiPage() {
           regole di protezione dei dati personali descritte nella Privacy
           Policy.
         </p>
+        <p className="mt-2">
+          <strong className="text-white">Promozioni e codici sconto.</strong>{' '}
+          Il Titolare pu&ograve; proporre periodicamente campagne promozionali e
+          codici sconto applicabili ai prodotti e servizi indicati nelle
+          relative offerte. Ciascuna promozione pu&ograve; prevedere specifiche
+          condizioni di utilizzo, limiti temporali, restrizioni sui prodotti
+          ammessi ed eventuali limitazioni di cumulabilit&agrave;, comunicate
+          al consumatore in modo chiaro prima dell&apos;acquisto. I codici
+          devono essere inseriti durante il checkout e lo sconto viene applicato
+          esclusivamente quando il codice &egrave; valido e le relative
+          condizioni sono soddisfatte. Non sono previsti sconti retroattivi
+          sugli acquisti gi&agrave; conclusi, salvo quanto previsto dalla
+          normativa applicabile.
+        </p>
       </section>
 
       <section>

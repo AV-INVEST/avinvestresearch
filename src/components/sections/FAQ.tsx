@@ -47,6 +47,11 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
       answer:
         'AV-INVEST Research può rendere disponibili i propri prodotti digitali in quantità e periodi di vendita selezionati. Le disponibilità sono stabilite e aggiornate dal titolare e possono variare nel tempo. Se un prodotto risulta non disponibile, non è possibile avviare un nuovo acquisto tramite il relativo pulsante. Chi ha già acquistato mantiene regolarmente l\'accesso ai propri contenuti e ai download dall\'area membri.',
     },
+    {
+      question: 'Come funzionano i codici sconto e le promozioni?',
+      answer:
+        "AV-INVEST Research può attivare periodicamente promozioni su prodotti digitali e percorsi formativi. Quando disponibile, inserisci il codice promozionale nell'apposito campo del checkout Stripe. Lo sconto viene applicato se il codice è valido e sono rispettate le condizioni della promozione, comprese eventuali scadenze o esclusioni. Le promozioni non sono retroattive e non modificano gli accessi già acquistati.",
+    },
   ],
   videocorso: [
     {
@@ -177,8 +182,7 @@ export default function FAQ() {
             Domande frequenti. <span className="text-av-green">Risposte chiare.</span>
           </h2>
           <p className="mt-5 body-lg">
-            Se non trovi quello che cerchi, prenota una call: rispondiamo a ogni dubbio
-            senza giri di parole.
+            Qui trovi le risposte alle domande più comuni sui nostri prodotti, gli acquisti e i servizi.
           </p>
         </div>
 
