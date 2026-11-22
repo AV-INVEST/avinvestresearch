@@ -5,6 +5,7 @@ import NeonBeams from '@/components/visuals/NeonBeams';
 import HeroChartSVG from '@/components/visuals/HeroChartSVG';
 import HeroAvailabilityBar from '@/components/sections/HeroAvailabilityBar';
 import CallBookingButton from '@/components/ui/CallBookingButton';
+import PromotionBanner from '@/components/sales/PromotionBanner';
 
 export default function Hero() {
   return (
@@ -45,6 +46,8 @@ export default function Hero() {
               decisioni più consapevoli. Nessun segnale. Nessuna promessa. Solo
               competenze.
             </p>
+
+            <PromotionBanner />
 
             <div
               className="mt-8 flex flex-col gap-3 animate-fade-in-up [animation-delay:360ms] sm:flex-row sm:flex-wrap"

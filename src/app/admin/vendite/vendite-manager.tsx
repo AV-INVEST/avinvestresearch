@@ -2,14 +2,25 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { AlertCircle, CheckCircle2, Info, Loader2, Minus, Plus } from 'lucide-react';
-import { updateCallsAvailability, updateSaleProduct } from './actions';
+import { updateCallsAvailability, updatePromotion, updateSaleProduct } from './actions';
 import {
   MAX_SALE_QUANTITY,
+  PROMOTION_MAX,
+  PROMOTION_THEMES,
   SALE_PRODUCT_KEYS,
   clampQuantity,
+  type PromotionState,
+  type PromotionTheme,
   type SaleProductKey,
   type SalesState,
 } from '@/lib/sales/sales-shared';
+import { PromotionBannerView } from '@/components/sales/PromotionBanner';
+
+const PROMOTION_THEME_LABELS: Record<PromotionTheme, string> = {
+  gold: 'Oro / Champagne',
+  green: 'Verde neon',
+  anthracite: 'Antracite',
+};
 
 const PRODUCT_META: Record<SaleProductKey, { title: string; note: string }> = {
   'market-lens': { title: 'AV Market Lens', note: 'Indicatore one-time' },
@@ -33,6 +44,41 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
   const [isPending, startTransition] = useTransition();
   const [savingKey, setSavingKey] = useState<SaleProductKey | null>(null);
   const [savingCalls, setSavingCalls] = useState(false);
+  // Campagna promozionale: `state.promotion` è la verità salvata, `promoDraft`
+  // la copia modificabile localmente. Nessuna scrittura per carattere digitato.
+  const [promoDraft, setPromoDraft] = useState<PromotionState>(initial.promotion);
+  const [savingPromo, setSavingPromo] = useState(false);
+
+  const promoDirty =
+    promoDraft.campaignName !== state.promotion.campaignName ||
+    promoDraft.headline !== state.promotion.headline ||
+    promoDraft.description !== state.promotion.description ||
+    promoDraft.code !== state.promotion.code ||
+    promoDraft.theme !== state.promotion.theme;
+
+  const setPromoField = <K extends keyof PromotionState>(key: K, value: PromotionState[K]) =>
+    setPromoDraft((d) => ({ ...d, [key]: value }));
+
+  const applyPromotion = (
+    payload: Parameters<typeof updatePromotion>[0],
+    onOk: (saved: PromotionState, sentEnabled: boolean) => void,
+    okText: (saved: PromotionState) => string,
+  ) => {
+    if (!storageConfigured || isPending) return;
+    setSavingPromo(true);
+    setBanner(null);
+    startTransition(async () => {
+      const res = await updatePromotion(payload);
+      if (res.ok && res.state) {
+        setState(res.state);
+        onOk(res.state.promotion, payload.enabled === true);
+        setBanner({ ok: true, text: okText(res.state.promotion) });
+      } else {
+        setBanner({ ok: false, text: res.error ?? 'Salvataggio non riuscito.' });
+      }
+      setSavingPromo(false);
+    });
+  };
 
   useEffect(() => {
     setDrafts(toDrafts(state));
@@ -71,6 +117,35 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
       }
       setSavingCalls(false);
     });
+  };
+
+  /** Switch ON/OFF salvato direttamente. ON invia i testi correnti così da
+   *  validare subito nome, titolo e codice; OFF preserva i testi salvati. */
+  const togglePromotion = () => {
+    const next = !state.promotion.enabled;
+    applyPromotion(
+      next ? { ...promoDraft, enabled: true } : { enabled: false },
+      (saved) => {
+        setPromoDraft(next ? saved : (d) => ({ ...d, enabled: false }));
+      },
+      (saved) => (saved.enabled ? 'Campagna promozionale attivata.' : 'Campagna promozionale disattivata.'),
+    );
+  };
+
+  /** Salva l'intera campagna con un solo click (testi, tema e stato). */
+  const savePromotion = () => {
+    applyPromotion(
+      { ...promoDraft },
+      (saved) => setPromoDraft(saved),
+      () => 'Campagna promozionale salvata.',
+    );
+  };
+
+  const previewPromotion: PromotionState = {
+    ...promoDraft,
+    campaignName: promoDraft.campaignName || 'NOME CAMPAGNA',
+    headline: promoDraft.headline || 'Titolo promozionale di esempio.',
+    code: promoDraft.code || 'CODICE',
   };
 
   const commitQuantity = (key: SaleProductKey) => {
@@ -284,6 +359,188 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
               />
             </button>
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-av-line bg-av-surface/60 p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+          <div className="min-w-0">
+            <h3 className="font-display text-base font-semibold text-white">
+              Campagna promozionale
+            </h3>
+            <p className="mt-1 text-xs leading-snug text-av-muted">
+              Banner riutilizzabile tutto l&apos;anno nella Hero della homepage. Il codice è solo
+              comunicativo: viene creato e gestito manualmente nella Dashboard Stripe e non è
+              applicato automaticamente al checkout.
+            </p>
+          </div>
+          <div className="flex flex-none items-center gap-3">
+            <span
+              className={[
+                'inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider',
+                state.promotion.enabled
+                  ? 'border-av-green-deep/40 bg-av-green/10 text-av-green'
+                  : 'border-av-line bg-av-bg-2/70 text-av-muted',
+              ].join(' ')}
+            >
+              {state.promotion.enabled ? 'Attiva' : 'Disattivata'}
+            </span>
+            {savingPromo ? (
+              <span className="inline-flex items-center gap-1 text-[11px] text-av-muted">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Salvataggio...
+              </span>
+            ) : null}
+            <button
+              type="button"
+              role="switch"
+              aria-checked={state.promotion.enabled}
+              aria-label="Banner promozionale attivo"
+              disabled={!storageConfigured || isPending}
+              onClick={togglePromotion}
+              className={[
+                'relative inline-flex h-6 w-11 flex-none items-center rounded-full border transition-colors disabled:opacity-50',
+                state.promotion.enabled
+                  ? 'border-av-green-deep/60 bg-av-green/30'
+                  : 'border-av-line bg-av-bg-2',
+              ].join(' ')}
+            >
+              <span
+                aria-hidden="true"
+                className={[
+                  'inline-block h-4 w-4 transform rounded-full transition-transform',
+                  state.promotion.enabled
+                    ? 'translate-x-6 bg-av-green'
+                    : 'translate-x-1 bg-av-muted',
+                ].join(' ')}
+              />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Nome campagna
+            </span>
+            <input
+              type="text"
+              value={promoDraft.campaignName}
+              maxLength={PROMOTION_MAX.campaignName}
+              disabled={!storageConfigured}
+              onChange={(e) => setPromoField('campaignName', e.target.value)}
+              placeholder="BLACK FRIDAY"
+              className="mt-2 h-9 w-full min-w-0 rounded-lg border border-av-line bg-av-bg-2/60 px-3 text-sm text-white placeholder:text-av-muted/70 focus:border-av-green-deep/60 focus:outline-none"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Codice sconto
+            </span>
+            <input
+              type="text"
+              value={promoDraft.code}
+              maxLength={PROMOTION_MAX.code}
+              disabled={!storageConfigured}
+              onChange={(e) => setPromoField('code', e.target.value)}
+              placeholder="AVFRIDAY20"
+              className="mt-2 h-9 w-full min-w-0 rounded-lg border border-av-line bg-av-bg-2/60 px-3 font-mono text-sm tracking-wider text-white placeholder:font-sans placeholder:tracking-normal placeholder:text-av-muted/70 focus:border-av-green-deep/60 focus:outline-none"
+            />
+          </label>
+
+          <label className="block sm:col-span-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Titolo promozionale
+            </span>
+            <input
+              type="text"
+              value={promoDraft.headline}
+              maxLength={PROMOTION_MAX.headline}
+              disabled={!storageConfigured}
+              onChange={(e) => setPromoField('headline', e.target.value)}
+              placeholder="La formazione che cercavi. Ora con il 20% di sconto."
+              className="mt-2 h-9 w-full min-w-0 rounded-lg border border-av-line bg-av-bg-2/60 px-3 text-sm text-white placeholder:text-av-muted/70 focus:border-av-green-deep/60 focus:outline-none"
+            />
+          </label>
+
+          <label className="block sm:col-span-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Descrizione
+            </span>
+            <textarea
+              value={promoDraft.description}
+              maxLength={PROMOTION_MAX.description}
+              rows={2}
+              disabled={!storageConfigured}
+              onChange={(e) => setPromoField('description', e.target.value)}
+              placeholder="Su prodotti selezionati, utilizza il codice promozionale al checkout."
+              className="mt-2 w-full min-w-0 resize-none rounded-lg border border-av-line bg-av-bg-2/60 px-3 py-2 text-sm leading-relaxed text-white placeholder:text-av-muted/70 focus:border-av-green-deep/60 focus:outline-none"
+            />
+          </label>
+
+          <div className="sm:col-span-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Tema colore
+            </span>
+            <div role="radiogroup" aria-label="Tema colore banner" className="mt-2 flex flex-wrap gap-2">
+              {PROMOTION_THEMES.map((theme) => {
+                const active = promoDraft.theme === theme;
+                const dotClass =
+                  theme === 'gold'
+                    ? 'bg-[#C9A961]'
+                    : theme === 'green'
+                      ? 'bg-av-green'
+                      : 'bg-white/70';
+                return (
+                  <button
+                    key={theme}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    disabled={!storageConfigured}
+                    onClick={() => setPromoField('theme', theme)}
+                    className={[
+                      'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50',
+                      active
+                        ? 'border-av-green-deep/60 bg-av-green/10 text-white'
+                        : 'border-av-line bg-av-bg-2/60 text-av-muted hover:text-white',
+                    ].join(' ')}
+                  >
+                    <span aria-hidden="true" className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
+                    {PROMOTION_THEME_LABELS[theme]}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+            Anteprima
+          </p>
+          <div className="mt-2">
+            <PromotionBannerView promotion={previewPromotion} />
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={savePromotion}
+            disabled={!storageConfigured || isPending || !promoDirty}
+            className="inline-flex items-center gap-2 rounded-xl bg-av-green px-4 py-2.5 text-sm font-semibold text-black transition-all duration-200 hover:bg-white focus-visible:outline-av-green disabled:opacity-40 disabled:hover:bg-av-green"
+          >
+            {savingPromo ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            SALVA MODIFICHE
+          </button>
+          {promoDirty ? (
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200">
+              <AlertCircle className="h-3.5 w-3.5" />
+              Modifiche non salvate
+            </span>
+          ) : null}
         </div>
       </div>
 

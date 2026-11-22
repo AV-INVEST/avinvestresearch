@@ -23,6 +23,28 @@ export interface SaleProductState {
   quantity: number | null;
 }
 
+/** Temi colore prestabiliti del banner promozionale (nessun color picker libero). */
+export type PromotionTheme = 'gold' | 'green' | 'anthracite';
+
+/**
+ * Campagna promozionale gestibile dall'amministratore. Il codice è puramente
+ * comunicativo: non viene applicato automaticamente al checkout Stripe.
+ */
+export interface PromotionState {
+  /** Switch ON/OFF del banner nella Hero. All'avvio è sempre OFF. */
+  enabled: boolean;
+  /** Etichetta premium (es. BLACK FRIDAY). */
+  campaignName: string;
+  /** Titolo promozionale. */
+  headline: string;
+  /** Descrizione breve secondaria. */
+  description: string;
+  /** Codice sconto mostrato nel banner (comunicativo). */
+  code: string;
+  /** Tema colore prestabilito. */
+  theme: PromotionTheme;
+}
+
 export interface SalesState {
   products: Record<SaleProductKey, SaleProductState>;
   /**
@@ -30,6 +52,8 @@ export interface SalesState {
    * "PRENOTA UNA CALL". Retrocompatibilità: se assente vale true (aperte).
    */
   callsAvailable: boolean;
+  /** Campagna promozionale del banner Hero. Retrocompatibilità: se assente è OFF. */
+  promotion: PromotionState;
   updatedAt: string | null;
 }
 
@@ -44,10 +68,21 @@ export const SALES_STORAGE_KEY = 'admin/sales-state.json';
 
 export const MAX_SALE_QUANTITY = 1_000_000;
 
+export const PROMOTION_THEMES: readonly PromotionTheme[] = ['gold', 'green', 'anthracite'] as const;
+
+/** Limiti di lunghezza validati lato server per i testi della campagna. */
+export const PROMOTION_MAX = {
+  campaignName: 40,
+  headline: 120,
+  description: 200,
+  code: 40,
+} as const;
+
 /**
  * Stato di default: preserva la disponibilità commerciale attuale.
  * Le quantità non sono configurate, quindi nessun numero è mostrato
  * finché l'amministratore non le imposta.
+ * La campagna promozionale parte sempre OFF, per non modificare la homepage.
  */
 export function buildDefaultSalesState(): SalesState {
   return {
@@ -58,8 +93,52 @@ export function buildDefaultSalesState(): SalesState {
       'complete-academy': { available: true, quantity: null },
     },
     callsAvailable: true,
+    promotion: buildDefaultPromotion(),
     updatedAt: null,
   };
+}
+
+export function buildDefaultPromotion(): PromotionState {
+  return {
+    enabled: false,
+    campaignName: '',
+    headline: '',
+    description: '',
+    code: '',
+    theme: 'gold',
+  };
+}
+
+function clampText(value: unknown, max: number): string {
+  return typeof value === 'string' ? value.trim().slice(0, max) : '';
+}
+
+/** Normalizza la campagna: valori mancanti o non validi ricadono sui default (OFF). */
+export function normalizePromotion(raw: unknown): PromotionState {
+  const base = buildDefaultPromotion();
+  if (!raw || typeof raw !== 'object') return base;
+  const r = raw as Record<string, unknown>;
+  base.enabled = r.enabled === true;
+  base.campaignName = clampText(r.campaignName, PROMOTION_MAX.campaignName);
+  base.headline = clampText(r.headline, PROMOTION_MAX.headline);
+  base.description = clampText(r.description, PROMOTION_MAX.description);
+  base.code = clampText(r.code, PROMOTION_MAX.code);
+  base.theme = PROMOTION_THEMES.includes(r.theme as PromotionTheme)
+    ? (r.theme as PromotionTheme)
+    : 'gold';
+  return base;
+}
+
+/**
+ * Una campagna è attivabile solo con nome, titolo e codice non vuoti:
+ * evita banner vuoti o incompleti.
+ */
+export function isPromotionComplete(promotion: PromotionState): boolean {
+  return (
+    promotion.campaignName.trim().length > 0 &&
+    promotion.headline.trim().length > 0 &&
+    promotion.code.trim().length > 0
+  );
 }
 
 export function clampQuantity(value: unknown): number | null {
@@ -96,6 +175,9 @@ export function normalizeSalesState(raw: unknown): SalesState {
   // Retrocompatibilità: se il campo non esiste, le call restano aperte (ON).
   const callsAvailable = (raw as { callsAvailable?: unknown }).callsAvailable;
   base.callsAvailable = callsAvailable === undefined ? true : Boolean(callsAvailable);
+
+  // Retrocompatibilità: promozione assente nel JSON esistente = campagna OFF.
+  base.promotion = normalizePromotion((raw as { promotion?: unknown }).promotion);
 
   return base;
 }
