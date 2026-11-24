@@ -191,7 +191,7 @@ export default function ResearchClubCheckoutButton({
       {modalOpen && mounted
         ? createPortal(
             <div
-              className="fixed inset-0 z-[999] flex items-end justify-center sm:items-center p-0 sm:p-4"
+              className="fixed inset-0 z-[999] flex items-center justify-center px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-4"
               role="presentation"
             >
               <div
@@ -204,15 +204,15 @@ export default function ResearchClubCheckoutButton({
                 aria-modal="true"
                 aria-labelledby="rc-consent-title"
                 aria-describedby="rc-consent-desc"
-                className="relative z-10 w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl border border-av-line bg-av-surface p-5 sm:p-6 shadow-2xl animate-fade-in-up focus:outline-none"
+                className="relative z-10 flex w-full max-w-lg max-h-[86dvh] sm:max-h-[92vh] flex-col overflow-hidden rounded-2xl border border-av-line bg-av-surface p-4 sm:p-6 shadow-2xl animate-fade-in-up focus:outline-none"
                 tabIndex={-1}
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-none items-start justify-between gap-2 sm:gap-3">
                   <div>
                     <span className="eyebrow">Passaggio obbligatorio</span>
                     <h3
                       id="rc-consent-title"
-                      className="mt-2 font-display text-xl sm:text-2xl font-semibold text-white"
+                      className="mt-1.5 font-display text-lg font-semibold text-white sm:mt-2 sm:text-2xl"
                     >
                       Conferma per AV Research Club
                     </h3>
@@ -227,72 +227,74 @@ export default function ResearchClubCheckoutButton({
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <p
-                  id="rc-consent-desc"
-                  className="mt-3 text-sm leading-relaxed text-av-muted"
-                >
-                  Prima di procedere al pagamento, conferma l&apos;opzione seguente.
-                  &Egrave; obbligatoria per completare l&apos;abbonamento.
-                </p>
-
-                <div className="mt-5 space-y-3">
-                  <label
-                    htmlFor="rc-consent-terms"
-                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
-                      acceptTerms
-                        ? 'border-[#C9A961]/60 bg-[#C9A961]/10'
-                        : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
-                    }`}
+                <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-0.5 sm:mt-4">
+                  <p
+                    id="rc-consent-desc"
+                    className="text-sm leading-relaxed text-av-muted"
                   >
-                    <input
-                      id="rc-consent-terms"
-                      type="checkbox"
-                      checked={acceptTerms}
-                      onChange={(e) => setAcceptTerms(e.target.checked)}
-                      aria-required="true"
-                      className="mt-0.5 h-4 w-4 flex-none accent-[#C9A961]"
-                    />
-                    <span className="text-sm leading-relaxed text-white/90">
-                      Dichiaro di avere almeno 18 anni, accetto i{' '}
-                      <a
-                        href="/termini"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="underline decoration-[#C9A961] underline-offset-2 hover:text-[#C9A961]"
-                      >
-                        Termini e condizioni
-                      </a>{' '}
-                      e confermo l&apos;abbonamento AV Research Club a 19,90 &euro; al mese, con rinnovo automatico fino alla disdetta.
-                    </span>
-                  </label>
-                </div>
-
-                <div
-                  className={`mt-5 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${
-                    acceptTerms
-                      ? 'border-[#C9A961]/40 bg-[#C9A961]/5 text-[#C9A961]'
-                      : 'border-av-line bg-av-bg/60 text-av-muted'
-                  }`}
-                  aria-live="polite"
-                >
-                  <CheckCircle2
-                    className={`mt-0.5 h-4 w-4 flex-none ${
-                      acceptTerms ? 'text-[#C9A961]' : 'text-av-muted/60'
-                    }`}
-                  />
-                  <p className="leading-relaxed">
-                    {acceptTerms
-                      ? 'Puoi continuare. Confermando, confermi anche la dichiarazione sopra.'
-                      : 'Seleziona la casella per sbloccare il pulsante Continua.'}
+                    Prima di procedere al pagamento, conferma l&apos;opzione seguente.
+                    &Egrave; obbligatoria per completare l&apos;abbonamento.
                   </p>
+
+                  <div className="mt-4 space-y-2.5 sm:mt-5 sm:space-y-3">
+                    <label
+                      htmlFor="rc-consent-terms"
+                      className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3.5 transition sm:gap-3 sm:p-4 ${
+                        acceptTerms
+                          ? 'border-[#C9A961]/60 bg-[#C9A961]/10'
+                          : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
+                      }`}
+                    >
+                      <input
+                        id="rc-consent-terms"
+                        type="checkbox"
+                        checked={acceptTerms}
+                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                        aria-required="true"
+                        className="mt-0.5 h-4 w-4 flex-none accent-[#C9A961]"
+                      />
+                      <span className="text-sm leading-relaxed text-white/90">
+                        Dichiaro di avere almeno 18 anni, accetto i{' '}
+                        <a
+                          href="/termini"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="underline decoration-[#C9A961] underline-offset-2 hover:text-[#C9A961]"
+                        >
+                          Termini e condizioni
+                        </a>{' '}
+                        e confermo l&apos;abbonamento AV Research Club a 19,90 &euro; al mese, con rinnovo automatico fino alla disdetta.
+                      </span>
+                    </label>
+                  </div>
+
+                  <div
+                    className={`mt-4 flex items-start gap-2 rounded-lg border px-3 py-1.5 text-xs sm:mt-5 sm:rounded-xl sm:py-2 ${
+                      acceptTerms
+                        ? 'border-[#C9A961]/40 bg-[#C9A961]/5 text-[#C9A961]'
+                        : 'border-av-line bg-av-bg/60 text-av-muted'
+                    }`}
+                    aria-live="polite"
+                  >
+                    <CheckCircle2
+                      className={`mt-0.5 h-4 w-4 flex-none ${
+                        acceptTerms ? 'text-[#C9A961]' : 'text-av-muted/60'
+                      }`}
+                    />
+                    <p className="leading-relaxed">
+                      {acceptTerms
+                        ? 'Puoi continuare. Confermando, confermi anche la dichiarazione sopra.'
+                        : 'Seleziona la casella per sbloccare il pulsante Continua.'}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                <div className="mt-4 flex flex-none flex-row items-stretch gap-2 sm:mt-6 sm:items-center sm:justify-end sm:gap-3">
                   <button
                     type="button"
                     onClick={closeModal}
                     disabled={submitting}
-                    className="btn-ghost w-full sm:w-auto items-center justify-center disabled:opacity-50"
+                    className="btn-ghost flex-none items-center justify-center px-4 sm:px-5 disabled:opacity-50"
                   >
                     Annulla
                   </button>
@@ -301,7 +303,7 @@ export default function ResearchClubCheckoutButton({
                     onClick={onSubmitConsent}
                     disabled={!acceptTerms || submitting}
                     aria-disabled={!acceptTerms || submitting}
-                    className="btn-rc-primary w-full sm:w-auto items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-rc-primary min-w-0 flex-1 items-center justify-center gap-1.5 sm:flex-none sm:w-auto sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {submitting ? (
                       <>

@@ -239,7 +239,7 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
       {modalOpen && mounted
         ? createPortal(
             <div
-              className="fixed inset-0 z-[999] flex items-end justify-center sm:items-center p-0 sm:p-4"
+              className="fixed inset-0 z-[999] flex items-center justify-center px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-4"
               role="presentation"
             >
               <div
@@ -252,15 +252,15 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
                 aria-modal="true"
                 aria-labelledby={`course-consent-${slug}-title`}
                 aria-describedby={`course-consent-${slug}-desc`}
-                className={`relative z-10 w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl border ${styles.modalBorder} bg-av-surface p-5 sm:p-6 shadow-2xl animate-fade-in-up focus:outline-none`}
+                className={`relative z-10 flex w-full max-w-lg max-h-[86dvh] sm:max-h-[92vh] flex-col overflow-hidden rounded-2xl border ${styles.modalBorder} bg-av-surface p-4 sm:p-6 shadow-2xl animate-fade-in-up focus:outline-none`}
                 tabIndex={-1}
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-none items-start justify-between gap-2 sm:gap-3">
                   <div>
                     <span className={styles.eyebrow}>Passaggio obbligatorio</span>
                     <h3
                       id={`course-consent-${slug}-title`}
-                      className="mt-2 font-display text-xl sm:text-2xl font-semibold text-white"
+                      className="mt-1.5 font-display text-lg font-semibold text-white sm:mt-2 sm:text-2xl"
                     >
                       Conferma per {productTitle}
                     </h3>
@@ -275,102 +275,104 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <p
-                  id={`course-consent-${slug}-desc`}
-                  className="mt-3 text-sm leading-relaxed text-av-muted"
-                >
-                  Prima di procedere al pagamento del corso, conferma le due opzioni
-                  seguenti. Sono obbligatorie per completare l&apos;acquisto.
-                </p>
-
-                <div className="mt-5 space-y-3">
-                  <label
-                    htmlFor={`course-consent-${slug}-terms`}
-                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
-                      acceptTerms
-                        ? styles.checkboxOn
-                        : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
-                    }`}
+                <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-0.5 sm:mt-4">
+                  <p
+                    id={`course-consent-${slug}-desc`}
+                    className="text-sm leading-relaxed text-av-muted"
                   >
-                    <input
-                      id={`course-consent-${slug}-terms`}
-                      type="checkbox"
-                      checked={acceptTerms}
-                      onChange={(e) => setAcceptTerms(e.target.checked)}
-                      aria-required="true"
-                      className={`mt-0.5 h-4 w-4 flex-none ${styles.accent}`}
-                    />
-                    <span className="text-sm leading-relaxed text-white/90">
-                      Dichiaro di avere almeno 18 anni, ho letto e accetto i{' '}
-                      <a
-                        href="/termini"
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`underline ${styles.link}`}
-                      >
-                        Termini e condizioni
-                      </a>{' '}
-                      e il{' '}
-                      <a
-                        href="/disclaimer"
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`underline ${styles.link}`}
-                      >
-                        Disclaimer
-                      </a>{' '}
-                      di AV-INVEST Research.
-                    </span>
-                  </label>
-
-                  <label
-                    htmlFor={`course-consent-${slug}-digital`}
-                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
-                      acceptDigital
-                        ? styles.checkboxOn
-                        : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
-                    }`}
-                  >
-                    <input
-                      id={`course-consent-${slug}-digital`}
-                      type="checkbox"
-                      checked={acceptDigital}
-                      onChange={(e) => setAcceptDigital(e.target.checked)}
-                      aria-required="true"
-                      className={`mt-0.5 h-4 w-4 flex-none ${styles.accent}`}
-                    />
-                    <span className="text-sm leading-relaxed text-white/90">
-                      Richiedo l&rsquo;accesso immediato al contenuto digitale e riconosco che, con l&rsquo;inizio della fornitura, perdo il diritto di recesso nei casi previsti dalla legge.
-                    </span>
-                  </label>
-                </div>
-
-                <div
-                  className={`mt-5 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${
-                    bothChecked
-                      ? styles.statusOn
-                      : 'border-av-line bg-av-bg/60 text-av-muted'
-                  }`}
-                  aria-live="polite"
-                >
-                  <CheckCircle2
-                    className={`mt-0.5 h-4 w-4 flex-none ${
-                      bothChecked ? styles.iconOn : 'text-av-muted/60'
-                    }`}
-                  />
-                  <p className="leading-relaxed">
-                    {bothChecked
-                      ? 'Puoi continuare. Confermando, confermi anche le due dichiarazioni sopra.'
-                      : 'Seleziona entrambe le caselle per sbloccare il pulsante Continua.'}
+                    Prima di procedere al pagamento del corso, conferma le due opzioni
+                    seguenti. Sono obbligatorie per completare l&apos;acquisto.
                   </p>
+
+                  <div className="mt-4 space-y-2.5 sm:mt-5 sm:space-y-3">
+                    <label
+                      htmlFor={`course-consent-${slug}-terms`}
+                      className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3.5 transition sm:gap-3 sm:p-4 ${
+                        acceptTerms
+                          ? styles.checkboxOn
+                          : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
+                      }`}
+                    >
+                      <input
+                        id={`course-consent-${slug}-terms`}
+                        type="checkbox"
+                        checked={acceptTerms}
+                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                        aria-required="true"
+                        className={`mt-0.5 h-4 w-4 flex-none ${styles.accent}`}
+                      />
+                      <span className="text-sm leading-relaxed text-white/90">
+                        Dichiaro di avere almeno 18 anni, ho letto e accetto i{' '}
+                        <a
+                          href="/termini"
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`underline ${styles.link}`}
+                        >
+                          Termini e condizioni
+                        </a>{' '}
+                        e il{' '}
+                        <a
+                          href="/disclaimer"
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`underline ${styles.link}`}
+                        >
+                          Disclaimer
+                        </a>{' '}
+                        di AV-INVEST Research.
+                      </span>
+                    </label>
+
+                    <label
+                      htmlFor={`course-consent-${slug}-digital`}
+                      className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3.5 transition sm:gap-3 sm:p-4 ${
+                        acceptDigital
+                          ? styles.checkboxOn
+                          : 'border-av-line bg-av-bg-2/50 hover:border-white/15'
+                      }`}
+                    >
+                      <input
+                        id={`course-consent-${slug}-digital`}
+                        type="checkbox"
+                        checked={acceptDigital}
+                        onChange={(e) => setAcceptDigital(e.target.checked)}
+                        aria-required="true"
+                        className={`mt-0.5 h-4 w-4 flex-none ${styles.accent}`}
+                      />
+                      <span className="text-sm leading-relaxed text-white/90">
+                        Richiedo l&rsquo;accesso immediato al contenuto digitale e riconosco che, con l&rsquo;inizio della fornitura, perdo il diritto di recesso nei casi previsti dalla legge.
+                      </span>
+                    </label>
+                  </div>
+
+                  <div
+                    className={`mt-4 flex items-start gap-2 rounded-lg border px-3 py-1.5 text-xs sm:mt-5 sm:rounded-xl sm:py-2 ${
+                      bothChecked
+                        ? styles.statusOn
+                        : 'border-av-line bg-av-bg/60 text-av-muted'
+                    }`}
+                    aria-live="polite"
+                  >
+                    <CheckCircle2
+                      className={`mt-0.5 h-4 w-4 flex-none ${
+                        bothChecked ? styles.iconOn : 'text-av-muted/60'
+                      }`}
+                    />
+                    <p className="leading-relaxed">
+                      {bothChecked
+                        ? 'Puoi continuare. Confermando, confermi anche le due dichiarazioni sopra.'
+                        : 'Seleziona entrambe le caselle per sbloccare il pulsante Continua.'}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                <div className="mt-4 flex flex-none flex-row items-stretch gap-2 sm:mt-6 sm:items-center sm:justify-end sm:gap-3">
                   <button
                     type="button"
                     onClick={closeModal}
                     disabled={submitting}
-                    className="btn-ghost w-full sm:w-auto items-center justify-center disabled:opacity-50"
+                    className="btn-ghost flex-none items-center justify-center px-4 sm:px-5 disabled:opacity-50"
                   >
                     Annulla
                   </button>
@@ -379,7 +381,7 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
                     onClick={onSubmitConsent}
                     disabled={!bothChecked || submitting}
                     aria-disabled={!bothChecked || submitting}
-                    className={`${styles.confirmBtn} w-full sm:w-auto items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`${styles.confirmBtn} min-w-0 flex-1 items-center justify-center gap-1.5 sm:flex-none sm:w-auto sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {submitting ? (
                       <>
