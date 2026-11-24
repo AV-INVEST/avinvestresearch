@@ -280,8 +280,7 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
                     id={`course-consent-${slug}-desc`}
                     className="text-sm leading-relaxed text-av-muted"
                   >
-                    Prima di procedere al pagamento del corso, conferma le due opzioni
-                    seguenti. Sono obbligatorie per completare l&apos;acquisto.
+                    Conferma le dichiarazioni obbligatorie per procedere al pagamento.
                   </p>
 
                   <div className="mt-4 space-y-2.5 sm:mt-5 sm:space-y-3">
@@ -347,7 +346,7 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
                   </div>
 
                   <div
-                    className={`mt-4 flex items-start gap-2 rounded-lg border px-3 py-1.5 text-xs sm:mt-5 sm:rounded-xl sm:py-2 ${
+                    className={`max-sm:sr-only mt-4 flex items-start gap-2 rounded-lg border px-3 py-1.5 text-xs sm:mt-5 sm:rounded-xl sm:py-2 ${
                       bothChecked
                         ? styles.statusOn
                         : 'border-av-line bg-av-bg/60 text-av-muted'

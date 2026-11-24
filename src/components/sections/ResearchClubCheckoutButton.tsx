@@ -232,8 +232,7 @@ export default function ResearchClubCheckoutButton({
                     id="rc-consent-desc"
                     className="text-sm leading-relaxed text-av-muted"
                   >
-                    Prima di procedere al pagamento, conferma l&apos;opzione seguente.
-                    &Egrave; obbligatoria per completare l&apos;abbonamento.
+                    Conferma la dichiarazione obbligatoria per procedere al pagamento.
                   </p>
 
                   <div className="mt-4 space-y-2.5 sm:mt-5 sm:space-y-3">
@@ -269,7 +268,7 @@ export default function ResearchClubCheckoutButton({
                   </div>
 
                   <div
-                    className={`mt-4 flex items-start gap-2 rounded-lg border px-3 py-1.5 text-xs sm:mt-5 sm:rounded-xl sm:py-2 ${
+                    className={`max-sm:sr-only mt-4 flex items-start gap-2 rounded-lg border px-3 py-1.5 text-xs sm:mt-5 sm:rounded-xl sm:py-2 ${
                       acceptTerms
                         ? 'border-[#C9A961]/40 bg-[#C9A961]/5 text-[#C9A961]'
                         : 'border-av-line bg-av-bg/60 text-av-muted'
