@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react';
 
-const CONSENT_TERMS_VERSION = 'v1';
+const CONSENT_TERMS_VERSION = 'v2';
 
 type LabelVariant = 'full' | 'short';
 
@@ -253,7 +253,7 @@ export default function ResearchClubCheckoutButton({
                       className="mt-0.5 h-4 w-4 flex-none accent-[#C9A961]"
                     />
                     <span className="text-sm leading-relaxed text-white/90">
-                      Accetto i{' '}
+                      Dichiaro di avere almeno 18 anni, accetto i{' '}
                       <a
                         href="/termini"
                         target="_blank"

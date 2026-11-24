@@ -32,7 +32,7 @@ interface Props {
 
 type ButtonState = 'idle' | 'loading' | 'error';
 
-const CONSENT_TERMS_VERSION = 'v1';
+const CONSENT_TERMS_VERSION = 'v2';
 const CONSENT_DIGITAL_WITHDRAWAL_VERSION = 'v1';
 
 const PURCHASABLE_BY_SLUG: Record<CourseCheckoutSlug, boolean> = {
@@ -301,7 +301,7 @@ export default function CourseCheckoutButton({ slug, variant = 'green', pending 
                       className={`mt-0.5 h-4 w-4 flex-none ${styles.accent}`}
                     />
                     <span className="text-sm leading-relaxed text-white/90">
-                      Ho letto e accetto i{' '}
+                      Dichiaro di avere almeno 18 anni, ho letto e accetto i{' '}
                       <a
                         href="/termini"
                         target="_blank"

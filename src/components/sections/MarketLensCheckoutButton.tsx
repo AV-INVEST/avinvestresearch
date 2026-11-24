@@ -25,7 +25,7 @@ interface Props {
   className?: string;
 }
 
-const CONSENT_TERMS_VERSION = 'v1';
+const CONSENT_TERMS_VERSION = 'v2';
 const CONSENT_DIGITAL_WITHDRAWAL_VERSION = 'v1';
 
 export default function MarketLensCheckoutButton({
@@ -257,7 +257,7 @@ export default function MarketLensCheckoutButton({
                       className="mt-0.5 h-4 w-4 flex-none accent-av-green"
                     />
                     <span className="text-sm leading-relaxed text-white/90">
-                      Ho letto e accetto i{' '}
+                      Dichiaro di avere almeno 18 anni, ho letto e accetto i{' '}
                       <a
                         href="/termini"
                         target="_blank"

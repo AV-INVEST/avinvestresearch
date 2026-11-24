@@ -48,6 +48,11 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
         'AV-INVEST Research può rendere disponibili i propri prodotti digitali in quantità e periodi di vendita selezionati. Le disponibilità sono stabilite e aggiornate dal titolare e possono variare nel tempo. Se un prodotto risulta non disponibile, non è possibile avviare un nuovo acquisto tramite il relativo pulsante. Chi ha già acquistato mantiene regolarmente l\'accesso ai propri contenuti e ai download dall\'area membri.',
     },
     {
+      question: 'Un minorenne può acquistare i vostri prodotti?',
+      answer:
+        "Gli acquisti diretti sul Sito sono riservati a persone maggiorenni, di età pari o superiore a 18 anni. Se sei minorenne e sei interessato ai nostri prodotti, l'acquisto deve essere concluso da un genitore o da un tutore che ne eserciti la responsabilità genitoriale, utilizzando il proprio account. Al momento del checkout viene richiesta anche la dichiarazione di maggiore età. In ogni caso i contenuti restano a finalità esclusivamente formativa.",
+    },
+    {
       question: 'Come funzionano i codici sconto e le promozioni?',
       answer:
         "AV-INVEST Research può attivare periodicamente promozioni su prodotti digitali e percorsi formativi. Quando disponibile, inserisci il codice promozionale nell'apposito campo del checkout Stripe. Lo sconto viene applicato se il codice è valido e sono rispettate le condizioni della promozione, comprese eventuali scadenze o esclusioni. Le promozioni non sono retroattive e non modificano gli accessi già acquistati.",

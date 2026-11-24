@@ -100,6 +100,17 @@ export default function TerminiPage() {
           </li>
         </ul>
         <p className="mt-2">
+          Gli acquisti diretti di corsi, prodotti digitali e abbonamenti tramite
+          il Sito sono riservati a persone maggiorenni, di et&agrave; pari o
+          superiore a 18 anni. Completando un acquisto, l&apos;utente dichiara
+          di essere maggiorenne; tale dichiarazione &egrave; resa
+          dall&apos;utente e non costituisce una verifica certificata
+          dell&apos;et&agrave;. Se il potenziale acquirente &egrave; minorenne,
+          l&apos;acquisto deve essere concluso da un genitore o da un tutore che
+          ne eserciti la responsabilit&agrave; genitoriale, il quale assume ogni
+          obbligo derivante dai presenti Termini.
+        </p>
+        <p className="mt-2">
           Il Titolare si riserva il diritto di modificare i Termini in
           qualsiasi momento. Le modifiche sono efficaci dal momento della
           pubblicazione sul Sito. La prosecuzione dell&apos;utilizzo
