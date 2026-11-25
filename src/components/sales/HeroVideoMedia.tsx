@@ -57,7 +57,7 @@ function HeroVideoPanel({ videoId, title }: { videoId: string; title: string }) 
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-av-green shadow-glow-green-sm" />
             <span className="font-mono text-[11px] uppercase tracking-widest text-av-muted sm:text-xs">
-              AV · IL PROGETTO
+              AV · IL PROGETTO IN 2 MINUTI
             </span>
           </div>
         </div>
