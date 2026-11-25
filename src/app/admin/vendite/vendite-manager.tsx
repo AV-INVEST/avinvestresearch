@@ -1,14 +1,23 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { AlertCircle, CheckCircle2, Info, Loader2, Minus, Plus } from 'lucide-react';
-import { updateCallsAvailability, updatePromotion, updateSaleProduct } from './actions';
+import { AlertCircle, CheckCircle2, Info, Loader2, Minus, Play, Plus } from 'lucide-react';
 import {
+  updateCallsAvailability,
+  updateHeroVideo,
+  updatePromotion,
+  updateSaleProduct,
+} from './actions';
+import {
+  HERO_VIDEO_DEFAULT_TITLE,
+  HERO_VIDEO_MAX,
   MAX_SALE_QUANTITY,
   PROMOTION_MAX,
   PROMOTION_THEMES,
   SALE_PRODUCT_KEYS,
   clampQuantity,
+  parseYouTubeId,
+  type HeroVideoState,
   type PromotionState,
   type PromotionTheme,
   type SaleProductKey,
@@ -48,6 +57,37 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
   // la copia modificabile localmente. Nessuna scrittura per carattere digitato.
   const [promoDraft, setPromoDraft] = useState<PromotionState>(initial.promotion);
   const [savingPromo, setSavingPromo] = useState(false);
+  // Video testimonianze Hero: `state.heroVideo` è la verità salvata, `heroDraft`
+  // la copia modificabile localmente. Nessuna scrittura per carattere digitato.
+  const [heroDraft, setHeroDraft] = useState<HeroVideoState>(initial.heroVideo);
+  const [savingHero, setSavingHero] = useState(false);
+
+  const heroDirty =
+    heroDraft.url !== state.heroVideo.url || heroDraft.title !== state.heroVideo.title;
+
+  const setHeroField = <K extends keyof HeroVideoState>(key: K, value: HeroVideoState[K]) =>
+    setHeroDraft((d) => ({ ...d, [key]: value }));
+
+  const applyHero = (
+    payload: Parameters<typeof updateHeroVideo>[0],
+    onOk: (saved: HeroVideoState) => void,
+    okText: (saved: HeroVideoState) => string,
+  ) => {
+    if (!storageConfigured || isPending) return;
+    setSavingHero(true);
+    setBanner(null);
+    startTransition(async () => {
+      const res = await updateHeroVideo(payload);
+      if (res.ok && res.state) {
+        setState(res.state);
+        onOk(res.state.heroVideo);
+        setBanner({ ok: true, text: okText(res.state.heroVideo) });
+      } else {
+        setBanner({ ok: false, text: res.error ?? 'Salvataggio non riuscito.' });
+      }
+      setSavingHero(false);
+    });
+  };
 
   const promoDirty =
     promoDraft.campaignName !== state.promotion.campaignName ||
@@ -140,6 +180,30 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
       () => 'Campagna promozionale salvata.',
     );
   };
+
+  /** Switch ON/OFF del video. ON invia il link corrente così da validarlo subito;
+   *  OFF preserva link e titolo salvati. */
+  const toggleHero = () => {
+    const next = !state.heroVideo.enabled;
+    applyHero(
+      next ? { ...heroDraft, enabled: true } : { ...heroDraft, enabled: false },
+      (saved) => setHeroDraft(saved),
+      (saved) =>
+        saved.enabled ? 'Video testimonianze attivato nella Hero.' : 'Video testimonianze disattivato.',
+    );
+  };
+
+  /** Salva link e titolo con un solo click (nessuna scrittura per carattere). */
+  const saveHero = () => {
+    applyHero(
+      { ...heroDraft },
+      (saved) => setHeroDraft(saved),
+      () => 'Video Hero salvato.',
+    );
+  };
+
+  const heroPreviewId = parseYouTubeId(heroDraft.url);
+  const heroPreviewTitle = heroDraft.title.trim() || HERO_VIDEO_DEFAULT_TITLE;
 
   const previewPromotion: PromotionState = {
     ...promoDraft,
@@ -536,6 +600,156 @@ export default function VenditeManager({ initial, storageConfigured }: Props) {
             SALVA MODIFICHE
           </button>
           {promoDirty ? (
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200">
+              <AlertCircle className="h-3.5 w-3.5" />
+              Modifiche non salvate
+            </span>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-av-line bg-av-surface/60 p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+          <div className="min-w-0">
+            <h3 className="font-display text-base font-semibold text-white">
+              Video testimonianze — Hero
+            </h3>
+            <p className="mt-1 text-xs leading-snug text-av-muted">
+              Sostituisce il riquadro &laquo;AV MARKET VIEW&raquo; della Hero con un video
+              YouTube. Con lo switch OFF o senza un link valido la Hero mostra sempre il
+              grafico originale. Il player carica solo dopo un clic dell&apos;utente.
+            </p>
+          </div>
+          <div className="flex flex-none items-center gap-3">
+            <span
+              className={[
+                'inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider',
+                state.heroVideo.enabled
+                  ? 'border-av-green-deep/40 bg-av-green/10 text-av-green'
+                  : 'border-av-line bg-av-bg-2/70 text-av-muted',
+              ].join(' ')}
+            >
+              {state.heroVideo.enabled ? 'Attivo' : 'Disattivato'}
+            </span>
+            {savingHero ? (
+              <span className="inline-flex items-center gap-1 text-[11px] text-av-muted">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Salvataggio...
+              </span>
+            ) : null}
+            <button
+              type="button"
+              role="switch"
+              aria-checked={state.heroVideo.enabled}
+              aria-label="Video testimonianze nella Hero attivo"
+              disabled={!storageConfigured || isPending}
+              onClick={toggleHero}
+              className={[
+                'relative inline-flex h-6 w-11 flex-none items-center rounded-full border transition-colors disabled:opacity-50',
+                state.heroVideo.enabled
+                  ? 'border-av-green-deep/60 bg-av-green/30'
+                  : 'border-av-line bg-av-bg-2',
+              ].join(' ')}
+            >
+              <span
+                aria-hidden="true"
+                className={[
+                  'inline-block h-4 w-4 transform rounded-full transition-transform',
+                  state.heroVideo.enabled
+                    ? 'translate-x-6 bg-av-green'
+                    : 'translate-x-1 bg-av-muted',
+                ].join(' ')}
+              />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3">
+          <label className="block">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Link YouTube
+            </span>
+            <input
+              type="url"
+              value={heroDraft.url}
+              maxLength={HERO_VIDEO_MAX.url}
+              disabled={!storageConfigured}
+              onChange={(e) => setHeroField('url', e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="mt-2 h-9 w-full min-w-0 rounded-lg border border-av-line bg-av-bg-2/60 px-3 text-sm text-white placeholder:text-av-muted/70 focus:border-av-green-deep/60 focus:outline-none"
+            />
+            <span className="mt-1 block text-[11px] leading-snug text-av-muted/90">
+              Ammessi: youtube.com/watch, youtu.be, shorts o live. Il link viene validato lato
+              server prima del salvataggio.
+            </span>
+          </label>
+
+          <label className="block">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+              Titolo visibile
+            </span>
+            <input
+              type="text"
+              value={heroDraft.title}
+              maxLength={HERO_VIDEO_MAX.title}
+              disabled={!storageConfigured}
+              onChange={(e) => setHeroField('title', e.target.value)}
+              placeholder={HERO_VIDEO_DEFAULT_TITLE}
+              className="mt-2 h-9 w-full min-w-0 rounded-lg border border-av-line bg-av-bg-2/60 px-3 text-sm text-white placeholder:text-av-muted/70 focus:border-av-green-deep/60 focus:outline-none"
+            />
+          </label>
+        </div>
+
+        <div className="mt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-av-muted">
+            Anteprima
+          </p>
+          <div className="mt-2">
+            {heroPreviewId ? (
+              <div className="relative mx-auto w-full max-w-sm overflow-hidden rounded-xl border border-av-line bg-black">
+                <div className="relative aspect-video w-full">
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,106,0.12),transparent_65%)]"
+                  />
+                  <span className="absolute inset-0 grid place-items-center">
+                    <span className="grid h-12 w-12 place-items-center rounded-full border border-av-green-deep/60 bg-av-green/10 text-av-green">
+                      <Play className="h-5 w-5 translate-x-[1px]" />
+                    </span>
+                  </span>
+                  <span className="absolute inset-x-0 bottom-0 block bg-gradient-to-t from-black/75 to-transparent p-3 font-display text-sm font-semibold text-white">
+                    {heroPreviewTitle}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <p
+                className={[
+                  'rounded-xl border px-3 py-2 text-xs leading-relaxed',
+                  heroDraft.url.trim()
+                    ? 'border-amber-400/40 bg-amber-400/[0.06] text-amber-200'
+                    : 'border-av-line bg-av-bg-2/40 text-av-muted',
+                ].join(' ')}
+              >
+                {heroDraft.url.trim()
+                  ? 'Link non valido: la Hero mostra il grafico “AV MARKET VIEW” e il video non può essere attivato.'
+                  : 'Nessun video configurato: la Hero mostra il grafico “AV MARKET VIEW”.'}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={saveHero}
+            disabled={!storageConfigured || isPending || !heroDirty}
+            className="inline-flex items-center gap-2 rounded-xl bg-av-green px-4 py-2.5 text-sm font-semibold text-black transition-all duration-200 hover:bg-white focus-visible:outline-av-green disabled:opacity-40 disabled:hover:bg-av-green"
+          >
+            {savingHero ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            SALVA MODIFICHE
+          </button>
+          {heroDirty ? (
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200">
               <AlertCircle className="h-3.5 w-3.5" />
               Modifiche non salvate

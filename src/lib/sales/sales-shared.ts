@@ -54,8 +54,34 @@ export interface SalesState {
   callsAvailable: boolean;
   /** Campagna promozionale del banner Hero. Retrocompatibilità: se assente è OFF. */
   promotion: PromotionState;
+  /**
+   * Video testimonianze nella Hero (sostituisce il grafico "AV MARKET VIEW").
+   * Retrocompatibilità: se assente è OFF e viene mostrato il grafico originale.
+   */
+  heroVideo: HeroVideoState;
   updatedAt: string | null;
 }
+
+/**
+ * Video YouTube configurabile dall'amministratore per la Hero.
+ * Il codice è puramente presentazionale: nessun dato sensibile, nessun autoplay.
+ */
+export interface HeroVideoState {
+  /** Switch ON/OFF. È effettivo solo con un link YouTube valido. */
+  enabled: boolean;
+  /** URL YouTube inserito dall'amministratore (validato lato server). */
+  url: string;
+  /** Titolo visibile sopra la copertina. */
+  title: string;
+}
+
+export const HERO_VIDEO_DEFAULT_TITLE = 'Dicono di me';
+
+/** Limiti di lunghezza validati lato server per i campi del video. */
+export const HERO_VIDEO_MAX = {
+  url: 300,
+  title: 80,
+} as const;
 
 export const SALE_PRODUCT_KEYS: readonly SaleProductKey[] = [
   'market-lens',
@@ -94,6 +120,7 @@ export function buildDefaultSalesState(): SalesState {
     },
     callsAvailable: true,
     promotion: buildDefaultPromotion(),
+    heroVideo: buildDefaultHeroVideo(),
     updatedAt: null,
   };
 }
@@ -106,6 +133,14 @@ export function buildDefaultPromotion(): PromotionState {
     description: '',
     code: '',
     theme: 'gold',
+  };
+}
+
+export function buildDefaultHeroVideo(): HeroVideoState {
+  return {
+    enabled: false,
+    url: '',
+    title: HERO_VIDEO_DEFAULT_TITLE,
   };
 }
 
@@ -139,6 +174,74 @@ export function isPromotionComplete(promotion: PromotionState): boolean {
     promotion.headline.trim().length > 0 &&
     promotion.code.trim().length > 0
   );
+}
+
+const YOUTUBE_ID_RE = /^[A-Za-z0-9_-]{11}$/;
+
+/**
+ * Estrae l'ID video da un link YouTube valido (watch, youtu.be, shorts, live,
+ * embed, youtube-nocookie). Ritorna `null` se il link non è riconosciuto: così
+ * non è mai possibile inserire URL arbitrari in un iframe.
+ */
+export function parseYouTubeId(input: unknown): string | null {
+  if (typeof input !== 'string') return null;
+  const raw = input.trim();
+  if (!raw) return null;
+  const withProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw)
+    ? raw
+    : `https://${raw.replace(/^\/+/, '')}`;
+
+  let url: URL;
+  try {
+    url = new URL(withProtocol);
+  } catch {
+    return null;
+  }
+
+  const host = url.hostname.replace(/^www\./i, '').toLowerCase();
+  const allowedHosts = new Set([
+    'youtube.com',
+    'm.youtube.com',
+    'music.youtube.com',
+    'youtube-nocookie.com',
+    'youtu.be',
+  ]);
+  if (!allowedHosts.has(host)) return null;
+
+  let candidate: string | null = null;
+
+  if (host === 'youtu.be') {
+    candidate = url.pathname.split('/').filter(Boolean)[0] ?? null;
+  } else {
+    candidate = url.searchParams.get('v');
+    if (!candidate) {
+      const segments = url.pathname.split('/').filter(Boolean);
+      const prefixes = ['embed', 'shorts', 'live', 'v'];
+      if (segments.length >= 2 && prefixes.includes(segments[0])) {
+        candidate = segments[1];
+      }
+    }
+  }
+
+  if (!candidate) return null;
+  const id = candidate.trim();
+  return YOUTUBE_ID_RE.test(id) ? id : null;
+}
+
+/**
+ * Normalizza il video della Hero: senza un link YouTube valido lo switch è
+ * forzato OFF, così la Hero mostra sempre il grafico originale come fallback.
+ */
+export function normalizeHeroVideo(raw: unknown): HeroVideoState {
+  const base = buildDefaultHeroVideo();
+  if (!raw || typeof raw !== 'object') return base;
+  const r = raw as Record<string, unknown>;
+  const url = typeof r.url === 'string' ? r.url.trim().slice(0, HERO_VIDEO_MAX.url) : '';
+  const title = typeof r.title === 'string' ? r.title.trim().slice(0, HERO_VIDEO_MAX.title) : '';
+  base.url = url;
+  base.title = title || HERO_VIDEO_DEFAULT_TITLE;
+  base.enabled = r.enabled === true && parseYouTubeId(url) !== null;
+  return base;
 }
 
 export function clampQuantity(value: unknown): number | null {
@@ -178,6 +281,9 @@ export function normalizeSalesState(raw: unknown): SalesState {
 
   // Retrocompatibilità: promozione assente nel JSON esistente = campagna OFF.
   base.promotion = normalizePromotion((raw as { promotion?: unknown }).promotion);
+
+  // Retrocompatibilità: video Hero assente nel JSON esistente = OFF (grafico originale).
+  base.heroVideo = normalizeHeroVideo((raw as { heroVideo?: unknown }).heroVideo);
 
   return base;
 }

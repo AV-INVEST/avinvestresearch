@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
+import SwipeCarousel from '@/components/ui/SwipeCarousel';
 import MarketLensCheckoutButton from '@/components/sections/MarketLensCheckoutButton';
 import { DEFAULT_ENTITLEMENT_STATE, type MarketLensEntitlement } from '@/lib/entitlements';
 
@@ -140,13 +141,17 @@ export default function MarketLens({
                 className="absolute -right-24 -top-24 h-52 w-52 rounded-full bg-av-green/10 blur-3xl"
               />
               <div className="relative p-3.5 sm:p-5 w-full min-w-0">
-                <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5 sm:gap-3 w-full min-w-0">
-                  {ml.features.map((f) => {
+                <SwipeCarousel
+                  ariaLabel="Funzionalità AV Market Lens"
+                  viewportClassName="gap-2.5"
+                  smViewportClassName="sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible"
+                  itemClassName="basis-[85%] max-w-[85%] sm:basis-auto sm:max-w-none sm:w-full"
+                  items={ml.features.map((f) => {
                     const Icon = featureIcons[f.key] ?? Sparkles;
                     return (
                       <div
                         key={f.key}
-                        className="group rounded-xl border border-av-line bg-av-bg-2/40 p-2.5 sm:p-3.5 transition-all duration-300 hover:border-av-green-deep/40 hover:bg-av-surface min-w-0"
+                        className="group h-full rounded-xl border border-av-line bg-av-bg-2/40 p-2.5 sm:p-3.5 transition-all duration-300 hover:border-av-green-deep/40 hover:bg-av-surface min-w-0"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <div className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-av-green-deep/50 bg-av-green/10 text-av-green transition-all group-hover:shadow-glow-green-sm">
@@ -162,7 +167,7 @@ export default function MarketLens({
                       </div>
                     );
                   })}
-                </div>
+                />
 
                 <div className="relative mt-3.5 sm:mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-3.5 sm:pt-4 w-full min-w-0">
                   <span className="text-xs font-medium text-av-muted sm:text-sm shrink-0">

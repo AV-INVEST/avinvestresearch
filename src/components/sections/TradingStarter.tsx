@@ -117,7 +117,7 @@ export default function TradingStarter({
               }}
             >
               <div className="relative p-5 sm:p-6">
-                <div className="relative overflow-hidden rounded-2xl border border-av-line bg-av-bg-2/60 aspect-[4/3]">
+                <div className="relative overflow-hidden rounded-2xl border border-av-line bg-av-bg-2/60 sm:aspect-[4/3]">
                   <div
                     aria-hidden="true"
                     className="absolute inset-0 opacity-30"
@@ -126,26 +126,26 @@ export default function TradingStarter({
                         'repeating-linear-gradient(0deg, rgba(0,255,106,0.10) 0px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, rgba(0,255,106,0.06) 0px, transparent 1px, transparent 20px)',
                     }}
                   />
-                  <div className="absolute inset-0 p-5 sm:p-6 flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="grid h-10 w-10 place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green shadow-glow-green-sm">
+                  <div className="relative flex flex-col justify-between p-4 sm:absolute sm:inset-0 sm:p-6">
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <div className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-av-green-deep/50 bg-av-green/10 text-av-green shadow-glow-green-sm">
                           <BookOpen className="h-5 w-5" />
                         </div>
-                        <div>
-                          <p className="font-display text-sm sm:text-base font-semibold text-white leading-none">
+                        <div className="min-w-0">
+                          <p className="font-display text-sm sm:text-base font-semibold text-white leading-tight">
                             {ts.title}
                           </p>
-                          <p className="mt-1 text-[11px] uppercase tracking-widest text-av-muted leading-none">
+                          <p className="mt-1 text-[11px] uppercase tracking-widest text-av-muted leading-tight">
                             Guida PDF · Principianti
                           </p>
                         </div>
                       </div>
-                      <span className="chip chip-green !py-1 !text-[11px]">
+                      <span className="chip chip-green flex-none !py-1 !text-[11px]">
                         ENTRY-LEVEL
                       </span>
                     </div>
-                    <div className="grid gap-2.5 mt-5">
+                    <div className="grid gap-2.5 mt-4 sm:mt-5">
                       <div className="flex items-center gap-3 rounded-xl border border-av-line bg-av-bg-2/50 px-3.5 py-2.5">
                         <CheckCircle2 className="h-4 w-4 flex-none text-av-green" />
                         <p className="text-xs sm:text-sm text-white/90">Basi di grafici e price action</p>

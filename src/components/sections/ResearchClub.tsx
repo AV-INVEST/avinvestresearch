@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import { getResearchClubEntitlement } from '@/lib/entitlements';
 import { siteConfig } from '@/config/siteConfig';
 import GlassCard from '@/components/ui/GlassCard';
+import SwipeCarousel from '@/components/ui/SwipeCarousel';
 import ResearchClubCheckoutButton from '@/components/sections/ResearchClubCheckoutButton';
 
 const icons = [Radar, Building2, AlertTriangle, Archive];
@@ -112,15 +113,19 @@ export default async function ResearchClub() {
                 aria-hidden="true"
                 className={`absolute -right-24 -top-24 h-64 w-64 rounded-full ${GOLD.bgSoft} blur-3xl`}
               />
-              <div className="w-full min-w-0 max-w-full overflow-hidden sm:contents">
-                <div className="w-full min-w-0 overflow-x-auto scrollbar-hidden snap-x snap-mandatory flex gap-3 pb-2 sm:overflow-visible sm:pb-0 sm:contents">
-                  {rc.features.map((feature, i) => {
-                    const Icon = icons[i] ?? Radar;
-                    const isGold = i === 0 || i === 3;
-                    return (
+              <SwipeCarousel
+                ariaLabel="Funzionalità AV Research Club"
+                viewportClassName="gap-3"
+                smViewportClassName="sm:block sm:overflow-visible"
+                itemClassName="basis-[86%] max-w-[86%] sm:basis-auto sm:max-w-none sm:w-full"
+                activeDotClassName="w-6 bg-[#C9A961] shadow-[0_0_12px_rgba(201,169,97,0.6)]"
+                items={rc.features.map((feature, i) => {
+                  const Icon = icons[i] ?? Radar;
+                  const isGold = i === 0 || i === 3;
+                  return (
                       <div
                         key={feature}
-                        className={`group shrink-0 basis-[86%] max-w-[86%] snap-start rounded-2xl border sm:basis-auto sm:max-w-none sm:w-full p-4 sm:p-5 transition-all duration-300 min-w-0 ${
+                        className={`group min-w-0 rounded-2xl border p-4 sm:p-5 transition-all duration-300 ${
                           isGold
                             ? `${GOLD.border} ${GOLD.bgSoft} hover:border-white/20 hover:bg-av-surface`
                             : 'border-av-line bg-av-bg-2/50 hover:border-white/20 hover:bg-av-surface'
@@ -152,10 +157,9 @@ export default async function ResearchClub() {
                           }`}
                         />
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                  );
+                })}
+              />
               <div className="relative mt-4 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 border-t border-av-line pt-4 sm:pt-6 w-full min-w-0">
                 <span className="text-xs font-medium text-av-muted sm:text-sm shrink-0">
                   Materiali riservati ai membri:

@@ -6,6 +6,7 @@ import HeroChartSVG from '@/components/visuals/HeroChartSVG';
 import HeroAvailabilityBar from '@/components/sections/HeroAvailabilityBar';
 import CallBookingButton from '@/components/ui/CallBookingButton';
 import PromotionBanner from '@/components/sales/PromotionBanner';
+import HeroVideoMedia from '@/components/sales/HeroVideoMedia';
 
 export default function Hero() {
   return (
@@ -70,42 +71,46 @@ export default function Hero() {
           </div>
 
           <div className="relative lg:col-span-5">
-            <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] animate-fade-in [animation-delay:400ms]">
-              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-av-green/20 via-transparent to-av-green/10 opacity-70 blur-2xl" />
-              <div className="relative glass-card overflow-hidden p-3 sm:p-4">
-                <div className="flex items-center justify-between rounded-xl border border-av-line bg-av-bg-2/70 px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-av-green shadow-glow-green-sm" />
-                    <span className="font-mono text-[11px] uppercase tracking-widest text-av-muted sm:text-xs">
-                      AV · MARKET VIEW
-                    </span>
-                  </div>
-                  <div className="hidden items-center gap-1 text-[10px] font-mono text-av-muted sm:flex">
-                    <span className="text-av-green">●</span> LIVE
-                  </div>
-                </div>
-                <div className="mt-3 aspect-[16/10] w-full">
-                  <HeroChartSVG />
-                </div>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-[11px] font-mono">
-                  {[
-                    { k: 'TREND', v: 'Rialzista', c: 'text-av-green' },
-                    { k: 'CONTESTO', v: 'Neutro', c: 'text-white' },
-                    { k: 'VOLATILITÀ', v: 'Media', c: 'text-av-muted' },
-                  ].map((it) => (
-                    <div
-                      key={it.k}
-                      className="rounded-lg border border-av-line bg-av-bg-2/50 px-3 py-2"
-                    >
-                      <div className="text-[10px] uppercase tracking-widest text-av-muted/80">
-                        {it.k}
+            <HeroVideoMedia
+              fallback={
+                <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] animate-fade-in [animation-delay:400ms]">
+                  <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-av-green/20 via-transparent to-av-green/10 opacity-70 blur-2xl" />
+                  <div className="relative glass-card overflow-hidden p-3 sm:p-4">
+                    <div className="flex items-center justify-between rounded-xl border border-av-line bg-av-bg-2/70 px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-av-green shadow-glow-green-sm" />
+                        <span className="font-mono text-[11px] uppercase tracking-widest text-av-muted sm:text-xs">
+                          AV · MARKET VIEW
+                        </span>
                       </div>
-                      <div className={`mt-1 text-xs font-semibold ${it.c}`}>{it.v}</div>
+                      <div className="hidden items-center gap-1 text-[10px] font-mono text-av-muted sm:flex">
+                        <span className="text-av-green">●</span> LIVE
+                      </div>
                     </div>
-                  ))}
+                    <div className="mt-3 aspect-[16/10] w-full">
+                      <HeroChartSVG />
+                    </div>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-[11px] font-mono">
+                      {[
+                        { k: 'TREND', v: 'Rialzista', c: 'text-av-green' },
+                        { k: 'CONTESTO', v: 'Neutro', c: 'text-white' },
+                        { k: 'VOLATILITÀ', v: 'Media', c: 'text-av-muted' },
+                      ].map((it) => (
+                        <div
+                          key={it.k}
+                          className="rounded-lg border border-av-line bg-av-bg-2/50 px-3 py-2"
+                        >
+                          <div className="text-[10px] uppercase tracking-widest text-av-muted/80">
+                            {it.k}
+                          </div>
+                          <div className={`mt-1 text-xs font-semibold ${it.c}`}>{it.v}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              }
+            />
           </div>
         </div>
       </div>

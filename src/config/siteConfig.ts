@@ -184,14 +184,9 @@ export const siteConfig = {
     currency: 'EUR',
     features: [
       {
-        key: 'trend',
-        title: 'SuperTrend',
-        text: 'Direzione del trend, cambi di regime e contatti con la SuperTrend.',
-      },
-      {
-        key: 'ema',
-        title: 'EMA 9/21/200',
-        text: 'Medie mobili attivabili per analizzare la dinamica del prezzo su diversi orizzonti.',
+        key: 'sessions',
+        title: 'Sessioni globali',
+        text: 'Sydney, Tokyo, Londra e New York evidenziate sul grafico, con AV Session opzionale.',
       },
       {
         key: 'candles',
@@ -204,14 +199,19 @@ export const siteConfig = {
         text: 'Livelli POC, VAH e VAL della giornata precedente, quando il volume è disponibile.',
       },
       {
-        key: 'sessions',
-        title: 'Sessioni globali',
-        text: 'Sydney, Tokyo, Londra e New York evidenziate sul grafico, con AV Session opzionale.',
-      },
-      {
         key: 'atr',
         title: 'ATR giornaliero',
         text: 'ATR del giorno precedente, range attuale e percentuale già utilizzata.',
+      },
+      {
+        key: 'trend',
+        title: 'SuperTrend',
+        text: 'Direzione del trend, cambi di regime e contatti con la SuperTrend.',
+      },
+      {
+        key: 'ema',
+        title: 'EMA 9/21/200',
+        text: 'Medie mobili attivabili per analizzare la dinamica del prezzo su diversi orizzonti.',
       },
     ],
     notes: [

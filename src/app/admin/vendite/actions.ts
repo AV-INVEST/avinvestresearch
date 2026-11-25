@@ -5,11 +5,15 @@ import { auth } from '@/auth';
 import { isAdminSession } from '@/lib/auth/admin';
 import { getSalesState, saveSalesState, isSalesStorageConfigured } from '@/lib/sales/sales-store';
 import {
+  HERO_VIDEO_DEFAULT_TITLE,
+  HERO_VIDEO_MAX,
   PROMOTION_THEMES,
   SALE_PRODUCT_KEYS,
   clampQuantity,
   isPromotionComplete,
+  normalizeHeroVideo,
   normalizePromotion,
+  parseYouTubeId,
   type PromotionTheme,
   type SaleProductKey,
   type SalesState,
@@ -170,4 +174,69 @@ export async function updatePromotion(input: PromotionInput): Promise<SalesActio
   revalidatePath('/');
 
   return { ok: true, message: 'Campagna promozionale salvata.', state: saved.state };
+}
+
+/** Campi modificabili del video testimonianze mostrato nella Hero. */
+export interface HeroVideoInput {
+  enabled?: boolean;
+  url?: string;
+  title?: string;
+}
+
+/**
+ * Salva il video testimonianze della Hero preservando integralmente prodotti,
+ * quantità, switch delle call e campagna promozionale. Il link è validato lato
+ * server: un URL non YouTube o senza ID valido non viene salvato e lo switch
+ * non può essere attivato senza un video valido.
+ */
+export async function updateHeroVideo(input: HeroVideoInput): Promise<SalesActionResult> {
+  const guard = await requireSalesAdmin();
+  if (!guard.ok) return { ok: false, error: guard.error };
+
+  if (!isSalesStorageConfigured()) {
+    return {
+      ok: false,
+      error:
+        'Storage Vercel Blob non configurato. Imposta BLOB_READ_WRITE_TOKEN per salvare le impostazioni.',
+    };
+  }
+
+  const current = await getSalesState();
+  const url = (typeof input.url === 'string' ? input.url : current.heroVideo.url).trim();
+  const wantEnabled =
+    input.enabled === undefined ? current.heroVideo.enabled : Boolean(input.enabled);
+
+  const videoId = parseYouTubeId(url);
+  if (url && !videoId) {
+    return {
+      ok: false,
+      error:
+        'Link YouTube non valido. Usa un URL youtube.com/watch, youtu.be, shorts o live, oppure svuota il campo.',
+    };
+  }
+  if (wantEnabled && !videoId) {
+    return {
+      ok: false,
+      error: 'Per attivare il video serve un link YouTube valido.',
+    };
+  }
+
+  const title = (typeof input.title === 'string' ? input.title : current.heroVideo.title)
+    .trim()
+    .slice(0, HERO_VIDEO_MAX.title);
+
+  const heroVideo = normalizeHeroVideo({
+    enabled: wantEnabled,
+    url: videoId ? url.slice(0, HERO_VIDEO_MAX.url) : '',
+    title: title || HERO_VIDEO_DEFAULT_TITLE,
+  });
+
+  const next: SalesState = { ...current, heroVideo };
+  const saved = await saveSalesState(next);
+  if (!saved.ok) return { ok: false, error: saved.error };
+
+  revalidatePath('/admin/vendite');
+  revalidatePath('/');
+
+  return { ok: true, message: 'Video Hero salvato.', state: saved.state };
 }

@@ -55,6 +55,7 @@ export async function saveSalesState(state: SalesState): Promise<SaveSalesResult
     products: state.products,
     callsAvailable: state.callsAvailable,
     promotion: state.promotion,
+    heroVideo: state.heroVideo,
     updatedAt: new Date().toISOString(),
   });
   try {
