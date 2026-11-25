@@ -80,12 +80,15 @@ export default function SwipeCarousel({
     const target = Math.max(0, Math.min(index, root.children.length - 1));
     const slide = root.children[target] as HTMLElement | undefined;
     if (!slide) return;
-    // Aggiornamento ottimistico: evita che le frecce restino disabilitate
-    // in attesa dell'IntersectionObserver (che confermerà lo stesso indice).
+    // Posizione della scheda calcolata rispetto al viewport scrollabile (non
+    // alla pagina): nessuno scroll sui contenitori antenati, quindi nessuno
+    // spostamento orizzontale della pagina.
+    const left =
+      root.scrollLeft + (slide.getBoundingClientRect().left - root.getBoundingClientRect().left);
+    // Aggiornamento ottimistico: le frecce non restano disabilitate in attesa
+    // dell'IntersectionObserver, che confermerà lo stesso indice.
     setActive(target);
-    // scrollIntoView con `block: 'nearest'`: non tocca lo scroll verticale
-    // della pagina e usa il contenitore scrollabile corretto.
-    slide.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    root.scrollTo({ left, behavior: 'smooth' });
   }, []);
 
   const last = items.length - 1;
@@ -94,7 +97,7 @@ export default function SwipeCarousel({
     <div className="w-full min-w-0">
       <div
         ref={viewportRef}
-        className={`relative flex w-full min-w-0 overflow-x-auto overflow-y-hidden scrollbar-hidden snap-x snap-mandatory pb-2 sm:pb-0 ${viewportClassName} ${smViewportClassName}`}
+        className={`relative flex w-full min-w-0 overflow-x-auto overflow-y-hidden overscroll-x-contain scrollbar-hidden snap-x snap-mandatory pb-2 sm:pb-0 ${viewportClassName} ${smViewportClassName}`}
       >
         {items.map((item, index) => (
           <div key={index} className={`min-w-0 shrink-0 snap-start ${itemClassName}`}>
