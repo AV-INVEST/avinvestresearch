@@ -7,11 +7,22 @@ import { parseYouTubeId } from '@/lib/sales/sales-shared';
 import { useCookieConsent } from '@/components/cookie/CookieConsentContext';
 
 /**
+ * Copia locale (ottimizzata) della miniatura dell'attuale video Hero, servita
+ * dal nostro dominio per non contattare i.ytimg.com prima del Play.
+ * È legata all'ID video indicato: se l'amministratore configura un video
+ * diverso, questa copia non corrisponderebbe più e non viene mostrata
+ * (resta il fallback grafico).
+ */
+const HERO_VIDEO_THUMB_ID = 'C-thoAmS1Qs';
+const HERO_VIDEO_THUMB_SRC = '/images/hero-video-thumb.webp';
+
+/**
  * Sostituisce il riquadro decorativo "AV MARKET VIEW" della Hero con il video
  * testimonianze configurato dall'amministratore.
  *
  * - Senza video valido o con switch OFF mostra il `fallback` (grafico originale).
- * - Nessuna richiesta a YouTube prima del clic: la copertina è solo CSS locale.
+ * - Nessuna richiesta a servizi esterni prima del clic: la copertina è una
+ *   copia locale della miniatura oppure, in mancanza, un fallback grafico.
  * - Al clic carica il player da `youtube-nocookie.com`, restando nel sito.
  */
 export default function HeroVideoMedia({ fallback }: { fallback: ReactNode }) {
@@ -26,8 +37,13 @@ export default function HeroVideoMedia({ fallback }: { fallback: ReactNode }) {
 function HeroVideoPanel({ videoId, title }: { videoId: string; title: string }) {
   const { state, setOpen } = useCookieConsent();
   const [playing, setPlaying] = useState(false);
+  // Se la copia locale non è disponibile si ricade sul fallback grafico.
+  const [thumbBroken, setThumbBroken] = useState(false);
   const consentGiven =
     state.timestamp > 0 && (state.categories.analitici || state.categories.marketing);
+
+  const thumbSrc =
+    videoId === HERO_VIDEO_THUMB_ID && !thumbBroken ? HERO_VIDEO_THUMB_SRC : null;
 
   const iframeSrc = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(
     videoId,
@@ -41,12 +57,12 @@ function HeroVideoPanel({ videoId, title }: { videoId: string; title: string }) 
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-av-green shadow-glow-green-sm" />
             <span className="font-mono text-[11px] uppercase tracking-widest text-av-muted sm:text-xs">
-              AV · TESTIMONIANZE
+              AV · IL PROGETTO
             </span>
           </div>
         </div>
 
-        <div className="relative mt-3 aspect-video w-full overflow-hidden rounded-xl border border-av-line bg-black">
+        <div className="relative mt-3 aspect-video w-full overflow-hidden rounded-xl border border-av-line bg-av-bg-2">
           {playing ? (
             <iframe
               className="absolute inset-0 h-full w-full"
@@ -64,13 +80,29 @@ function HeroVideoPanel({ videoId, title }: { videoId: string; title: string }) 
               className="group absolute inset-0 grid place-items-center focus-visible:outline-none"
               aria-label={`Riproduci il video: ${title || 'Video testimonianze'}`}
             >
+              {thumbSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={thumbSrc}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  onError={() => setThumbBroken(true)}
+                />
+              ) : null}
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/45"
+              />
               <span
                 aria-hidden="true"
                 className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,106,0.14),transparent_65%)]"
               />
               <span
                 aria-hidden="true"
-                className="absolute inset-0 opacity-25"
+                className={`absolute inset-0 ${thumbSrc ? 'opacity-15' : 'opacity-25'}`}
                 style={{
                   backgroundImage:
                     'repeating-linear-gradient(0deg, rgba(0,255,106,0.12) 0px, transparent 1px, transparent 22px), repeating-linear-gradient(90deg, rgba(0,255,106,0.08) 0px, transparent 1px, transparent 22px)',
@@ -91,7 +123,8 @@ function HeroVideoPanel({ videoId, title }: { videoId: string; title: string }) 
         {!playing ? (
           <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-relaxed text-av-muted">
             <ShieldAlert className="h-3.5 w-3.5 flex-none text-av-green" />
-            <span>
+            <span aria-hidden="true">Video ospitato su YouTube</span>
+            <span className="sr-only">
               Premendo Play carichi un contenuto esterno da YouTube
               (youtube-nocookie.com).
             </span>
