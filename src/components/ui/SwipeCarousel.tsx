@@ -43,6 +43,12 @@ export default function SwipeCarousel({
 }: SwipeCarouselProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState(0);
+  // Indice corrente in una ref: le frecce lo leggono in modo sincrono, quindi
+  // click rapidi e consecutivi non perdono passaggi prima del re-render.
+  const activeRef = useRef(0);
+  // Indice impostato dalle frecce/pallini, in attesa che lo scorrimento si
+  // assesti: finché è valorizzato l'observer ignora gli stati intermedi.
+  const pendingRef = useRef<number | null>(null);
 
   useEffect(() => {
     const root = viewportRef.current;
@@ -65,19 +71,37 @@ export default function SwipeCarousel({
             bestIndex = i;
           }
         }
+        // Scorrimento programmato in corso: ignoriamo gli indici intermedi
+        // finché non raggiunge la scheda target, così il pallino non "torna
+        // indietro" per poi correggersi da solo.
+        if (pendingRef.current !== null) {
+          if (bestIndex !== pendingRef.current) return;
+          pendingRef.current = null;
+        }
+        activeRef.current = bestIndex;
         setActive(bestIndex);
       },
       { root, threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
 
+    // Rete di sicurezza: a ogni scorrimento concluso sblocchiamo l'observer,
+    // così anche lo swipe manuale torna sempre a guidare i pallini.
+    const clearPending = () => {
+      pendingRef.current = null;
+    };
+    root.addEventListener('scrollend', clearPending);
     slides.forEach((slide) => observer.observe(slide));
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      root.removeEventListener('scrollend', clearPending);
+    };
   }, [items.length]);
 
   const goTo = useCallback((index: number) => {
     const root = viewportRef.current;
     if (!root) return;
     const target = Math.max(0, Math.min(index, root.children.length - 1));
+    if (target === activeRef.current) return;
     const slide = root.children[target] as HTMLElement | undefined;
     if (!slide) return;
     // Posizione della scheda calcolata rispetto al viewport scrollabile (non
@@ -85,10 +109,13 @@ export default function SwipeCarousel({
     // spostamento orizzontale della pagina.
     const left =
       root.scrollLeft + (slide.getBoundingClientRect().left - root.getBoundingClientRect().left);
-    // Aggiornamento ottimistico: le frecce non restano disabilitate in attesa
-    // dell'IntersectionObserver, che confermerà lo stesso indice.
+    pendingRef.current = target;
+    activeRef.current = target;
     setActive(target);
-    root.scrollTo({ left, behavior: 'smooth' });
+    // Scorrimento immediato (non `smooth`): elimina la corsa con lo
+    // scroll-snap obbligatorio e con l'observer, causa di pallini instabili e
+    // di frecce che sembravano non funzionare. Lo swipe manuale resta nativo.
+    root.scrollTo({ left, behavior: 'auto' });
   }, []);
 
   const last = items.length - 1;
@@ -109,7 +136,7 @@ export default function SwipeCarousel({
       <div className="mt-3 flex items-center justify-center gap-3 sm:hidden">
         <button
           type="button"
-          onClick={() => goTo(active - 1)}
+          onClick={() => goTo(activeRef.current - 1)}
           disabled={active === 0}
           aria-label="Scheda precedente"
           className="grid h-8 w-8 flex-none place-items-center rounded-full border border-av-line bg-av-surface/60 text-av-muted transition-colors hover:text-white disabled:opacity-40"
@@ -125,7 +152,7 @@ export default function SwipeCarousel({
               onClick={() => goTo(index)}
               aria-label={`Vai alla scheda ${index + 1} di ${items.length}`}
               aria-current={index === active ? 'true' : undefined}
-              className={`h-2.5 rounded-full transition-all ${
+              className={`h-2.5 rounded-full transition-colors ${
                 index === active ? activeDotClassName : 'w-2.5 bg-av-line hover:bg-white/30'
               }`}
             />
@@ -134,7 +161,7 @@ export default function SwipeCarousel({
 
         <button
           type="button"
-          onClick={() => goTo(active + 1)}
+          onClick={() => goTo(activeRef.current + 1)}
           disabled={active === last}
           aria-label="Scheda successiva"
           className="grid h-8 w-8 flex-none place-items-center rounded-full border border-av-line bg-av-surface/60 text-av-muted transition-colors hover:text-white disabled:opacity-40"
