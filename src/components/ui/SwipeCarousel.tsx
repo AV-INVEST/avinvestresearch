@@ -80,8 +80,12 @@ export default function SwipeCarousel({
     const target = Math.max(0, Math.min(index, root.children.length - 1));
     const slide = root.children[target] as HTMLElement | undefined;
     if (!slide) return;
-    // scrollTo sul contenitore: non tocca lo scroll verticale della pagina.
-    root.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
+    // Aggiornamento ottimistico: evita che le frecce restino disabilitate
+    // in attesa dell'IntersectionObserver (che confermerà lo stesso indice).
+    setActive(target);
+    // scrollIntoView con `block: 'nearest'`: non tocca lo scroll verticale
+    // della pagina e usa il contenitore scrollabile corretto.
+    slide.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
   }, []);
 
   const last = items.length - 1;
