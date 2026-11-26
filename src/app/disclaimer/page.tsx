@@ -43,7 +43,8 @@ export default function DisclaimerPage() {
         <p>
           Tutti i contenuti del Sito - inclusi, a titolo esemplificativo e non
           esaustivo, corsi digitali, ricerche PDF, dispense, esempi, grafici,
-          commenti, visualizzazioni, call informative, presentazioni,
+          commenti, visualizzazioni, call informative, eventi formativi online
+          in diretta (Eventi Live Premium), presentazioni,
           newsletter, materiale del Research Club, la guida PDF AV Trading
           Starter, post social, approfondimenti e qualsiasi altra tipologia di
           materiale pubblicato o reso accessibile - sono forniti a scopo
@@ -87,6 +88,24 @@ export default function DisclaimerPage() {
           La versione digitale PDF &egrave; acquistabile su AV-INVEST RESEARCH,
           mentre la versione cartacea &egrave; acquistabile separatamente su
           Amazon, secondo le condizioni applicabili alla relativa vendita.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          Eventi Live Premium: incontri formativi in diretta
+        </h2>
+        <p>
+          Gli Eventi Live Premium sono incontri formativi online in diretta,
+          erogati tramite Google Meet, con le stesse finalit&agrave; e gli stessi
+          limiti dei corsi e degli altri contenuti del Sito. Essi hanno natura
+          esclusivamente educativa e informativa: non costituiscono consulenza
+          finanziaria personalizzata, non forniscono segnali operativi,
+          raccomandazioni d&apos;investimento o promesse di risultati e non
+          sostituiscono la valutazione autonoma dell&apos;utente. I contenuti e
+          le eventuali registrazioni messi a disposizione dopo l&apos;evento,
+          ove previsti, sono forniti per uso personale e non trasferibile e non
+          possono essere copiati, distribuiti o pubblicati.
         </p>
       </section>
 
@@ -372,7 +391,9 @@ export default function DisclaimerPage() {
           membri, l&apos;acquisto dei corsi digitali, l&apos;acquisto del
           romanzo Oltre il Grafico in versione digitale PDF, l&apos;acquisto
           one-time di
-          AV Market Lens (indicatore Pine Script e guida PDF) e la
+          AV Market Lens (indicatore Pine Script e guida PDF), l&apos;acquisto
+          di un biglietto per un evento formativo online in diretta (Eventi
+          Live Premium) e la
           sottoscrizione dell&apos;abbonamento al Research Club, cos&igrave; come
           l&apos;utilizzo dei servizi riservati, comportano la presa visione e
           l&apos;accettazione integrale del presente disclaimer, nonch&eacute; dei

@@ -92,6 +92,15 @@ export default function TerminiPage() {
             presenti Termini.
           </li>
           <li>
+            <strong className="text-white">Acquisto biglietto Eventi Live Premium</strong>:
+            la conclusione dell&apos;ordine e il pagamento a tantum del
+            biglietto per un evento formativo online in diretta (Eventi Live
+            Premium), tramite Stripe, comportano l&apos;accettazione integrale
+            dei presenti Termini e del Disclaimer. Il biglietto &egrave;
+            personale, non trasferibile e legato all&apos;account Google con cui
+            &egrave; stato effettuato l&apos;acquisto.
+          </li>
+          <li>
             <strong className="text-white">Accesso abilitato manualmente</strong>:
             l&apos;abilitazione di un prodotto una tantum disposta
             dall&apos;amministratore, previa verifica del pagamento oppure a
@@ -185,6 +194,13 @@ export default function TerminiPage() {
             <strong className="text-white">Prenotazione call informative</strong>
             : tramite link esterno a Calendly per richieste di orientamento
             iniziale sui servizi formativi.
+          </li>
+          <li>
+            <strong className="text-white">Eventi Live Premium</strong>
+            : eventi formativi online in diretta su Google Meet, con acquisto di
+            un biglietto digitale a tantum per singolo evento. Il biglietto
+            &egrave; personale e consente l&apos;accesso alla diretta e, ove
+            previsto, alla registrazione dell&apos;evento dall&apos;area membri.
           </li>
         </ul>
       </section>
@@ -811,6 +827,12 @@ export default function TerminiPage() {
             l&apos;accesso all&apos;area membri.
           </li>
           <li>
+            <strong className="text-white">Google Meet</strong>: per
+            l&apos;erogazione in diretta degli eventi formativi online (Eventi
+            Live Premium) e la relativa partecipazione tramite link riservato al
+            solo account autorizzato.
+          </li>
+          <li>
             <strong className="text-white">Calendly</strong>: per la
             prenotazione di call informative tramite link esterno.
           </li>
@@ -938,7 +960,94 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          25. Legge applicabile e foro competente
+          25. Eventi Live Premium: biglietti per eventi formativi online
+        </h2>
+        <p>
+          Gli Eventi Live Premium sono incontri formativi online in diretta,
+          erogati tramite Google Meet, a carattere esclusivamente educativo e
+          informativo, con le medesime finalit&agrave; e gli stessi limiti dei
+          corsi e degli altri contenuti del Sito. L&apos;accesso all&apos;evento
+          avviene tramite l&apos;acquisto di un biglietto digitale a tantum per
+          singolo evento, il cui prezzo &egrave; indicato nella pagina
+          dell&apos;evento e include l&apos;IVA ove applicabile.
+        </p>
+        <p className="mt-2">
+          <strong className="text-white">Biglietto personale e non trasferibile.</strong>{' '}
+          Il biglietto &egrave; strettamente personale, non cedibile e non
+          trasferibile: &egrave; legato all&apos;account Google con cui &egrave;
+          stato effettuato l&apos;acquisto ed &egrave; utilizzabile da una sola
+          persona. Per partecipare &egrave; necessario accedere all&apos;area
+          membri con lo stesso account utilizzato per l&apos;acquisto. La
+          condivisione del link di accesso o delle credenziali con terzi
+          &egrave; vietata.
+        </p>
+        <p className="mt-2">
+          <strong className="text-white">Accesso all&apos;evento.</strong>{' '}
+          Il link riservato di partecipazione a Google Meet viene reso
+          disponibile, per i soli biglietti validi e per i soli eventi
+          pubblicati, a partire da 60 minuti prima dell&apos;orario di inizio
+          dell&apos;evento, esclusivamente dall&apos;area membri. L&apos;utente
+          &egrave; responsabile della disponibilit&agrave; della propria
+          connessione, del proprio dispositivo e dell&apos;ambiente di fruizione.
+          Eventuali difficolt&agrave; tecniche riconducibili a Google Meet o
+          alla connessione dell&apos;utente non sono imputabili al Titolare, che
+          presta ogni ragionevole assistenza.
+        </p>
+        <p className="mt-2">
+          <strong className="text-white">Registrazioni e replay.</strong> Ove
+          l&apos;evento lo preveda, la registrazione dell&apos;incontro pu&ograve;
+          essere resa disponibile nell&apos;area membri dopo la conclusione
+          dell&apos;evento, per il solo account che ha acquistato il biglietto e
+          nei limiti di disponibilit&agrave; indicati nella pagina
+          dell&apos;evento. La registrazione &egrave; fornita per uso personale
+          e non pu&ograve; essere copiata, distribuita o pubblicata. La
+          disponibilit&agrave; e la qualit&agrave; della registrazione non sono
+          garantite in modo assoluto, fermo restando quanto previsto dalla legge
+          a tutela del consumatore.
+        </p>
+        <p className="mt-2">
+          <strong className="text-white">Cancellazioni, rinvii e variazioni.</strong>{' '}
+          Il Titolare pu&ograve; annullare o rinviare un evento per ragioni
+          organizzative, tecniche o di forza maggiore. In caso di annullamento
+          di un evento non ancora erogato, all&apos;acquirente &egrave;
+          riconosciuto il rimborso del prezzo del biglietto, salvo diverso
+          accordo (ad esempio riprogrammazione con conservazione del biglietto
+          per la nuova data). In caso di rinvio, l&apos;utente &egrave; informato
+          della nuova data tramite i recapiti associati all&apos;account e
+          pu&ograve; scegliere se mantenere la partecipazione alla nuova data
+          oppure richiedere il rimborso ove non possa partecipare alla data
+          riprogrammata.
+        </p>
+        <p className="mt-2">
+          <strong className="text-white">Rimborsi e recesso.</strong> In
+          relazione ai biglietti degli Eventi Live Premium, rimborsi e diritto
+          di recesso sono regolati nei limiti e nei modi previsti dalla legge
+          applicabile, con particolare riferimento al Codice del Consumo (D.Lgs.
+          206/2005) e alle disposizioni inderogabili di diritto comunitario e
+          nazionale. Il Titolare non dichiara rinunce unilaterali ai diritti
+          riconosciuti all&apos;utente consumatore da norme inderogabili,
+          n&eacute; appone rinuncia preventiva al diritto di recesso per la parte
+          di servizio non ancora fornita. Eventuali limitazioni al recesso
+          vengono applicate soltanto nei casi e con le modalit&agrave;
+          espressamente previsti dalla legge.
+        </p>
+        {/* NOTA INTERNA: la disciplina del recesso e dei rimborsi per gli eventi in diretta a data fissa (servizio di formazione live, potenzialmente riconducibile all'art. 59, comma 1, lett. n), Codice del Consumo) richiede verifica legale prima della pubblicazione. */}
+        <p className="mt-2">
+          <strong className="text-white">Trattamento dei dati durante gli eventi.</strong>{' '}
+          La partecipazione tramite Google Meet comporta il trattamento dei dati
+          secondo le modalit&agrave; descritte nella Privacy Policy. Ove
+          l&apos;evento venga registrato, la registrazione pu&ograve; includere
+          le immagini, la voce o le domande dei partecipanti; l&apos;utente ne
+          &egrave; informato e partecipa su base volontaria, potendo gestire
+          l&apos;uso di videocamera e microfono tramite le impostazioni di Google
+          Meet e limitandosi, ove preferisca, alla sola modalit&agrave; di
+          ascolto.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
+          26. Legge applicabile e foro competente
         </h2>
         <p>
           I presenti Termini sono regolati dalla legge italiana. Per ogni
@@ -958,7 +1067,7 @@ export default function TerminiPage() {
 
       <section>
         <h2 className="font-display text-xl font-semibold text-white sm:text-2xl">
-          26. Contatti e dati del venditore
+          27. Contatti e dati del venditore
         </h2>
         <p>
           I servizi offerti sul Sito sono forniti da:

@@ -3,6 +3,12 @@ import type Stripe from 'stripe';
 import { getStripeClient, getStripeWebhookSecret } from '@/lib/stripe/client';
 import { markEventProcessed, metadataFromSession, syncPurchase, applyChargeRefund } from '@/lib/stripe/purchase-sync';
 import {
+  sessionLiveEventId,
+  syncLiveEventTicketFromSession,
+  markLiveEventTicketFailed,
+  applyLiveEventChargeRefund,
+} from '@/lib/stripe/live-event-sync';
+import {
   handleCheckoutSessionCompletedSubscription,
   handleSubscriptionUpsertFromStripe,
   handleSubscriptionDeletedFromStripe,
@@ -40,6 +46,12 @@ async function fetchInvoiceUrls(
 }
 
 async function handleCheckoutSessionCompleted(stripe: Stripe, session: Stripe.Checkout.Session): Promise<void> {
+  // Instradamento separato per i biglietti degli Eventi Live: non passa dalla
+  // logica dei prodotti/abbonamenti e non tocca la tabella Purchase.
+  if (sessionLiveEventId(session)) {
+    await syncLiveEventTicketFromSession(session);
+    return;
+  }
   const meta = metadataFromSession(session);
   const billingModeRaw = session.metadata?.billing_mode;
   const isSubscription = session.mode === 'subscription' || billingModeRaw === 'subscription';
@@ -80,6 +92,10 @@ async function handleCheckoutSessionCompleted(stripe: Stripe, session: Stripe.Ch
 }
 
 async function handleAsyncPaymentSucceeded(stripe: Stripe, session: Stripe.Checkout.Session): Promise<void> {
+  if (sessionLiveEventId(session)) {
+    await syncLiveEventTicketFromSession(session);
+    return;
+  }
   const meta = metadataFromSession(session);
   const userEmail = meta.user_email ?? normalizeEmail(session.customer_email);
   const productSlug = meta.product_slug;
@@ -108,6 +124,10 @@ async function handleAsyncPaymentSucceeded(stripe: Stripe, session: Stripe.Check
 }
 
 async function handleAsyncPaymentFailed(session: Stripe.Checkout.Session): Promise<void> {
+  if (sessionLiveEventId(session)) {
+    await markLiveEventTicketFailed(session.id);
+    return;
+  }
   const meta = metadataFromSession(session);
   const userEmail = meta.user_email ?? normalizeEmail(session.customer_email);
   const productSlug = meta.product_slug;
@@ -141,6 +161,10 @@ async function handleCheckoutSessionExpired(session: Stripe.Checkout.Session): P
     });
   } catch (err) {
     console.warn('[stripe:webhook] checkout.session.expired update failed', session.id, err);
+  }
+  // Biglietti evento: marca come failed il pending collegato alla sessione scaduta.
+  if (sessionLiveEventId(session)) {
+    await markLiveEventTicketFailed(session.id);
   }
 }
 
@@ -213,6 +237,8 @@ export async function POST(req: Request): Promise<Response> {
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
         await applyChargeRefund(charge);
+        // Rimborsi relativi a biglietti evento (PaymentIntent non presente in Purchase).
+        await applyLiveEventChargeRefund(charge);
         break;
       }
       case 'customer.subscription.created':

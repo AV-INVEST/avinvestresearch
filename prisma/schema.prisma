@@ -76,6 +76,20 @@ enum ManualGrantAuditAction {
   EVIDENCE_RECHECKED
 }
 
+enum LiveEventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  ARCHIVED
+}
+
+enum LiveEventTicketStatus {
+  pending
+  succeeded
+  failed
+  refunded
+}
+
 model User {
   id             String           @id @default(cuid())
   email          String           @unique @db.VarChar(255)
@@ -87,6 +101,7 @@ model User {
   purchases      Purchase[]
   lessonProgress LessonProgress[]
   subscriptions  Subscription[]
+  liveEventTickets LiveEventTicket[]
 }
 
 model StripeEvent {
@@ -324,4 +339,59 @@ model ManualGrantEvent {
   @@index([actorEmail, createdAt])
   @@index([targetEmail, createdAt])
   @@index([action, createdAt])
+}
+
+/// Evento formativo live acquistabile singolarmente (biglietto 9,90 €).
+/// Indipendente da Purchase/Subscription: nessuna logica di prodotto condivisa.
+model LiveEvent {
+  id          String          @id @default(cuid())
+  slug        String          @unique @db.VarChar(128)
+  title       String          @db.VarChar(255)
+  description String?         @db.Text
+  startsAt    DateTime
+  endsAt      DateTime?
+  /// Link privato Google Meet, esposto solo ai possessori di un biglietto valido.
+  meetUrl     String?         @db.Text
+  /// Link replay privato, disponibile dopo lo svolgimento dell'evento.
+  replayUrl   String?         @db.Text
+  status      LiveEventStatus @default(DRAFT)
+  publishedAt DateTime?
+  priceAmount Int             @default(990)
+  currency    String          @default("EUR") @db.VarChar(8)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  tickets     LiveEventTicket[]
+
+  @@index([status, startsAt])
+  @@index([startsAt])
+}
+
+/// Biglietto di accesso a un singolo LiveEvent.
+/// Un solo biglietto per utente ed evento: un checkout non completato viene
+/// riutilizzato (upsert su [userEmail, eventId]) per consentire il riprova.
+model LiveEventTicket {
+  id                              String                @id @default(cuid())
+  eventId                         String
+  userEmail                       String                @db.VarChar(255)
+  checkoutSessionId               String                @unique @db.VarChar(255)
+  paymentIntentId                 String?               @unique @db.VarChar(255)
+  customerId                      String?               @db.VarChar(255)
+  amountTotal                     Int
+  currency                        String                @default("EUR") @db.VarChar(8)
+  status                          LiveEventTicketStatus @default(pending)
+  purchasedAt                     DateTime?
+  refundedAt                      DateTime?
+  refundedAmount                  Int?                  @default(0)
+  consentTermsVersion             String?               @db.VarChar(32)
+  consentDigitalWithdrawalVersion String?               @db.VarChar(32)
+  consentAcceptedAt               DateTime?
+  createdAt                       DateTime              @default(now())
+  updatedAt                       DateTime              @updatedAt
+  event                           LiveEvent             @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  user                            User?                 @relation(fields: [userEmail], references: [email])
+
+  @@unique([userEmail, eventId])
+  @@index([eventId, status])
+  @@index([userEmail, status])
+  @@index([paymentIntentId])
 }

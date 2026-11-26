@@ -18,6 +18,7 @@ import {
   Kanban,
   Info,
   Package,
+  Ticket,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -56,6 +57,7 @@ const NAV: NavItem[] = [
   { href: '/area-membri', label: 'Panoramica', Icon: LayoutDashboard },
   { href: '/area-membri/percorsi', label: 'Videocorsi', Icon: CirclePlay },
   { href: '/area-membri/prodotti', label: 'I miei prodotti', Icon: Package },
+  { href: '/area-membri/biglietti', label: 'I miei biglietti', Icon: Ticket },
   { href: '/area-membri/profilo', label: 'Profilo e sicurezza', Icon: UserCircle },
   { href: '/area-membri/assistenza', label: 'Assistenza', Icon: LifeBuoy },
 ];

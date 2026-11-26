@@ -331,7 +331,7 @@ export const siteConfig = {
     { label: 'Indicatore', href: '/#market-lens' },
     { label: 'Guida', href: '/#trading-starter' },
     { label: 'Libro', href: '/libro/oltre-il-grafico' },
-    { label: 'Chi sono', href: '/#chi-sono' },
+    { label: 'Eventi', href: '/eventi' },
     { label: 'FAQ', href: '/#faq' },
   ],
 

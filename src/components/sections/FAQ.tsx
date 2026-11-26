@@ -9,6 +9,7 @@ type CategoryKey =
   | 'research-club'
   | 'market-lens'
   | 'trading-starter'
+  | 'eventi'
   | 'romanzo';
 
 interface Category {
@@ -22,6 +23,7 @@ const categories: Category[] = [
   { key: 'research-club', label: 'Research Club' },
   { key: 'market-lens', label: 'Market Lens' },
   { key: 'trading-starter', label: 'Trading Starter' },
+  { key: 'eventi', label: 'Eventi' },
   { key: 'romanzo', label: 'Il romanzo' },
 ];
 
@@ -144,6 +146,28 @@ const faqsByCategory: Record<CategoryKey, FAQItem[]> = {
       question: 'AV Trading Starter è un segnale operativo o una consulenza finanziaria?',
       answer:
         'No. Assolutamente no. AV Trading Starter è esclusivamente materiale formativo introduttivo: non contiene consigli personalizzati, raccomandazioni di acquisto o vendita, target di prezzo, indicazioni di timing o segnali operativi di qualsiasi genere. Non menziona strumenti finanziari specifici e non costituisce consulenza finanziaria, legale o fiscale. Ogni decisione di investimento o operativa resta sotto la tua esclusiva responsabilità. Consulta il Disclaimer e i Termini pubblicati sul sito per i dettagli completi.',
+    },
+  ],
+  eventi: [
+    {
+      question: 'Come funzionano gli Eventi Live Premium?',
+      answer:
+        "Gli Eventi Live Premium sono incontri formativi online in diretta su Google Meet, in piccolo gruppo. Per ogni evento acquisti un biglietto personale a 9,90 € (IVA inclusa) con il tuo account Google. Gli eventi hanno finalità esclusivamente formativa e informativa: non forniscono segnali, consigli personalizzati o promesse di rendimento. Le date disponibili e lo storico degli eventi passati sono nella pagina Eventi.",
+    },
+    {
+      question: 'Come acquisto un biglietto per un evento?',
+      answer:
+        "Accedi con il tuo account Google, vai nella pagina Eventi e premi «Acquista biglietto» sull’evento desiderato. Il pagamento è gestito in modo sicuro tramite Stripe. Puoi acquistare un solo biglietto per account e per singolo evento; eventi diversi si acquistano separatamente. Se hai già un biglietto valido per un evento, il sistema non ne consente un secondo per lo stesso account.",
+    },
+    {
+      question: 'Come accedo all’evento su Google Meet?',
+      answer:
+        "Il link per entrare è riservato ai possessori di un biglietto valido e viene mostrato nella tua area membri, alla voce «I miei biglietti». Il pulsante «Entra su Google Meet» diventa disponibile a partire da 60 minuti prima dell’inizio dell’evento e resta valido per biglietti confermati. L’accesso viene abilitato solo dopo la verifica del pagamento: se il pagamento è ancora in elaborazione, aggiorna lo stato dalla stessa pagina.",
+    },
+    {
+      question: 'Cosa succede se non posso partecipare o se l’evento viene rinviato?',
+      answer:
+        "Il biglietto è personale e non trasferibile. Quando previsto, dopo lo svolgimento dell’evento il replay è disponibile agli aventi diritto nella tua area membri: potrai quindi recuperare la registrazione anche se non hai partecipato in diretta. In caso di cancellazione o rinvio dell’evento da parte nostra, ti informeremo e potrai scegliere tra la partecipazione alla nuova data, un altro evento disponibile o il rimborso del biglietto. Per rimborsi, recesso e condizioni complete consulta i Termini e condizioni.",
     },
   ],
   romanzo: [

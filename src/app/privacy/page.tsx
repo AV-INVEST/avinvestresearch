@@ -77,6 +77,13 @@ export default function PrivacyPage() {
             al timestamp di accettazione).
           </li>
           <li>
+            Acquisto di biglietti per gli eventi formativi online in diretta
+            (Eventi Live Premium), con acquisto a tantum per singolo evento e
+            gestione dello stato del biglietto (valido, in attesa, non
+            completato, rimborsato) e dell&apos;accesso all&apos;evento tramite
+            Google Meet.
+          </li>
+          <li>
             Abilitazione manuale dell&apos;accesso ai prodotti una tantum
             (corsi digitali, AV Market Lens, AV Trading Starter) disposta
             dall&apos;amministratore, previa verifica del pagamento oppure a
@@ -151,6 +158,19 @@ export default function PrivacyPage() {
             altres&igrave; riportate nei metadata della sessione di checkout
             Stripe al fine di garantire tracciabilit&agrave; e allineamento tra
             sistema interno e registro del fornitore di pagamento.
+          </li>
+          <li>
+            <strong className="text-white">Dati dei biglietti Eventi Live Premium</strong>:
+            in relazione all&apos;acquisto di un biglietto per un evento
+            formativo online, vengono memorizzati nel database del Titolare -
+            oltre ai dati di transazione ricevuti da Stripe - l&apos;email
+            dell&apos;account acquirente, l&apos;evento acquistato, lo stato del
+            biglietto (valido, in attesa, non completato, rimborsato), i
+            riferimenti della sessione di pagamento Stripe e i riferimenti
+            dell&apos;eventuale rimborso. L&apos;associazione tra biglietto ed
+            evento &egrave; effettuata tramite dati verificati lato server
+            (email dell&apos;account autenticato ed evento), al fine di garantire
+            l&apos;accesso al solo avente diritto.
           </li>
           <li>
             <strong className="text-white">Dati degli accessi manuali</strong>:
@@ -254,6 +274,8 @@ export default function PrivacyPage() {
             - Tracciamento del progresso personale nei corsi all&apos;interno dell&apos;area membri.
             <br />
             - Gestione delle prenotazioni di call informative ricevute tramite Calendly.
+            <br />
+            - Gestione dell&apos;acquisto dei biglietti per gli eventi formativi online (Eventi Live Premium), verifica dello stato del biglietto, erogazione dell&apos;accesso all&apos;evento tramite Google Meet e gestione dell&apos;eventuale rimborso.
             <br />
             - Abilitazione manuale dell&apos;accesso ai prodotti una tantum da parte dell&apos;amministratore, previa verifica del pagamento oppure a titolo gratuito (omaggio), e relativa registrazione di audit.
             <br />
@@ -401,6 +423,24 @@ export default function PrivacyPage() {
             <br />
             L&apos;uso del servizio &egrave; soggetto all&apos;informativa
             ufficiale disponibile su{' '}
+            <a href="https://policies.google.com/privacy?hl=it" target="_blank" rel="noopener noreferrer" className="link-underline">
+              policies.google.com/privacy
+            </a>.
+            <br />
+            Trasferimenti internazionali, se applicabili, sono disciplinati
+            secondo le garanzie previste dalla normativa e adottate dal
+            fornitore.
+          </li>
+          <li>
+            <strong className="text-white">Google Meet</strong>
+            <br />
+            Ruolo: servizio di videoconferenza utilizzato per l&apos;erogazione
+            in diretta degli eventi formativi online (Eventi Live Premium). La
+            partecipazione avviene tramite un link riservato reso disponibile
+            nell&apos;area membri ai soli aventi diritto; durante l&apos;evento
+            possono essere trattati dati audio, video e di partecipazione dei
+            partecipanti secondo le impostazioni di Google Meet e
+            l&apos;informativa di Google, disponibile su{' '}
             <a href="https://policies.google.com/privacy?hl=it" target="_blank" rel="noopener noreferrer" className="link-underline">
               policies.google.com/privacy
             </a>.
